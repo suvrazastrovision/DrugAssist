@@ -1,0 +1,1259 @@
+[
+  {
+    "drug": "aspirin",
+    "difficulty": "easy",
+    "text": "What active ingredient does the aspirin label list?",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "active_ingredient"
+        ],
+        "patterns": [
+          "aspirin"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "aspirin",
+    "difficulty": "easy",
+    "text": "Find the aspirin label directions for adults and children 12 years and over.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "dosage_and_administration"
+        ],
+        "patterns": [
+          "12 years"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "aspirin",
+    "difficulty": "medium",
+    "text": "Where does aspirin labeling discuss stomach bleeding risk with blood thinners?",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "warnings"
+        ],
+        "patterns": [
+          "bleeding",
+          "anticoagulant"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "aspirin",
+    "difficulty": "medium",
+    "text": "Find aspirin advice about use while pregnant or breast-feeding.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "warnings"
+        ],
+        "patterns": [
+          "pregnan",
+          "breast"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "aspirin",
+    "difficulty": "hard",
+    "text": "Find aspirin warnings that qualify use in children recovering from chicken pox or flu-like symptoms.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "warnings"
+        ],
+        "patterns": [
+          "children",
+          "chicken",
+          "flu"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "aspirin",
+    "difficulty": "hard",
+    "text": "Retrieve aspirin dose limits together with warnings about taking more than directed.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "dosage_and_administration",
+          "warnings"
+        ],
+        "patterns": [
+          "directed"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "metformin",
+    "difficulty": "easy",
+    "text": "Find the indications and usage section for metformin.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "indications_and_usage"
+        ],
+        "patterns": [
+          "diabetes"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "metformin",
+    "difficulty": "easy",
+    "text": "Find metformin contraindications concerning renal impairment.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "contraindications"
+        ],
+        "patterns": [
+          "renal"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "metformin",
+    "difficulty": "medium",
+    "text": "Where does metformin labeling address lactic acidosis and kidney function?",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "warnings_and_cautions"
+        ],
+        "patterns": [
+          "lactic",
+          "renal"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "metformin",
+    "difficulty": "medium",
+    "text": "Find metformin dosing information about an evening meal.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "dosage_and_administration"
+        ],
+        "patterns": [
+          "evening",
+          "meal"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "metformin",
+    "difficulty": "hard",
+    "text": "Retrieve metformin directions for interruption around iodinated contrast imaging, including kidney-function qualifiers.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "dosage_and_administration",
+          "warnings_and_cautions"
+        ],
+        "patterns": [
+          "contrast",
+          "renal"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "metformin",
+    "difficulty": "hard",
+    "text": "Find the metformin sections addressing hypoglycemia with insulin or insulin secretagogues.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "warnings_and_cautions",
+          "drug_interactions"
+        ],
+        "patterns": [
+          "hypoglycemia",
+          "insulin"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "warfarin",
+    "difficulty": "easy",
+    "text": "Find warfarin indications and usage.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "indications_and_usage"
+        ],
+        "patterns": [
+          "thrombo"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "warfarin",
+    "difficulty": "easy",
+    "text": "Find the boxed warning for warfarin about bleeding.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "boxed_warning"
+        ],
+        "patterns": [
+          "bleeding"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "warfarin",
+    "difficulty": "medium",
+    "text": "Retrieve warfarin dosing passages that mention INR monitoring.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "dosage_and_administration"
+        ],
+        "patterns": [
+          "INR"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "warfarin",
+    "difficulty": "medium",
+    "text": "Where does warfarin labeling discuss interactions with antibiotics?",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "drug_interactions"
+        ],
+        "patterns": [
+          "antibiotic"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "warfarin",
+    "difficulty": "hard",
+    "text": "Find warfarin pregnancy contraindication language and its qualification for mechanical heart valves.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "contraindications"
+        ],
+        "patterns": [
+          "pregnan",
+          "mechanical"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "warfarin",
+    "difficulty": "hard",
+    "text": "Retrieve warfarin information about heparin coadministration and INR testing.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "dosage_and_administration"
+        ],
+        "patterns": [
+          "heparin",
+          "INR"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "lisinopril",
+    "difficulty": "easy",
+    "text": "Find lisinopril indications for hypertension.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "indications_and_usage"
+        ],
+        "patterns": [
+          "hypertension"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "lisinopril",
+    "difficulty": "easy",
+    "text": "Find lisinopril adverse reactions concerning cough.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "adverse_reactions"
+        ],
+        "patterns": [
+          "cough"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "lisinopril",
+    "difficulty": "medium",
+    "text": "Where does lisinopril labeling discuss swelling of the face, lips, tongue, or throat?",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "warnings_and_cautions"
+        ],
+        "patterns": [
+          "angioedema"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "lisinopril",
+    "difficulty": "medium",
+    "text": "Find lisinopril interaction information about potassium supplements.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "drug_interactions"
+        ],
+        "patterns": [
+          "potassium"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "lisinopril",
+    "difficulty": "hard",
+    "text": "Retrieve lisinopril contraindications involving a neprilysin inhibitor and a 36-hour interval.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "contraindications"
+        ],
+        "patterns": [
+          "neprilysin",
+          "36"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "lisinopril",
+    "difficulty": "hard",
+    "text": "Find lisinopril renal dosing adjustments together with warnings about impaired renal function.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "dosage_and_administration",
+          "warnings_and_cautions"
+        ],
+        "patterns": [
+          "renal"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "atorvastatin",
+    "difficulty": "easy",
+    "text": "Find the atorvastatin indications and usage section.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "indications_and_usage"
+        ],
+        "patterns": [
+          "cholesterol"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "atorvastatin",
+    "difficulty": "easy",
+    "text": "Find atorvastatin dosage and administration information.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "dosage_and_administration"
+        ],
+        "patterns": [
+          "daily"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "atorvastatin",
+    "difficulty": "medium",
+    "text": "Where does atorvastatin labeling discuss muscle pain and rhabdomyolysis?",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "warnings_and_cautions"
+        ],
+        "patterns": [
+          "myopathy",
+          "rhabdomyolysis"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "atorvastatin",
+    "difficulty": "medium",
+    "text": "Find atorvastatin drug interactions concerning grapefruit juice.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "drug_interactions"
+        ],
+        "patterns": [
+          "grapefruit"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "atorvastatin",
+    "difficulty": "hard",
+    "text": "Retrieve atorvastatin interaction and dosing language involving clarithromycin.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "drug_interactions",
+          "dosage_and_administration"
+        ],
+        "patterns": [
+          "clarithromycin"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "atorvastatin",
+    "difficulty": "hard",
+    "text": "Find atorvastatin liver-related contraindications and hepatic warnings.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "contraindications",
+          "warnings_and_cautions"
+        ],
+        "patterns": [
+          "hepatic"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "amoxicillin",
+    "difficulty": "easy",
+    "text": "Find amoxicillin indications concerning bacterial infections.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "indications_and_usage"
+        ],
+        "patterns": [
+          "bacterial"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "amoxicillin",
+    "difficulty": "easy",
+    "text": "Find amoxicillin contraindication language about hypersensitivity.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "contraindications"
+        ],
+        "patterns": [
+          "hypersensitiv"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "amoxicillin",
+    "difficulty": "medium",
+    "text": "Where does amoxicillin labeling discuss severe allergy or anaphylaxis?",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "warnings_and_cautions"
+        ],
+        "patterns": [
+          "anaphyla"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "amoxicillin",
+    "difficulty": "medium",
+    "text": "Find amoxicillin interaction information about probenecid.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "drug_interactions"
+        ],
+        "patterns": [
+          "probenecid"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "amoxicillin",
+    "difficulty": "hard",
+    "text": "Retrieve amoxicillin dosage information for severe renal impairment, including the 875 mg dose qualifier.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "dosage_and_administration"
+        ],
+        "patterns": [
+          "renal",
+          "875"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "amoxicillin",
+    "difficulty": "hard",
+    "text": "Find amoxicillin warnings concerning diarrhea caused by Clostridium difficile.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "warnings_and_cautions"
+        ],
+        "patterns": [
+          "difficile",
+          "diarrhea"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "ibuprofen",
+    "difficulty": "easy",
+    "text": "What active ingredient is listed in the ibuprofen label?",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "active_ingredient"
+        ],
+        "patterns": [
+          "ibuprofen"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "ibuprofen",
+    "difficulty": "easy",
+    "text": "Find ibuprofen directions on the maximum daily number of tablets.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "dosage_and_administration"
+        ],
+        "patterns": [
+          "24 hours"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "ibuprofen",
+    "difficulty": "medium",
+    "text": "Where do ibuprofen warnings discuss stomach bleeding and alcohol?",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "warnings"
+        ],
+        "patterns": [
+          "bleeding",
+          "alcohol"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "ibuprofen",
+    "difficulty": "medium",
+    "text": "Find ibuprofen warning advice for people taking a blood thinner.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "warnings"
+        ],
+        "patterns": [
+          "anticoagulant"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "ibuprofen",
+    "difficulty": "hard",
+    "text": "Find ibuprofen pregnancy warnings with timing qualifiers.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "warnings"
+        ],
+        "patterns": [
+          "pregnan",
+          "weeks"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "ibuprofen",
+    "difficulty": "hard",
+    "text": "Retrieve ibuprofen directions and age-specific warnings for children.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "dosage_and_administration",
+          "warnings"
+        ],
+        "patterns": [
+          "children"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "sertraline",
+    "difficulty": "easy",
+    "text": "Find sertraline indications and usage.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "indications_and_usage"
+        ],
+        "patterns": [
+          "depressive"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "sertraline",
+    "difficulty": "easy",
+    "text": "Find sertraline contraindications concerning monoamine oxidase inhibitors.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "contraindications"
+        ],
+        "patterns": [
+          "monoamine"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "sertraline",
+    "difficulty": "medium",
+    "text": "Where does sertraline labeling discuss serotonin syndrome?",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "warnings_and_cautions"
+        ],
+        "patterns": [
+          "serotonin syndrome"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "sertraline",
+    "difficulty": "medium",
+    "text": "Find sertraline instructions about stopping treatment gradually.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "dosage_and_administration"
+        ],
+        "patterns": [
+          "gradual"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "sertraline",
+    "difficulty": "hard",
+    "text": "Retrieve sertraline contraindication language on MAOI use and the 14-day interval.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "contraindications"
+        ],
+        "patterns": [
+          "14",
+          "monoamine"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "sertraline",
+    "difficulty": "hard",
+    "text": "Find sertraline boxed-warning language about suicidal thoughts in pediatric and young adult patients.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "boxed_warning"
+        ],
+        "patterns": [
+          "suicidal",
+          "pediatric"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "omeprazole",
+    "difficulty": "easy",
+    "text": "Find omeprazole indications for gastroesophageal reflux disease.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "indications_and_usage"
+        ],
+        "patterns": [
+          "gastroesophageal"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "omeprazole",
+    "difficulty": "easy",
+    "text": "Find omeprazole dosage and administration instructions.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "dosage_and_administration"
+        ],
+        "patterns": [
+          "meal"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "omeprazole",
+    "difficulty": "medium",
+    "text": "Where does omeprazole labeling discuss low magnesium?",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "warnings_and_cautions"
+        ],
+        "patterns": [
+          "hypomagnesemia"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "omeprazole",
+    "difficulty": "medium",
+    "text": "Find omeprazole interaction information about clopidogrel.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "drug_interactions"
+        ],
+        "patterns": [
+          "clopidogrel"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "omeprazole",
+    "difficulty": "hard",
+    "text": "Retrieve omeprazole warning and interaction passages about concomitant methotrexate.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "warnings_and_cautions",
+          "drug_interactions"
+        ],
+        "patterns": [
+          "methotrexate"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "omeprazole",
+    "difficulty": "hard",
+    "text": "Find omeprazole warnings about fracture risk and qualifiers for long-term use.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "warnings_and_cautions"
+        ],
+        "patterns": [
+          "fracture",
+          "long"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "albuterol",
+    "difficulty": "easy",
+    "text": "Find albuterol indications and usage concerning bronchospasm.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "indications_and_usage"
+        ],
+        "patterns": [
+          "bronchospasm"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "albuterol",
+    "difficulty": "easy",
+    "text": "Find albuterol dosage and administration information.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "dosage_and_administration"
+        ],
+        "patterns": [
+          "dose"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "albuterol",
+    "difficulty": "medium",
+    "text": "Where does albuterol labeling discuss a paradoxical worsening of bronchospasm?",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "warnings"
+        ],
+        "patterns": [
+          "paradoxical"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "albuterol",
+    "difficulty": "medium",
+    "text": "Find albuterol interaction language concerning beta blockers.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "drug_interactions"
+        ],
+        "patterns": [
+          "beta"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "albuterol",
+    "difficulty": "hard",
+    "text": "Retrieve albuterol drug-interaction language on MAO inhibitors and tricyclic antidepressants.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "drug_interactions"
+        ],
+        "patterns": [
+          "monoamine",
+          "tricyclic"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "albuterol",
+    "difficulty": "medium",
+    "text": "Where does albuterol labeling describe effects on the heart and circulation?",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "warnings",
+          "adverse_reactions"
+        ],
+        "patterns": [
+          "cardiovascular"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "levothyroxine",
+    "difficulty": "easy",
+    "text": "Find levothyroxine indications and usage concerning hypothyroidism.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "indications_and_usage"
+        ],
+        "patterns": [
+          "hypothyroidism"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "levothyroxine",
+    "difficulty": "easy",
+    "text": "Find the levothyroxine boxed warning about obesity or weight loss.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "boxed_warning"
+        ],
+        "patterns": [
+          "obesity"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "levothyroxine",
+    "difficulty": "medium",
+    "text": "Where does levothyroxine dosing describe an empty stomach before breakfast?",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "dosage_and_administration"
+        ],
+        "patterns": [
+          "empty",
+          "breakfast"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "levothyroxine",
+    "difficulty": "medium",
+    "text": "Find levothyroxine interaction language concerning calcium carbonate.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "drug_interactions"
+        ],
+        "patterns": [
+          "calcium carbonate"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "levothyroxine",
+    "difficulty": "hard",
+    "text": "Retrieve levothyroxine administration instructions concerning separation from interfering drugs by four hours.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "dosage_and_administration"
+        ],
+        "patterns": [
+          "4 hours"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "levothyroxine",
+    "difficulty": "hard",
+    "text": "Find levothyroxine warnings and dosage precautions concerning cardiac disease in elderly patients.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "warnings_and_cautions",
+          "dosage_and_administration"
+        ],
+        "patterns": [
+          "cardiac",
+          "elderly"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "clopidogrel",
+    "difficulty": "easy",
+    "text": "Find clopidogrel indications and usage concerning acute coronary syndrome.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "indications_and_usage"
+        ],
+        "patterns": [
+          "acute coronary"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "clopidogrel",
+    "difficulty": "medium",
+    "text": "Where does clopidogrel labeling discuss reduced effectiveness in CYP2C19 poor metabolizers?",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "boxed_warning"
+        ],
+        "patterns": [
+          "CYP2C19"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "clopidogrel",
+    "difficulty": "medium",
+    "text": "Find clopidogrel contraindications for active pathological bleeding.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "contraindications"
+        ],
+        "patterns": [
+          "bleeding"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "clopidogrel",
+    "difficulty": "medium",
+    "text": "Find clopidogrel interaction language about omeprazole or esomeprazole.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "drug_interactions"
+        ],
+        "patterns": [
+          "omeprazole"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "clopidogrel",
+    "difficulty": "medium",
+    "text": "Retrieve clopidogrel dose instructions for a loading dose in ACS.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "dosage_and_administration"
+        ],
+        "patterns": [
+          "loading"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "clopidogrel",
+    "difficulty": "hard",
+    "text": "Find clopidogrel warnings about discontinuation five days before surgery and bleeding risk.",
+    "answerable": true,
+    "targets": [
+      {
+        "sections": [
+          "warnings_and_cautions"
+        ],
+        "patterns": [
+          "five days",
+          "surgery"
+        ]
+      }
+    ]
+  },
+  {
+    "drug": "aspirin",
+    "difficulty": "easy",
+    "text": "What is the current retail price in euros for aspirin?",
+    "answerable": false,
+    "dev": true,
+    "targets": [],
+    "unsupported_reason": "Requested economic, future, personal, or unpublished evidence is outside FDA label scope."
+  },
+  {
+    "drug": "warfarin",
+    "difficulty": "easy",
+    "text": "Which local pharmacy has warfarin in stock right now?",
+    "answerable": false,
+    "dev": false,
+    "targets": [],
+    "unsupported_reason": "Requested economic, future, personal, or unpublished evidence is outside FDA label scope."
+  },
+  {
+    "drug": "metformin",
+    "difficulty": "medium",
+    "text": "What was the worldwide sales revenue of metformin in 2025?",
+    "answerable": false,
+    "dev": true,
+    "targets": [],
+    "unsupported_reason": "Requested economic, future, personal, or unpublished evidence is outside FDA label scope."
+  },
+  {
+    "drug": "ibuprofen",
+    "difficulty": "medium",
+    "text": "Which ibuprofen manufacturer has the lowest carbon footprint this month?",
+    "answerable": false,
+    "dev": false,
+    "targets": [],
+    "unsupported_reason": "Requested economic, future, personal, or unpublished evidence is outside FDA label scope."
+  },
+  {
+    "drug": "albuterol",
+    "difficulty": "medium",
+    "text": "What is the current reimbursement price of albuterol in Germany?",
+    "answerable": false,
+    "dev": false,
+    "targets": [],
+    "unsupported_reason": "Requested economic, future, personal, or unpublished evidence is outside FDA label scope."
+  },
+  {
+    "drug": "sertraline",
+    "difficulty": "hard",
+    "text": "Using only this label corpus, predict my exact response to sertraline next year from my genome.",
+    "answerable": false,
+    "dev": true,
+    "targets": [],
+    "unsupported_reason": "Requested economic, future, personal, or unpublished evidence is outside FDA label scope."
+  },
+  {
+    "drug": "omeprazole",
+    "difficulty": "hard",
+    "text": "Which omeprazole batch will be recalled next year and on what date?",
+    "answerable": false,
+    "dev": false,
+    "targets": [],
+    "unsupported_reason": "Requested economic, future, personal, or unpublished evidence is outside FDA label scope."
+  },
+  {
+    "drug": "clopidogrel",
+    "difficulty": "hard",
+    "text": "Which unpublished trial proves clopidogrel cures every viral infection?",
+    "answerable": false,
+    "dev": false,
+    "targets": [],
+    "unsupported_reason": "Requested economic, future, personal, or unpublished evidence is outside FDA label scope."
+  }
+]

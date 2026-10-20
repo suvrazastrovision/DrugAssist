@@ -1,0 +1,85 @@
+{
+  "openapi_version": "3.1.0",
+  "paths": {
+    "/api/v1/fda/labels/recent": {
+      "get": {
+        "tags": [
+          "fda.recalls"
+        ],
+        "summary": "Recent FDA drug labels (Structured Product Labeling)",
+        "parameters": [
+          {
+            "name": "product_type",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "description": "e.g., 'HUMAN PRESCRIPTION DRUG'"
+            }
+          },
+          {
+            "name": "manufacturer",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 50,
+              "maximum": 200
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/fda/labels/{name}": {
+      "get": {
+        "tags": [
+          "fda.recalls"
+        ],
+        "summary": "FDA drug-label lookup by brand, generic, or substance name",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Substring match — e.g. 'aspirin' or 'COSENTYX'"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK with indications, dosage, warnings, adverse reactions, etc."
+          }
+        }
+      }
+    }
+  },
+  "security": [],
+  "provenance": {
+    "url": "https://api.morvs.ai/openapi.json",
+    "params": {},
+    "status": 200,
+    "retrieved_at": "2026-10-19T19:43:54.705237+00:00",
+    "body_sha256": "16d40173b7640f4606c8bc382659c11816359cc2cef71f683f6eeb7c84a8a534",
+    "raw_file": "data\\raw\\http\\16d40173b7640f4606c8bc382659c11816359cc2cef71f683f6eeb7c84a8a534.body",
+    "provider": "morvs",
+    "response_headers": {
+      "Content-Type": "application/json; charset=utf-8",
+      "Last-Modified": "Mon, 19 Oct 2026 19:39:35 GMT"
+    }
+  },
+  "pagination": "not documented",
+  "rate_limits": "not documented; honor 429",
+  "scope": "bounded recent feed and bounded name lookups; not a full FDA corpus"
+}

@@ -1,0 +1,916 @@
+{
+  "artifact_type": "search_index",
+  "run_id": "index_5499bda801cf75838e5f",
+  "snapshot_id": "a98bf2c19d4d8ac2944d",
+  "created_at": "2026-10-20T09:06:09.636106+00:00",
+  "provisional": true,
+  "evaluation_status": "expanded_corpus_not_benchmarked",
+  "configuration_source_run_id": "b47aa78a5a05c7b8",
+  "default_method": "hybrid_normalized",
+  "selection": {
+    "chunking": {
+      "strategy": "recursive",
+      "size": 256,
+      "overlap": 32,
+      "encoding": "cl100k_base"
+    },
+    "bm25": {
+      "k1": 2.0,
+      "b": 0.75
+    },
+    "hybrid": {
+      "fusion": "normalized",
+      "rrf_k": 60,
+      "alpha": 0.25
+    },
+    "reranker": {
+      "model": "cross-encoder/ms-marco-MiniLM-L6-v2",
+      "revision": "233902d25c440f23af6f7d6e94d2946bac0bee0a",
+      "batch_size": 16,
+      "max_length": 512
+    },
+    "embedding": {
+      "embedding": {
+        "provider": "openai",
+        "model": "text-embedding-3-small",
+        "dimensions": 1536,
+        "batch_size": 32
+      },
+      "embedding_fingerprint": "8409d0f783f63f92d3d02fe8da09b4350ed2ce50a0f13532e7892a217cade5e2",
+      "collection_fingerprint": "455ec42a4abe90d544432ffb79ed5b30c52607080cdbbc9d2634697e9c709b2d",
+      "collection_name": "fda_455ec42a4abe90d544432ffb79ed5b30",
+      "corpus_hash": "57af4a71052a2cfaf45864ef8d564806cfe6add61f07a1ff84a5e7def5cae768",
+      "chunks": 8601,
+      "dimensions": 1536,
+      "stored_vector_sha256": "98cf18f9cdbc280a0d31b82326db686a5b07147d20b4bb40022bf9a0ba9c3aa2",
+      "new_api_tokens": 1596446,
+      "indexing_seconds": 191.06542270001955
+    }
+  },
+  "fusion_settings": {
+    "hybrid_rrf": {
+      "fusion": "rrf",
+      "rrf_k": 20,
+      "alpha": 0.5
+    },
+    "hybrid_normalized": {
+      "fusion": "normalized",
+      "rrf_k": 60,
+      "alpha": 0.25
+    }
+  },
+  "coverage": {
+    "snapshot_id": "a98bf2c19d4d8ac2944d",
+    "requested_names": 60,
+    "covered_names": 60,
+    "names_with_two_labels": 60,
+    "full_fda_records": 118,
+    "full_fda_label_sets": 118,
+    "names": [
+      {
+        "name": "aspirin",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "2c5e80e8-a979-45fb-9297-8ff294280c25",
+          "7ce4807e-7bd5-41f1-a9c7-1f3af6acdc09"
+        ],
+        "source_generic_names": [
+          "ASPIRIN"
+        ]
+      },
+      {
+        "name": "metformin",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "05999192-ebc6-4198-bd1e-f46abbfb4f8a",
+          "4d3dbf6f-1c8a-4daa-8343-8cd8f64a65cd"
+        ],
+        "source_generic_names": [
+          "METFORMIN ER 500 MG",
+          "METFORMIN HYDROCHLORIDE"
+        ]
+      },
+      {
+        "name": "warfarin",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "2fb8b8d5-f643-4069-8e47-5eae31a8fbc8",
+          "724b0061-f42a-4008-a078-09c800ee9785"
+        ],
+        "source_generic_names": [
+          "WARFARIN",
+          "WARFARIN SODIUM"
+        ]
+      },
+      {
+        "name": "lisinopril",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "42f49299-7ae5-4d30-86eb-66b739c0e95d",
+          "aa5d68e7-c2b9-41eb-ade4-2cd57edc1533"
+        ],
+        "source_generic_names": [
+          "LISINOPRIL"
+        ]
+      },
+      {
+        "name": "atorvastatin",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "2e583569-499d-4f20-87ca-84e7d9868d22",
+          "56a9e58f-567e-30cc-e063-6294a90a290f"
+        ],
+        "source_generic_names": [
+          "ATORVASTATIN CALCIUM"
+        ]
+      },
+      {
+        "name": "amoxicillin",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "4adc198e-39d8-4b3e-bfa4-278aaf4064ae",
+          "704e99b1-c14a-40bf-adbd-c2794fa92c72"
+        ],
+        "source_generic_names": [
+          "AMOXICILLIN",
+          "AMOXICILLIN AND CLAVULANATE POTASSIUM"
+        ]
+      },
+      {
+        "name": "ibuprofen",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "0ca02f8b-4413-4e7c-a67b-8c67c53e1343",
+          "54b08d24-d5e9-4111-9d97-329896e8309d"
+        ],
+        "source_generic_names": [
+          "ACETAMINOPHEN, IBUPROFEN",
+          "IBUPROFEN"
+        ]
+      },
+      {
+        "name": "sertraline",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "561a8a20-be26-c4f8-e063-6394a90af072",
+          "561e7498-a606-366d-e063-6394a90a1c6a"
+        ],
+        "source_generic_names": [
+          "SERTRALINE HYDROCHLORIDE"
+        ]
+      },
+      {
+        "name": "omeprazole",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "0344268f-d8e6-48d5-b1e1-f750ed1d8a52",
+          "28a0b4c8-3ad3-451c-a957-28aef5e3d8b5"
+        ],
+        "source_generic_names": [
+          "OMEPRAZOLE"
+        ]
+      },
+      {
+        "name": "albuterol",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "3c64255e-074c-41f8-a344-3686a0685020",
+          "4aec7f59-b429-4b0e-a779-8df1dd8f80d7"
+        ],
+        "source_generic_names": [
+          "ALBUTEROL SULFATE",
+          "IPRATROPIUM BROMIDE AND ALBUTEROL SULFATE"
+        ]
+      },
+      {
+        "name": "levothyroxine",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "4c903249-69e9-4168-a9d1-22e6c2c1eb22",
+          "7fd988be-ab3d-406d-a55d-1e5a8a2101cc"
+        ],
+        "source_generic_names": [
+          "LEVOTHYROXINE SODIUM"
+        ]
+      },
+      {
+        "name": "clopidogrel",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "669f0bc6-f173-484d-8efe-c006683b25d1",
+          "bb3b5e96-e629-4db5-8ad5-40c17c6dae18"
+        ],
+        "source_generic_names": [
+          "CLOPIDOGREL BISULFATE"
+        ]
+      },
+      {
+        "name": "acetaminophen",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "1022767d-a456-4fbc-95cf-91337c74c330",
+          "54b08d24-d5e9-4111-9d97-329896e8309d"
+        ],
+        "source_generic_names": [
+          "ACETAMINOPHEN, GUAIFENESIN, PHENYLEPHRINE HCL",
+          "ACETAMINOPHEN, IBUPROFEN"
+        ]
+      },
+      {
+        "name": "naproxen",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "4039504c-e612-4503-854a-62ee06780956",
+          "79f48c92-783d-40f2-9865-89958a9f9de6"
+        ],
+        "source_generic_names": [
+          "NAPROXEN SODIUM"
+        ]
+      },
+      {
+        "name": "diclofenac",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "391d9d0b-74b7-4359-aea0-d3bb8c8d3cd1",
+          "681b6b25-4a28-44f2-8042-d5e01a502116"
+        ],
+        "source_generic_names": [
+          "DICLOFENAC SODIUM",
+          "DICLOFENAC SODIUM 1%"
+        ]
+      },
+      {
+        "name": "celecoxib",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "06076494-62ad-4f58-b8bb-7038fcfe3b12",
+          "78d59905-4a78-4d9f-ac29-58790a5b3a92"
+        ],
+        "source_generic_names": [
+          "CELECOXIB"
+        ]
+      },
+      {
+        "name": "tramadol",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "16053b28-c759-4914-93e6-2de0afe72445",
+          "42de8c3a-0441-5d46-e063-6294a90a2079"
+        ],
+        "source_generic_names": [
+          "TRAMADOL HYDROCHLORIDE"
+        ]
+      },
+      {
+        "name": "gabapentin",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "4a975ebe-ae0a-446a-8a3d-2ca325e28f93",
+          "7f830664-2fa3-4d73-a154-775fbb8fd65d"
+        ],
+        "source_generic_names": [
+          "GABAPENTIN"
+        ]
+      },
+      {
+        "name": "pregabalin",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "13ec99b9-1c49-4ce4-9f6a-4434c5bc7137",
+          "ab06a36d-9a2d-4eae-8991-4eab5bc8311c"
+        ],
+        "source_generic_names": [
+          "PREGABALIN"
+        ]
+      },
+      {
+        "name": "duloxetine",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "461d769c-b787-4bc7-b4a6-7a5f33ae9d45",
+          "569582d5-cb6d-735e-e063-6394a90abfb6"
+        ],
+        "source_generic_names": [
+          "DULOXETINE"
+        ]
+      },
+      {
+        "name": "fluoxetine",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "4afdf87f-462b-4a38-9c0d-e74995c492ea",
+          "a08dadff-f209-48dc-b597-6f085be13640"
+        ],
+        "source_generic_names": [
+          "FLUOXETINE HYDROCHLORIDE"
+        ]
+      },
+      {
+        "name": "escitalopram",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "1b2ec266-be5b-9265-e063-6294a90a10e3",
+          "4508226c-5623-41d3-8916-5f94ffdb8839"
+        ],
+        "source_generic_names": [
+          "ESCITALOPRAM"
+        ]
+      },
+      {
+        "name": "citalopram",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "25b0d184-2a4c-42b0-9a57-7a00fa3e0cd7",
+          "53e5d66f-7902-76ac-e063-6294a90aa526"
+        ],
+        "source_generic_names": [
+          "CITALOPRAM"
+        ]
+      },
+      {
+        "name": "venlafaxine",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "38431a76-6185-4c17-994f-8278b6cd7510",
+          "ac9b972d-8b8a-4727-90c2-b208f91272fd"
+        ],
+        "source_generic_names": [
+          "VENLAFAXINE HYDROCHLORIDE",
+          "VENLAFAXINE HYDROCHLORIDE, EXTENDED RELEASE"
+        ]
+      },
+      {
+        "name": "bupropion",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "4fbe64aa-f8f4-45fa-88ae-e844997703ae",
+          "5604eb14-bab4-4f06-e063-6294a90a6920"
+        ],
+        "source_generic_names": [
+          "BUPROPION HYDROCHLORIDE"
+        ]
+      },
+      {
+        "name": "trazodone",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "007f38e0-653b-43e4-a1c1-b59997b2762a",
+          "2863317d-657b-4dc6-81fb-b7158ea03498"
+        ],
+        "source_generic_names": [
+          "TRAZODONE HYDROCHLORIDE"
+        ]
+      },
+      {
+        "name": "buspirone",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "5718bc19-07b2-b61d-e063-6394a90a6e80",
+          "b42cc365-6259-4d2e-9648-d37718b65e1e"
+        ],
+        "source_generic_names": [
+          "BUSPIRONE HYDROCHLORIDE"
+        ]
+      },
+      {
+        "name": "quetiapine",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "3085f68d-e83c-4f59-b058-8bdae7f4e537",
+          "b8864cb9-1c6a-4e36-9893-eb1403ee8745"
+        ],
+        "source_generic_names": [
+          "QUETIAPINE FUMARATE"
+        ]
+      },
+      {
+        "name": "risperidone",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "5643c32b-310e-4888-e063-6394a90ab62f",
+          "ee495f20-c668-4d8f-9684-1029a4f232db"
+        ],
+        "source_generic_names": [
+          "RISPERIDONE"
+        ]
+      },
+      {
+        "name": "olanzapine",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "2a7300d3-95e3-427e-bf37-55fa654cc90a",
+          "b6f0b2e2-3cbd-4564-8b3e-f811589af275"
+        ],
+        "source_generic_names": [
+          "OLANZAPINE"
+        ]
+      },
+      {
+        "name": "lamotrigine",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "3448839b-4933-4ef9-a80a-9e504d2c5696",
+          "fa679e97-3b3d-4bf2-8de7-da3a89e38b37"
+        ],
+        "source_generic_names": [
+          "LAMOTRIGINE"
+        ]
+      },
+      {
+        "name": "levetiracetam",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "ace53552-d616-45e8-9f99-2f0041d0b430",
+          "ae405796-1eca-4890-bcb2-e1b07654a24d"
+        ],
+        "source_generic_names": [
+          "LEVETIRACETAM"
+        ]
+      },
+      {
+        "name": "topiramate",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "44095c2b-2e90-45d2-ab45-d0961c41550d",
+          "e846124d-e9e6-42c7-83f1-5df170d3f70b"
+        ],
+        "source_generic_names": [
+          "TOPIRAMATE"
+        ]
+      },
+      {
+        "name": "carbamazepine",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "d0121be3-b904-41d3-a81a-292aa4176491",
+          "e91f9de3-3fdd-0a6b-71ce-53a2cc142816"
+        ],
+        "source_generic_names": [
+          "CARBAMAZEPINE"
+        ]
+      },
+      {
+        "name": "donepezil",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "37fc6638-4a63-4582-a64c-3525f8ed7ef2",
+          "90fedc32-19e5-480c-afc6-f35a5cf4b9aa"
+        ],
+        "source_generic_names": [
+          "DONEPEZIL HYDROCHLORIDE",
+          "MEMANTINE HYDROCHLORIDE AND DONEPEZIL HYDROCHLORIDE"
+        ]
+      },
+      {
+        "name": "memantine",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "90fedc32-19e5-480c-afc6-f35a5cf4b9aa",
+          "becb09dc-174d-4817-88d4-f38c8adcd309"
+        ],
+        "source_generic_names": [
+          "MEMANTINE HYDROCHLORIDE",
+          "MEMANTINE HYDROCHLORIDE AND DONEPEZIL HYDROCHLORIDE"
+        ]
+      },
+      {
+        "name": "amlodipine",
+        "full_fda_label_sets": 3,
+        "set_ids": [
+          "0f253cac-67ac-4b03-b1a8-f2c345938dda",
+          "27b0c628-820a-48bf-a411-86c0ebd4cc8d",
+          "fed14445-1117-861a-e053-6294a90a2aa3"
+        ],
+        "source_generic_names": [
+          "AMLODIPINE AND BENAZEPRIL HYDROCHLORIDE",
+          "AMLODIPINE AND VALSARTAN",
+          "AMLODIPINE BESYLATE AND BENAZEPRIL HYDROCHLORIDE"
+        ]
+      },
+      {
+        "name": "losartan",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "1843ee4b-1afc-4992-993a-4b0e03e785fc",
+          "3233c707-70b6-4c29-8210-913eeb2a38ed"
+        ],
+        "source_generic_names": [
+          "LOSARTAN POTASSIUM"
+        ]
+      },
+      {
+        "name": "valsartan",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "000dc81d-ab91-450c-8eae-8eb74e72296f",
+          "fed14445-1117-861a-e053-6294a90a2aa3"
+        ],
+        "source_generic_names": [
+          "AMLODIPINE AND VALSARTAN",
+          "SACUBITRIL AND VALSARTAN"
+        ]
+      },
+      {
+        "name": "metoprolol",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "0ca72c89-82c5-4b31-b515-1a8b8e82ec59",
+          "a46cbf09-20e3-4f0d-ab41-221f60fde068"
+        ],
+        "source_generic_names": [
+          "METOPROLOL SUCCINATE",
+          "METOPROLOL TARTRATE"
+        ]
+      },
+      {
+        "name": "atenolol",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "35d04cfd-34d4-429c-b990-a6c00137bc77",
+          "7f8304a4-93de-774f-e053-2a91aa0aa5b5"
+        ],
+        "source_generic_names": [
+          "ATENOLOL"
+        ]
+      },
+      {
+        "name": "carvedilol",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "0e98593a-8424-48c8-acc0-671f4b566aee",
+          "32098c09-7580-4975-a3e1-31b619c04c69"
+        ],
+        "source_generic_names": [
+          "CARVEDILOL"
+        ]
+      },
+      {
+        "name": "hydrochlorothiazide",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "569596a2-98f0-116a-e063-6294a90a3fa1",
+          "88aaa2a1-13be-4f56-ace6-66e899028007"
+        ],
+        "source_generic_names": [
+          "IRBESARTAN AND HYDROCHLOROTHIAZIDE",
+          "OLMESARTAN MEDOXOMIL-HYDROCHLOROTHIAZIDE"
+        ]
+      },
+      {
+        "name": "furosemide",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "3d312ab0-589c-427b-84da-18887244bfc9",
+          "916de29e-228c-4dfc-bcee-ad9a641316bd"
+        ],
+        "source_generic_names": [
+          "FUROSEMIDE"
+        ]
+      },
+      {
+        "name": "spironolactone",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "0cc23419-e6d5-4036-8011-dc1d2455e0cb",
+          "8b76a904-6c99-485a-a05f-13a36c5f720c"
+        ],
+        "source_generic_names": [
+          "SPIRONOLACTONE"
+        ]
+      },
+      {
+        "name": "rosuvastatin",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "0c919fc0-a3d7-4afb-968b-4ef0e447001c",
+          "11fad602-16c2-4c1f-bdf1-867d95f063ca"
+        ],
+        "source_generic_names": [
+          "ROSUVASTATIN CALCIUM"
+        ]
+      },
+      {
+        "name": "simvastatin",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "5257271e-5c07-4996-e063-6394a90a4424",
+          "e447cc46-adee-4126-8b85-f00f81a6e93c"
+        ],
+        "source_generic_names": [
+          "SIMVASTATIN"
+        ]
+      },
+      {
+        "name": "ezetimibe",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "090776cf-f211-49a3-a993-ff5d707311f2",
+          "a1cc2018-72a3-48bc-90de-c460f224cf5a"
+        ],
+        "source_generic_names": [
+          "EZETIMIBE"
+        ]
+      },
+      {
+        "name": "apixaban",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "095a08ac-cf0e-497e-a682-ddef38d6b29c",
+          "1523ab32-2c2c-6501-e063-6394a90aa0b3"
+        ],
+        "source_generic_names": [
+          "APIXABAN"
+        ]
+      },
+      {
+        "name": "rivaroxaban",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "10db92f9-2300-4a80-836b-673e1ae91610",
+          "481b7802-5093-43e7-bbd9-1532197eb6e6"
+        ],
+        "source_generic_names": [
+          "RIVAROXABAN"
+        ]
+      },
+      {
+        "name": "pantoprazole",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "70378eba-3904-4491-9f6d-00f5d1501c4a",
+          "f38a6df2-1dd4-48bf-9ec4-1113ce492e78"
+        ],
+        "source_generic_names": [
+          "PANTOPRAZOLE SODIUM"
+        ]
+      },
+      {
+        "name": "famotidine",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "55cc3304-9094-3da8-e063-6394a90aa49b",
+          "669fbd46-cae5-4477-884e-8eca893d2e05"
+        ],
+        "source_generic_names": [
+          "FAMOTIDINE",
+          "FAMOTIDINE, CALCIUM CARBONATE, AND MAGNESIUM HYDROXIDE"
+        ]
+      },
+      {
+        "name": "ondansetron",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "3f2e8efe-7fd4-407c-a77b-bd6dd04608e2",
+          "561dce26-92fa-e00b-e063-6294a90a1ab2"
+        ],
+        "source_generic_names": [
+          "ONDANSETRON HYDROCHLORIDE"
+        ]
+      },
+      {
+        "name": "cetirizine",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "36b6d0e4-8da5-9df5-e063-6294a90af326",
+          "562b5e6c-6103-df3d-e063-6394a90a897d"
+        ],
+        "source_generic_names": [
+          "CETIRIZINE HYDROCHLORIDE"
+        ]
+      },
+      {
+        "name": "loratadine",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "44da36d2-1881-e779-d3a2-13ea828f9240",
+          "bc789b82-56ca-4248-b60a-252d9695636a"
+        ],
+        "source_generic_names": [
+          "LORATADINE"
+        ]
+      },
+      {
+        "name": "montelukast",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "09b0bc9e-3035-45b4-b61b-4aca70848360",
+          "d7870c45-5a8b-8369-e053-2a95a90ae1f3"
+        ],
+        "source_generic_names": [
+          "MONTELUKAST",
+          "MONTELUKAST SODIUM"
+        ]
+      },
+      {
+        "name": "budesonide",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "3e8a6cf4-4bda-4e22-8653-12635adfb316",
+          "c7df2a10-4166-423e-bb60-5f3a8234f26c"
+        ],
+        "source_generic_names": [
+          "BUDESONIDE"
+        ]
+      },
+      {
+        "name": "prednisone",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "0062fcc7-aa08-4990-9d33-d798725907f1",
+          "290a91e5-22ae-4d62-ab34-39a3117002e2"
+        ],
+        "source_generic_names": [
+          "PREDNISONE"
+        ]
+      },
+      {
+        "name": "doxycycline",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "051654c7-8ba6-44f2-842c-72f515e9b32d",
+          "3af9348c-a98b-4059-a5ef-4229e2b33af0"
+        ],
+        "source_generic_names": [
+          "DOXYCYCLINE HYCLATE"
+        ]
+      },
+      {
+        "name": "azithromycin",
+        "full_fda_label_sets": 2,
+        "set_ids": [
+          "2a8010dc-700f-45d3-94ca-ebe4a51acc1b",
+          "333ffe63-aaeb-4dff-b595-1c11209189a6"
+        ],
+        "source_generic_names": [
+          "AZITHROMYCIN"
+        ]
+      }
+    ],
+    "selection": "Manually selected named-drug sample; not a representative FDA census.",
+    "coverage_definition": "Name occurs in source identity/ingredient/product fields; combinations may cover multiple names."
+  },
+  "configuration": {
+    "seed": 42,
+    "ingestion": {
+      "recent_limit": 200,
+      "lookup_names": [
+        "aspirin",
+        "metformin",
+        "warfarin",
+        "lisinopril",
+        "atorvastatin",
+        "amoxicillin",
+        "ibuprofen",
+        "sertraline",
+        "omeprazole",
+        "albuterol",
+        "levothyroxine",
+        "clopidogrel",
+        "acetaminophen",
+        "naproxen",
+        "diclofenac",
+        "celecoxib",
+        "tramadol",
+        "gabapentin",
+        "pregabalin",
+        "duloxetine",
+        "fluoxetine",
+        "escitalopram",
+        "citalopram",
+        "venlafaxine",
+        "bupropion",
+        "trazodone",
+        "buspirone",
+        "quetiapine",
+        "risperidone",
+        "olanzapine",
+        "lamotrigine",
+        "levetiracetam",
+        "topiramate",
+        "carbamazepine",
+        "donepezil",
+        "memantine",
+        "amlodipine",
+        "losartan",
+        "valsartan",
+        "metoprolol",
+        "atenolol",
+        "carvedilol",
+        "hydrochlorothiazide",
+        "furosemide",
+        "spironolactone",
+        "rosuvastatin",
+        "simvastatin",
+        "ezetimibe",
+        "apixaban",
+        "rivaroxaban",
+        "pantoprazole",
+        "famotidine",
+        "ondansetron",
+        "cetirizine",
+        "loratadine",
+        "montelukast",
+        "budesonide",
+        "prednisone",
+        "doxycycline",
+        "azithromycin"
+      ],
+      "fda_verify_per_name": 2,
+      "timeout": 60,
+      "retries": 4,
+      "sampling_method": "Manually selected names for a bounded 60-name corpus expansion; not random or representative."
+    },
+    "chunking": {
+      "strategy": "section",
+      "size": 256,
+      "overlap": 32,
+      "encoding": "cl100k_base"
+    },
+    "embedding": {
+      "provider": "openai",
+      "model": "text-embedding-3-small",
+      "dimensions": 1536,
+      "batch_size": 32
+    },
+    "embedding_candidates": [
+      {
+        "provider": "openai",
+        "model": "text-embedding-3-large",
+        "dimensions": 3072,
+        "batch_size": 32
+      },
+      {
+        "provider": "local",
+        "model": "sentence-transformers/all-MiniLM-L6-v2",
+        "revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+        "max_length": 256,
+        "batch_size": 32
+      }
+    ],
+    "chroma": {
+      "space": "cosine",
+      "ef_construction": 100,
+      "ef_search": 100,
+      "max_neighbors": 16
+    },
+    "retrieval": {
+      "k1": 1.5,
+      "b": 0.75,
+      "fusion": "rrf",
+      "rrf_k": 60,
+      "alpha": 0.5,
+      "candidates": 30
+    },
+    "reranker": {
+      "model": "cross-encoder/ms-marco-MiniLM-L6-v2",
+      "revision": "233902d25c440f23af6f7d6e94d2946bac0bee0a",
+      "batch_size": 16,
+      "max_length": 512
+    },
+    "evaluation": {
+      "ks": [
+        1,
+        3,
+        5,
+        10
+      ],
+      "bootstrap_samples": 2000,
+      "permutation_samples": 10000,
+      "primary_metric": "ndcg@10"
+    }
+  },
+  "snapshot_integrity": {
+    "verified_raw_bodies": 177,
+    "verified_record_hashes": 896,
+    "documents": 896,
+    "snapshot_integrity": "passed"
+  },
+  "quality_summary": {
+    "snapshot_id": "a98bf2c19d4d8ac2944d",
+    "records": 896,
+    "by_kind": {
+      "lookup": 578,
+      "fda_full": 118,
+      "recent_summary": 200
+    },
+    "distinct_label_sets": 740,
+    "repeated_versions_within_source": 0,
+    "duplicate_envelope_rate": 0.18248175182481752,
+    "repeated_section_texts": 1246,
+    "schema_errors": 0,
+    "warnings": 1252,
+    "quarantined": 0,
+    "observed_prefix_truncations": 318,
+    "acceptance": {
+      "raw_preserved": true,
+      "no_unquarantined_schema_errors": true,
+      "authoritative_corpus_available": true
+    }
+  },
+  "limitations": [
+    "Prior 12-drug benchmark scores do not apply to the expanded corpus.",
+    "Retrieval parameters are transferred without new tuning or evaluation.",
+    "Manually selected named-drug sample; not a representative FDA census.",
+    "Name occurs in source identity/ingredient/product fields; combinations may cover multiple names."
+  ]
+}

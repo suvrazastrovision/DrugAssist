@@ -1,0 +1,110 @@
+[
+  {
+    "strategy": "fixed",
+    "size": 128,
+    "overlap": 16,
+    "encoding": "cl100k_base",
+    "chunks": 2270,
+    "dev_ndcg@10": 0.8386322773165152,
+    "dev_evidence_coverage@10": 0.6197916666666666
+  },
+  {
+    "strategy": "fixed",
+    "size": 256,
+    "overlap": 32,
+    "encoding": "cl100k_base",
+    "chunks": 1202,
+    "dev_ndcg@10": 0.8103260410468077,
+    "dev_evidence_coverage@10": 0.8177083333333334
+  },
+  {
+    "strategy": "fixed",
+    "size": 512,
+    "overlap": 64,
+    "encoding": "cl100k_base",
+    "chunks": 703,
+    "dev_ndcg@10": 0.8777705431159614,
+    "dev_evidence_coverage@10": 0.875
+  },
+  {
+    "strategy": "recursive",
+    "size": 128,
+    "overlap": 16,
+    "encoding": "cl100k_base",
+    "chunks": 2545,
+    "dev_ndcg@10": 0.8618086109867867,
+    "dev_evidence_coverage@10": 0.5989583333333334
+  },
+  {
+    "strategy": "recursive",
+    "size": 256,
+    "overlap": 32,
+    "encoding": "cl100k_base",
+    "chunks": 1267,
+    "dev_ndcg@10": 0.8863888678456533,
+    "dev_evidence_coverage@10": 0.765625
+  },
+  {
+    "strategy": "recursive",
+    "size": 512,
+    "overlap": 64,
+    "encoding": "cl100k_base",
+    "chunks": 719,
+    "dev_ndcg@10": 0.8825637335062888,
+    "dev_evidence_coverage@10": 0.8645833333333334
+  },
+  {
+    "strategy": "section",
+    "size": 128,
+    "overlap": 16,
+    "encoding": "cl100k_base",
+    "chunks": 2653,
+    "dev_ndcg@10": 0.8652233445565539,
+    "dev_evidence_coverage@10": 0.625
+  },
+  {
+    "strategy": "section",
+    "size": 256,
+    "overlap": 32,
+    "encoding": "cl100k_base",
+    "chunks": 1308,
+    "dev_ndcg@10": 0.8406617913347119,
+    "dev_evidence_coverage@10": 0.7708333333333334
+  },
+  {
+    "strategy": "section",
+    "size": 512,
+    "overlap": 64,
+    "encoding": "cl100k_base",
+    "chunks": 732,
+    "dev_ndcg@10": 0.8800270115462404,
+    "dev_evidence_coverage@10": 0.8541666666666666
+  },
+  {
+    "strategy": "semantic",
+    "size": 128,
+    "overlap": 16,
+    "encoding": "cl100k_base",
+    "chunks": 2649,
+    "dev_ndcg@10": 0.8444427543624659,
+    "dev_evidence_coverage@10": 0.6666666666666666
+  },
+  {
+    "strategy": "semantic",
+    "size": 256,
+    "overlap": 32,
+    "encoding": "cl100k_base",
+    "chunks": 1304,
+    "dev_ndcg@10": 0.8406617913347119,
+    "dev_evidence_coverage@10": 0.7291666666666666
+  },
+  {
+    "strategy": "semantic",
+    "size": 512,
+    "overlap": 64,
+    "encoding": "cl100k_base",
+    "chunks": 730,
+    "dev_ndcg@10": 0.8800270115462404,
+    "dev_evidence_coverage@10": 0.8541666666666666
+  }
+]
