@@ -1,0 +1,107 @@
+# Application flow
+
+[README](../README.md) | [Run and search](usage.md) | [App flow](app-flow.md) | [Research](research.md) | [Repository guide](repository.md)
+
+This diagram separates collection preparation, login, live search and evaluation. The proposed answer-writing layer is clearly marked as future work.
+
+Solid arrows show processing; dotted arrows also connect saved data to the steps that read it. Purple dashed boxes mark the proposed answer-generation layer, which is not running yet. Data preparation happens during maintenance, rather than on every question.
+
+```mermaid
+flowchart TB
+    subgraph setup["1. Prepare the collection - maintenance only"]
+        Names["60 configured drug names"] --> Discovery["MORVS name lookup and recent summaries"]
+        Discovery --> FDA["Fetch full FDA labels by set ID<br/>Direct FDA name search fills coverage gaps"]
+        Discovery --> Raw[("Saved original responses<br/>data/raw")]
+        FDA --> Raw
+        Raw --> Checks["Check schema, drug identity and file integrity"]
+        Checks --> Snapshot[("Saved records and full section text<br/>data/processed")]
+        Snapshot --> Full["Select full FDA labels for indexing"]
+        Full --> Chunks["Split each section into passages<br/>256 tokens with 32-token overlap"]
+        Chunks --> DocVectors["Document embeddings<br/>text-embedding-3-small, 1536 dimensions"]
+        Cache[("Shared document and question vector cache<br/>data/cache/embeddings.sqlite3")] -.-> DocVectors
+        DocVectors --> Cache
+        DocVectors --> Chroma[("Chroma: saved passage vectors<br/>and source metadata")]
+        Chunks --> Index[("Saved passage inventory and index settings<br/>results/search_indexes")]
+        Index --> Pointer["Activate index<br/>results/search_latest.json"]
+        Chroma -->|"Verify vector count and fingerprint"| Pointer
+    end
+
+    subgraph access["2. Open the app and sign in"]
+        User["User"] --> UI["Streamlit frontend<br/>localhost:8501"]
+        UI --> Auth["FastAPI authentication routes<br/>Sign up, log in, check session, log out"]
+        Auth <--> Accounts[("Separate account database<br/>Argon2 password hashes<br/>Hashed session tokens and expiry")]
+        Auth -->|"Login returns a session token"| UI
+    end
+
+    subgraph search["3. Search the saved FDA collection"]
+        Request["POST /search<br/>Original question, result limit k, bearer token"]
+        Request --> Session{"Valid session?"}
+        Session -->|"No"| Unauthorized["401: log in again"]
+        Session -->|"Yes"| Input{"Valid question and k?"}
+        Input -->|"No"| Invalid["422: correct the input"]
+        Input -->|"Yes"| Parse["Recognize drug aliases, literal conditions<br/>and label topics, including everyday phrases"]
+        Parse --> Filters["Build exact document and section filters<br/>Ambiguous attributes remain unset"]
+        Filters --> Scope{"Recognized drug or supported condition<br/>and within label scope?"}
+        Scope -->|"No"| NoMatch["No matching evidence<br/>no_match: true, with a reason"]
+        Scope -->|"Yes"| Ready{"Saved index available and complete?"}
+        Ready -->|"No"| Unavailable["503: search service unavailable"]
+        Ready -->|"Yes"| Eligible{"Any passages satisfy the filters?"}
+        Eligible -->|"No"| NoMatch
+        Eligible -->|"Yes"| BM25["BM25 lexical search<br/>Apply the same filters"]
+        Eligible -->|"Yes"| Cached{"Exact question vector cached?"}
+        Cached -->|"Yes: reuse vector"| Dense["Semantic search in Chroma<br/>Apply the same filters"]
+        Cached -->|"No"| QueryVector["Embed the original question<br/>OpenAI embedding API"]
+        QueryVector --> Cache
+        QueryVector --> Dense
+        QueryVector -->|"Provider failure"| Unavailable
+        BM25 --> Fusion["Normalized score fusion<br/>25% BM25 + 75% semantic<br/>Keep up to 30 candidates"]
+        Dense --> Fusion
+        Fusion --> Rerank["Local cross-encoder reranking<br/>Score original question and passage pairs"]
+        Rerank --> TopK["Select top k passages"]
+        TopK --> Cutoff{"Any selected scores at least 0.5?<br/>Experimental relevance cutoff"}
+        Cutoff -->|"No"| NoMatch
+        Cutoff -->|"Yes: retain passing passages"| Evidence["Return source text, ranks, raw scores,<br/>label IDs, dates, source links and fingerprints"]
+    end
+
+    UI -->|"Question and session token"| Request
+    Pointer -.-> Ready
+    Index -.-> BM25
+    Chroma -.-> Dense
+    Cache -.-> Cached
+    Evidence --> Display["Streamlit results<br/>Ranked passages and source details<br/>Existing expander shows each retrieved chunk"]
+    NoMatch --> Display
+    Unauthorized --> UI
+    Invalid --> UI
+    Unavailable --> UI
+
+    subgraph evaluation["4. Review data and retrieval quality - separate workflow"]
+        Notebooks["Notebooks 1 and 2<br/>Data checks, exploration and search"]
+        Compare["Notebook 3<br/>Six retrieval methods, 60 section-finding questions"]
+        Results["Saved reports and plots<br/>Source/section matches are diagnostic checks"]
+        Notebooks --> Results
+        Compare --> Results
+    end
+    Snapshot -.-> Notebooks
+    Index -.-> Compare
+    Chroma -.-> Compare
+
+    subgraph planned["5. PLANNED - polished answers, not implemented"]
+        Audience["Choose audience explicitly<br/>Patient or clinician"]
+        Context["Load sufficient saved FDA section context<br/>Preserve qualifications and source IDs"]
+        Generate["Generate an evidence-based answer<br/>Adapt wording to the selected audience<br/>Cite supporting evidence; identify missing information"]
+        Answer["Polished answer above the original evidence<br/>Expandable supporting FDA text"]
+        Audience -.-> Generate
+        Context -.-> Generate
+        Generate -.-> Answer
+    end
+    UI -.-> Audience
+    Evidence -.-> Context
+    Snapshot -.-> Context
+
+    classDef future fill:#f5f0ff,stroke:#8056b3,stroke-dasharray:5 5;
+    class Audience,Context,Generate,Answer future;
+```
+
+The original question reaches lexical search, semantic search and reranking without the parser rewriting its meaning. The API filters by recognized drug and section; it does not interpret manufacturer, route, version or date constraints in natural language. Conditions are not database filters. Terminal search uses the shared retrievers with explicit command-line filters and bypasses the app's login, parser, scope gate and relevance cutoff.
+
+Each current result is a passage from a longer section, so it can end mid-list. The complete section remains in the saved dataset. Expanding a passage currently shows that chunk only. Loading complete supporting sections and generating a polished answer are proposed changes. The existing 80-question draft benchmark remains separate and needs independent review before accuracy claims; generated answers would also need their own factual and citation checks.
