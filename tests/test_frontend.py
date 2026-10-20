@@ -11,6 +11,7 @@ from streamlit.testing.v1 import AppTest
 
 from src.api.main import create_app
 from src.auth.service import AuthError
+from src.services.answer_service import AnswerService
 
 APP = Path(__file__).resolve().parents[1] / "frontend/app.py"
 ACCOUNT = {"email": "reviewer@example.com", "password": "test-password-123"}
@@ -45,7 +46,7 @@ def search_response(query, k):
                 "section": "contraindications",
                 "text": "Engineering FDA excerpt for UI testing only.",
                 "start": 0,
-                "end": 10,
+                "end": len("Engineering FDA excerpt for UI testing only."),
                 "effective_time": "20240101",
                 "source_url": "https://api.fda.gov/drug/label.json",
                 "source_record_hash": "fixture-record-hash",
@@ -59,11 +60,21 @@ def search_response(query, k):
 def ui(auth_service, monkeypatch):
     service = Mock()
     service.search.side_effect = search_response
+    service.documents = {"fixture-document": {"sections": {
+        "contraindications": "Engineering FDA excerpt for UI testing only. Additional saved context.",
+    }}}
+    service.writer = Mock()
+    service.writer.write.return_value = {
+        "insufficient_evidence": False,
+        "statements": [{"text": "Engineering summary for interface testing.", "source_ids": ["S1"]}],
+    }
     monkeypatch.setenv("DRUGASSIST_API_URL", "http://127.0.0.1:8000")
     monkeypatch.setenv("DRUGASSIST_REQUEST_TIMEOUT", "120")
     monkeypatch.setattr("dotenv.load_dotenv", lambda *args, **kwargs: False)
     calls = []
-    with TestClient(create_app(lambda: service, lambda: auth_service)) as client:
+    with TestClient(create_app(
+        lambda: service, lambda: auth_service, lambda search: AnswerService(search, service.writer),
+    )) as client:
 
         def request(method, url, **kwargs):
             path = urlsplit(url).path
@@ -211,4 +222,39 @@ def test_failed_search_clears_old_results_and_shows_error_status(ui, auth_servic
     with pytest.raises(KeyError):
         app.session_state["search_seconds"]
     assert not app.exception
+
+
+def test_cited_answer_and_selected_wording_persist_without_regeneration(ui, auth_service):
+    import json
+
+    app, calls, service = ui
+    log_in(app, auth_service)
+    app.text_area[0].set_value("metformin contraindications")
+    app.selectbox[0].select("Clinician")
+    click(app, "Search FDA labels")
+    assert ("POST", "/answer") in calls
+    assert any("Engineering summary" in element.value for element in app.text)
+    assert any("Sources: S1" in element.value for element in app.caption)
+    assert any("Additional saved context" in element.value for element in app.text)
+    assert json.loads(service.writer.write.call_args.args[0])["audience"] == "clinician"
+    app.run()
+    service.writer.write.assert_called_once()
+    assert not app.exception
+
+
+def test_evidence_only_mode_and_generation_failure(ui, auth_service):
+    app, calls, service = ui
+    log_in(app, auth_service)
+    app.checkbox[0].uncheck()
+    app.text_area[0].set_value("metformin contraindications")
+    click(app, "Search FDA labels")
+    assert ("POST", "/search") in calls
+    service.writer.write.assert_not_called()
+    app.checkbox[0].check()
+    service.writer.write.side_effect = RuntimeError("private-provider-details")
+    click(app, "Search FDA labels")
+    assert any("written answer is unavailable" in element.value for element in app.info)
+    assert any("Engineering FDA excerpt" in element.value for element in app.text)
+    assert not app.error and not app.exception
+    assert all("private-provider-details" not in element.value for element in app.info)
 

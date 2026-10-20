@@ -1,1 +1,1 @@
-"""FDA label retrieval research. No answer generation or application server."""
+"""Source-traceable FDA retrieval, evaluation and cited answer writing."""

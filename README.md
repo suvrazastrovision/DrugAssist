@@ -1,7 +1,7 @@
 # DrugAssist
 
-Search FDA drug labels and read the supporting passages with source links.
-The app uses **hybrid retrieval with cross-encoder reranking** and displays evidence; it does not generate medical advice.
+Search FDA drug labels, get an optional cited answer and read the supporting passages.
+The app uses **hybrid retrieval with cross-encoder reranking**, followed by one optional LLM writing step. Outputs are informational, not personalized medical advice.
 
 The saved collection covers **60 selected drug names**, **118 full FDA labels** and **8,601 passages**. It is a sample of FDA data. See the [drug list and settings](config/default.json).
 
@@ -29,6 +29,8 @@ uv run --locked --no-sync streamlit run frontend/app.py
 
 Open **http://localhost:8501**, sign up, log in and enter a drug-label question. The API reference is at **http://127.0.0.1:8000/docs**.
 
+**Write a cited answer** adds a short summary above the evidence, with Patient or Clinician wording. It uses your existing `OPENAI_API_KEY`; model and token limits are in `config/default.json`. Uncheck it for evidence-only search. See [answer writing](docs/usage.md#cited-answers).
+
 The app uses saved local data, models and a Chroma index. These large files are ignored by Git. For a new machine, see [data transfer](docs/repository.md) and [collection preparation](docs/research.md#maintain-and-check-the-project).
 
 ## Documentation
@@ -45,4 +47,6 @@ The app uses saved local data, models and a Chroma index. These large files are 
 
 Results are chunks of label sections and can end before the full section does. Scores rank passages; they are not medical confidence values.
 
-The 60-question comparison checks drug and section matching. The older 80-question benchmark has draft judgments and needs independent review before accuracy claims. See [evaluation details](docs/research.md).
+Written answers use expanded saved context and checked source IDs. These checks do not prove factual support; review the cited FDA text. If writing fails, the retrieved passages remain available.
+
+The 60-question comparison checks drug and section matching. It does not establish clinical answer quality; that needs independent human review. See [evaluation details](docs/research.md).

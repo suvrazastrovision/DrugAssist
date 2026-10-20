@@ -33,9 +33,8 @@ def saved_run(chunks, tmp_path):
     run = {
         "run_id": "test-search-run",
         "snapshot_id": "test-snapshot",
-        "provisional": True,
+        "default_method": "bm25",
         "selection": {
-            "preferred_on_dev": "bm25",
             "bm25": {"k1": 1.5, "b": 0.75},
             "chunking": {"encoding": "cl100k_base"},
             "embedding": {"corpus_hash": digest(sorted(c.chunk_id for c in chunks))},
@@ -58,7 +57,7 @@ def test_search_reuses_saved_corpus_and_returns_complete_source_text(saved_run):
     assert "not correctness probabilities" in response["score_note"]
 
 
-def test_active_expanded_index_is_used_without_claiming_new_benchmark_scores(
+def test_active_index_is_used_without_legacy_files_or_clinical_accuracy_claims(
     saved_run, tmp_path, monkeypatch
 ):
     from src.retrieval import search
@@ -70,14 +69,12 @@ def test_active_expanded_index_is_used_without_claiming_new_benchmark_scores(
         evaluation_status="expanded_corpus_not_benchmarked",
         coverage={"covered_names": 60},
     )
-    del descriptor["selection"]["preferred_on_dev"]
     write_json(saved_run, descriptor)
     write_json(tmp_path / "results/search_latest.json", {"run_path": "run.json"})
-    write_json(tmp_path / "results/latest.json", {"run_path": "old-unavailable-run.json"})
     monkeypatch.setattr(search, "ROOT", tmp_path)
     result = SearchSession().search("safety")
     assert result["corpus_drug_names"] == 60
-    assert "has not been benchmarked" in format_results(result)
+    assert "do not establish clinical relevance" in format_results(result)
     assert "Verified named-drug coverage: 60" in format_results(result)
 
 
@@ -85,6 +82,14 @@ def test_unknown_label_filter_is_not_silently_relaxed(saved_run):
     response = SearchSession(saved_run, "keyword").search("safety", filters={"set_id": "missing"})
     assert response["results"] == []
     assert "No filters were relaxed" in format_results(response)
+
+
+def test_missing_active_index_gives_current_rebuild_command(tmp_path, monkeypatch):
+    from src.retrieval import search
+
+    monkeypatch.setattr(search, "ROOT", tmp_path)
+    with pytest.raises(FileNotFoundError, match="maintain --step index"):
+        SearchSession()
 
 
 @pytest.mark.parametrize("question,k", [("", 5), ("   ", 5), ("safety", 0), ("safety", 101)])

@@ -1,22 +1,15 @@
-"""Command-line tools for FDA label acquisition, retrieval and evaluation."""
+"""Command-line tools for FDA label acquisition and retrieval."""
 
 import argparse
 
-from src.utils.config import ROOT, load_config, read_json
+from src.utils.config import load_config
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "command",
-        choices=[
-            "ingest",
-            "prepare-benchmark",
-            "benchmark",
-            "verify-benchmark",
-            "search",
-            "maintain",
-        ],
+        choices=["ingest", "search", "maintain"],
     )
     parser.add_argument("question", nargs="?", help="Question for search; omit to enter interactive mode")
     parser.add_argument("--config")
@@ -25,13 +18,6 @@ def main():
         "--step", choices=["acquire", "index", "verify", "all"], default="verify",
         help="Maintenance step; defaults to offline verification. 'all' acquires, indexes and verifies.",
     )
-    parser.add_argument(
-        "--provisional",
-        action="store_true",
-        help="Explicitly allow draft qrels; results are not scientific validation",
-    )
-    parser.add_argument("--compare-embeddings", action="store_true")
-    parser.add_argument("--no-tune-chunks", action="store_true")
     parser.add_argument(
         "--method",
         default=None,
@@ -84,36 +70,12 @@ def main():
 
         maintain(config, args.step)
         return
-    from src.ingestion.data_loader import ingest, load_snapshot
+    from src.ingestion.data_loader import ingest
 
     if args.command == "ingest":
         snapshot = ingest(config)
         print(snapshot["manifest"]["snapshot_id"])
         return
-    snapshot_id = args.snapshot
-    if snapshot_id is None and args.command == "verify-benchmark":
-        snapshot_id = read_json(ROOT / "data/benchmarks/benchmark.json")["snapshot_id"]
-    snapshot = load_snapshot(snapshot_id)
-    if args.command == "prepare-benchmark":
-        from src.evaluation.benchmark_data import make_benchmark
-
-        benchmark = make_benchmark(snapshot)
-        print(benchmark["benchmark_id"], benchmark["status"])
-    elif args.command == "verify-benchmark":
-        from src.evaluation.benchmark_data import validate_benchmark
-
-        validate_benchmark(
-            read_json(ROOT / "data/benchmarks/benchmark.json"),
-            [d for d in snapshot["documents"] if d["kind"] == "fda_full"],
-        )
-        print("Reviewed benchmark validated against frozen FDA corpus")
-    elif args.command == "benchmark":
-        from src.evaluation.benchmarking import run_benchmark
-
-        run = run_benchmark(
-            snapshot, config, args.provisional, args.compare_embeddings, not args.no_tune_chunks
-        )
-        print("Completed", run["run_id"], "provisional:", run["provisional"])
 
 
 if __name__ == "__main__":

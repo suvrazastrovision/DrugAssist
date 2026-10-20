@@ -47,13 +47,12 @@ def verify(config):
     expected = len(config["ingestion"]["lookup_names"])
     if coverage["covered_names"] != expected or coverage["requested_names"] != expected:
         raise ValueError("Active index does not cover the configured drug names")
-    baseline = read_json(ROOT / read_json(ROOT / "results/latest.json")["run_path"])
-    original = load_snapshot(baseline["snapshot_id"])
-    original_sets = {
-        row["record"]["set_id"] for row in original["records"] if row["kind"] == "fda_full"
+    snapshot = load_snapshot(session.snapshot_id)
+    source_sets = {
+        row["record"]["set_id"] for row in snapshot["records"] if row["kind"] == "fda_full"
     }
-    if not original_sets <= {chunk.set_id for chunk in session.chunks}:
-        raise ValueError("Active index is missing original FDA label sets")
+    if source_sets != {chunk.set_id for chunk in session.chunks}:
+        raise ValueError("Active index label sets do not match its saved source dataset")
     rows = []
     for drug in coverage["names"]:
         response = session.search(drug["name"], k=10)
@@ -76,15 +75,14 @@ def verify(config):
         "method": "bm25",
         "checked_names": len(rows),
         "passed_names": len(rows),
-        "preserved_original_fda_label_sets": len(original_sets),
-        "original_benchmark_pointer_preserved": True,
+        "indexed_fda_label_sets": len(source_sets),
         "limitation": "Exact-name lookup and source identity smoke checks, not an independently judged relevance benchmark.",
         "names": rows,
     }
     write_json(checkpoint, checks)
     print(
         f"All {len(rows)} drug names retrieved a matching source; "
-        f"original {len(original_sets)} label sets preserved."
+        f"all {len(source_sets)} source label sets indexed."
     )
 
 

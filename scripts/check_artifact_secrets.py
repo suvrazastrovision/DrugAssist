@@ -11,9 +11,9 @@ secrets = [
 paths = []
 paths.extend(
     ROOT / name
-    for name in ["README.md", "ANNOTATION_PROTOCOL.md", "pyproject.toml", "uv.lock", ".env.example"]
+    for name in ["README.md", "pyproject.toml", "uv.lock", ".env.example"]
 )
-for folder in ["src", "frontend", "scripts", "tests", "config", "notebooks", "reports", "results", "data/benchmarks"]:
+for folder in ["src", "frontend", "scripts", "tests", "config", "notebooks", "reports", "results", "docs"]:
     paths.extend(
         p
         for p in (ROOT / folder).rglob("*")

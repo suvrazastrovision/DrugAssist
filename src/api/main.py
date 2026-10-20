@@ -1,4 +1,4 @@
-"""DrugAssist: read-only retrieval API; no generated answers."""
+"""DrugAssist: authenticated FDA retrieval and optional cited answer writing."""
 
 import sqlite3
 from contextlib import asynccontextmanager
@@ -9,10 +9,11 @@ from fastapi import Depends, FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
-from src.api.schemas import HealthResponse, SearchRequest, SearchResponse
+from src.api.schemas import AnswerRequest, AnswerResponse, HealthResponse, SearchRequest, SearchResponse
 from src.auth.routes import get_current_user
 from src.auth.routes import router as auth_router
 from src.auth.service import AuthError, build_auth_service
+from src.services.answer_service import build_answer_service
 from src.services.search_service import ServiceUnavailable, build_search_service
 
 
@@ -26,7 +27,9 @@ def get_service(request: Request):
         raise ServiceUnavailable() from None
 
 
-def create_app(service_factory=build_search_service, auth_factory=build_auth_service):
+def create_app(
+    service_factory=build_search_service, auth_factory=build_auth_service, answer_factory=build_answer_service,
+):
     @asynccontextmanager
     async def lifespan(app):
         try:
@@ -38,13 +41,14 @@ def create_app(service_factory=build_search_service, auth_factory=build_auth_ser
     app = FastAPI(title="DrugAssist", version="0.1.0", lifespan=lifespan)
     app.state.service_factory, app.state.service = service_factory, None
     app.state.auth_factory, app.state.auth = auth_factory, None
+    app.state.answer_factory, app.state.answer = answer_factory, None
     app.state.lock = RLock()
     app.include_router(auth_router)
 
     @app.middleware("http")
     async def private_responses(request, call_next):
         response = await call_next(request)
-        if request.url.path.startswith("/auth/") or request.url.path == "/search":
+        if request.url.path.startswith("/auth/") or request.url.path in {"/search", "/answer"}:
             response.headers["Cache-Control"] = "no-store"
         return response
 
@@ -84,6 +88,15 @@ def create_app(service_factory=build_search_service, auth_factory=build_auth_ser
     @app.post("/search", response_model=SearchResponse)
     def search(body: SearchRequest, request: Request, user: Annotated[dict, Depends(get_current_user)]):
         return get_service(request).search(body.query, body.k)
+
+    @app.post("/answer", response_model=AnswerResponse)
+    def answer(body: AnswerRequest, request: Request, user: Annotated[dict, Depends(get_current_user)]):
+        service = get_service(request)
+        with request.app.state.lock:
+            if request.app.state.answer is None:
+                request.app.state.answer = request.app.state.answer_factory(service)
+            writer = request.app.state.answer
+        return writer.answer(body.query, body.k, body.audience)
 
     return app
 

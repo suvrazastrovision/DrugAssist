@@ -6,6 +6,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
 from src.query_parser import ParsedQuery
+from src.services.answer_service import AnswerStatement
 
 
 class Credentials(BaseModel):
@@ -89,6 +90,26 @@ class SearchResponse(BaseModel):
     threshold: ThresholdInfo
     results: list[SearchHit]
     disclaimer: str
+
+
+class AnswerRequest(SearchRequest):
+    audience: Literal["patient", "clinician"] = "patient"
+
+
+class AnswerCitation(SearchHit):
+    source_id: str
+    context_partial: bool
+
+
+class AnswerResponse(SearchResponse):
+    answer: str | None
+    statements: list[AnswerStatement]
+    citations: list[AnswerCitation]
+    audience: Literal["patient", "clinician"]
+    answer_model: str
+    answer_status: Literal["generated", "insufficient_evidence", "unavailable"]
+    insufficient_evidence: bool | None
+    answer_note: str
 
 
 class HealthResponse(BaseModel):

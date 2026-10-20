@@ -2,9 +2,9 @@
 
 [README](../README.md) | [Run and search](usage.md) | [App flow](app-flow.md) | [Research](research.md) | [Repository guide](repository.md)
 
-This diagram separates collection preparation, login, live search and evaluation. The proposed answer-writing layer is clearly marked as future work.
+This diagram separates collection preparation, login, live search, optional answer writing and evaluation.
 
-Solid arrows show processing; dotted arrows also connect saved data to the steps that read it. Purple dashed boxes mark the proposed answer-generation layer, which is not running yet. Data preparation happens during maintenance, rather than on every question.
+Solid arrows show processing; dotted arrows connect saved data to the steps that read it. Data preparation happens during maintenance. Answer writing is an optional step after retrieval and reranking.
 
 ```mermaid
 flowchart TB
@@ -34,7 +34,7 @@ flowchart TB
     end
 
     subgraph search["3. Search the saved FDA collection"]
-        Request["POST /search<br/>Original question, result limit k, bearer token"]
+        Request["POST /search or /answer<br/>Original question, k, bearer token<br/>Answer requests also select patient or clinician wording"]
         Request --> Session{"Valid session?"}
         Session -->|"No"| Unauthorized["401: log in again"]
         Session -->|"Yes"| Input{"Valid question and k?"}
@@ -68,13 +68,14 @@ flowchart TB
     Index -.-> BM25
     Chroma -.-> Dense
     Cache -.-> Cached
-    Evidence --> Display["Streamlit results<br/>Ranked passages and source details<br/>Existing expander shows each retrieved chunk"]
+    Evidence --> Mode{"Written answer requested?"}
+    Mode -->|"No"| Display["Streamlit results<br/>Optional written answer and supporting context<br/>Original ranked passages and source details"]
     NoMatch --> Display
     Unauthorized --> UI
     Invalid --> UI
     Unavailable --> UI
 
-    subgraph evaluation["4. Review data and retrieval quality - separate workflow"]
+    subgraph evaluation["5. Review data and retrieval quality - separate workflow"]
         Notebooks["Notebooks 1 and 2<br/>Data checks, exploration and search"]
         Compare["Notebook 3<br/>Six retrieval methods, 60 section-finding questions"]
         Results["Saved reports and plots<br/>Source/section matches are diagnostic checks"]
@@ -85,23 +86,32 @@ flowchart TB
     Index -.-> Compare
     Chroma -.-> Compare
 
-    subgraph planned["5. PLANNED - polished answers, not implemented"]
-        Audience["Choose audience explicitly<br/>Patient or clinician"]
-        Context["Load sufficient saved FDA section context<br/>Preserve qualifications and source IDs"]
-        Generate["Generate an evidence-based answer<br/>Adapt wording to the selected audience<br/>Cite supporting evidence; identify missing information"]
-        Answer["Polished answer above the original evidence<br/>Expandable supporting FDA text"]
-        Audience -.-> Generate
-        Context -.-> Generate
-        Generate -.-> Answer
+    subgraph writing["4. Write a cited answer - optional"]
+        Audience["User selects Patient or Clinician wording"]
+        Context["Expand exact saved section context<br/>Up to 4 sources, 1600 tokens each<br/>6000-token instructions and context budget"]
+        Generate["One OpenAI Responses request<br/>Configured model and reasoning; structured output<br/>1500 output tokens; 60-second read timeout"]
+        Complete{"Complete response with valid structure<br/>and citations to supplied source IDs?"}
+        Supported{"Model reports sufficient evidence?"}
+        Written["Cited answer with source IDs<br/>Expanded supporting FDA context"]
+        Fallback["Written answer unavailable<br/>Keep the retrieved passages"]
+        Abstain["Evidence insufficient for an answer<br/>Keep the retrieved passages"]
+        Mode -->|"Yes"| Context
+        Context --> Generate
+        Generate --> Complete
+        Complete -->|"Yes"| Supported
+        Complete -->|"No / refusal / provider failure"| Fallback
+        Supported -->|"Yes"| Written
+        Supported -->|"No"| Abstain
+        Written --> Display
+        Fallback --> Display
+        Abstain --> Display
     end
-    UI -.-> Audience
-    Evidence -.-> Context
+    UI --> Audience
+    Audience --> Generate
     Snapshot -.-> Context
 
-    classDef future fill:#f5f0ff,stroke:#8056b3,stroke-dasharray:5 5;
-    class Audience,Context,Generate,Answer future;
 ```
 
 The original question reaches lexical search, semantic search and reranking without the parser rewriting its meaning. The API filters by recognized drug and section; it does not interpret manufacturer, route, version or date constraints in natural language. Conditions are not database filters. Terminal search uses the shared retrievers with explicit command-line filters and bypasses the app's login, parser, scope gate and relevance cutoff.
 
-Each current result is a passage from a longer section, so it can end mid-list. The complete section remains in the saved dataset. Expanding a passage currently shows that chunk only. Loading complete supporting sections and generating a polished answer are proposed changes. The existing 80-question draft benchmark remains separate and needs independent review before accuracy claims; generated answers would also need their own factual and citation checks.
+Each current result is a passage from a longer section, so it can end mid-list. The complete section remains in the saved dataset. Expanding an original passage shows that chunk only. Answer mode additionally supplies expanded saved section context, deduplicated by document and section. Short sections can be supplied in full; longer sections use bounded windows and are marked partial. The Supporting FDA context expander shows exactly the context cited by the writer. Generated answers need independent factual and citation-support review. The implementation checks citation identities and response structure; it does not automatically establish that each claim is supported. No-match searches skip generation. Generation failures keep the retrieved evidence available.

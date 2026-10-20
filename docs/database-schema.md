@@ -4,6 +4,8 @@
 
 The app uses **three separate local databases**. Chroma stores searchable evidence, an embedding cache avoids repeated encoding, and the account database manages logins. They have no SQL foreign keys between them.
 
+Optional answer writing reuses these stores and the saved FDA sections. It adds no database tables or locally persisted answer history.
+
 ![DrugAssist database schema: Chroma tables, vector-index files, embedding cache, and separate account tables](database-schema.svg)
 
 [Open the full-size diagram](database-schema.svg).

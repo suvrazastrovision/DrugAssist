@@ -112,7 +112,33 @@ def label_date(value: str | None) -> str:
     return "Not provided"
 
 
+def show_answer(result: dict) -> None:
+    st.subheader("Answer")
+    status = result.get("answer_status")
+    if status != "generated":
+        st.info(result["answer_note"])
+        return
+    st.caption("AI-written from the FDA evidence below. Review the sources for important qualifications.")
+    for statement in result["statements"]:
+        # Model text is displayed literally, so it cannot introduce clickable invented URLs or HTML.
+        st.text(statement["text"])
+        st.caption("Sources: " + ", ".join(dict.fromkeys(statement["source_ids"])))
+    with st.expander("Supporting FDA context"):
+        for source in result["citations"]:
+            st.markdown(f"**{source['source_id']} | {source['section'].replace('_', ' ').title()}**")
+            st.text(source["drug_name"])
+            st.caption(f"Label date: {label_date(source.get('effective_time'))}")
+            if source.get("source_url") and urlsplit(source["source_url"]).scheme == "https":
+                st.link_button(f"FDA source {source['source_id']}", source["source_url"])
+            if source["context_partial"]:
+                st.caption("Selected context from a longer section; this may not be a complete list.")
+            st.text(source["text"])
+    st.caption(f"Wording: {result['audience'].title()} | {result['answer_note']}")
+
+
 def show_results(result: dict, elapsed: float | None = None) -> None:
+    if "answer_status" in result:
+        show_answer(result)
     st.subheader("Results")
     hits = result["results"]
     labels = len({hit["set_id"] for hit in hits})
@@ -195,6 +221,9 @@ def search_screen(user: dict) -> None:
             max_chars=2000,
             height=110,
         )
+        writing, audience_column = st.columns([2, 1])
+        write_answer = writing.checkbox("Write a cited answer", value=True)
+        audience = audience_column.selectbox("Wording", ["Patient", "Clinician"])
         count, action = st.columns([1, 2], vertical_alignment="bottom")
         k = count.number_input("Number of results", min_value=1, max_value=20, value=5, step=1)
         with action:
@@ -208,13 +237,14 @@ def search_screen(user: dict) -> None:
             progress = st.empty()
             with progress.container(), st.status("Searching FDA labels", expanded=True) as status:
                 st.caption(
-                    "Finding matching passages and ranking their relevance. The first search may take longer."
+                    "Finding and ranking FDA passages, then writing a cited answer."
+                    if write_answer else "Finding matching passages and ranking their relevance."
                 )
                 started = perf_counter()
                 st.session_state["results"] = api_request(
                     "POST",
-                    "/search",
-                    {"query": question.strip(), "k": int(k)},
+                    "/answer" if write_answer else "/search",
+                    {"query": question.strip(), "k": int(k), **({"audience": audience.lower()} if write_answer else {})},
                     on_error=lambda: status.update(
                         label="Search not completed", state="error", expanded=True
                     ),

@@ -1,4 +1,4 @@
-"""Ask new questions against a completed experiment without rebuilding its index."""
+"""Search the saved FDA label index without rebuilding it."""
 
 import json
 import textwrap
@@ -36,26 +36,24 @@ class SearchSession:
         self.query_cache = query_cache
         self.store = None
         pointer = ROOT / "results/search_latest.json"
-        if not pointer.exists():
-            pointer = ROOT / "results/latest.json"
+        if not run_path and not pointer.exists():
+            raise FileNotFoundError(
+                "No active search index; restore it or run fda-rag maintain --step index"
+            )
         path = Path(run_path) if run_path else ROOT / read_json(pointer)["run_path"]
         self.run = read_json(path)
         self.snapshot_id = self.run["snapshot_id"]
         if snapshot_id and snapshot_id != self.snapshot_id:
             raise ValueError(
-                "Requested snapshot does not match the saved experiment; select its run with --run"
+                "Requested snapshot does not match the saved index; select its descriptor with --run"
             )
         if method not in METHODS:
             raise ValueError("Unknown retrieval method")
-        self.method = (
-            (self.run.get("default_method") or self.run["selection"]["preferred_on_dev"])
-            if method == "selected"
-            else method
-        )
+        self.method = self.run["default_method"] if method == "selected" else method
         self.chunks = [Chunk(**row) for row in read_json(path.parent / "chunks.json")]
         expected = self.run["selection"]["embedding"]["corpus_hash"]
         if digest(sorted(c.chunk_id for c in self.chunks)) != expected:
-            raise ValueError("Saved chunk inventory differs from the experiment corpus")
+            raise ValueError("Saved chunk inventory differs from the indexed corpus")
         encoding = self.run["selection"]["chunking"]["encoding"]
         for c in self.chunks:
             actual = digest(
@@ -82,7 +80,7 @@ class SearchSession:
                 options["cache"] = self.query_cache
             embedder = cls(**options)
         if embedder.fingerprint != selected["embedding_fingerprint"]:
-            raise ValueError("Embedding model differs from the saved experiment")
+            raise ValueError("Embedding model differs from the saved index")
         if self.query_cache is not None and not isinstance(embedder, OpenAIEmbedder):
             embedder = QueryEmbeddingCache(embedder, self.query_cache)
         self.embedder = embedder
@@ -97,21 +95,15 @@ class SearchSession:
         if store.collection.name != selected["collection_name"] or store.collection.count() != len(
             self.chunks
         ):
-            raise ValueError("Saved vector collection is incomplete or does not match the experiment")
+            raise ValueError("Saved vector collection is incomplete or does not match the index")
         dense = SemanticRetriever(store)
         if self.method == "dense":
             return dense
         candidates = self.run["configuration"]["retrieval"]["candidates"]
         if self.method == "hybrid_rerank":
             fusion = self.run["selection"]["hybrid"]
-        elif "fusion_settings" in self.run:
-            fusion = self.run["fusion_settings"][self.method]
         else:
-            kind = self.method.removeprefix("hybrid_")
-            fusion = max(
-                (row for row in self.run["fusion_trials"] if row["fusion"] == kind),
-                key=lambda row: row["dev_ndcg@10"],
-            )
+            fusion = self.run["fusion_settings"][self.method]
         hybrid = HybridRetriever(
             bm25, dense, candidates=candidates, **{k: fusion[k] for k in ("fusion", "rrf_k", "alpha")}
         )
@@ -138,8 +130,7 @@ class SearchSession:
             "method": self.method,
             "run_id": self.run["run_id"],
             "snapshot_id": self.snapshot_id,
-            "benchmark_provisional": self.run["provisional"],
-            "evaluation_status": self.run.get("evaluation_status", "provisional_benchmark"),
+            "evaluation_status": self.run.get("evaluation_status", "not_independently_reviewed"),
             "corpus_drug_names": self.run.get("coverage", {}).get("covered_names"),
             "corpus_labels": len({c.set_id for c in self.chunks}),
             "corpus_chunks": len(self.chunks),
@@ -161,13 +152,10 @@ def format_results(response):
         f"Snapshot: {response['snapshot_id']}",
         response["score_note"],
         response["result_note"],
+        "Source-section checks do not establish clinical relevance.",
     ]
     if response.get("corpus_drug_names") is not None:
         lines.insert(3, f"Verified named-drug coverage: {response['corpus_drug_names']}")
-    if response.get("evaluation_status") == "expanded_corpus_not_benchmarked":
-        lines.append(
-            "This expanded corpus has not been benchmarked; settings come from the earlier experiment."
-        )
     if not response["results"]:
         lines.append("No matching passages found. No filters were relaxed.")
     for row in response["results"]:

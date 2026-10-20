@@ -27,7 +27,9 @@ class ChromaStore:
         self.fingerprint = digest([self.corpus_hash, embedder.fingerprint, self.settings])
         storage_path = Path(path or ROOT / "data/chroma")
         if not create and not (storage_path / "chroma.sqlite3").is_file():
-            raise FileNotFoundError("Saved vector index is missing; restore it or run the benchmark first")
+            raise FileNotFoundError(
+                "Saved vector index is missing; restore it or run fda-rag maintain --step index"
+            )
         self.client = chromadb.PersistentClient(
             str(storage_path), settings=Settings(anonymized_telemetry=False)
         )
@@ -44,7 +46,7 @@ class ChromaStore:
                 self.collection = self.client.get_collection(name, embedding_function=None)
             except chromadb.errors.NotFoundError:
                 raise FileNotFoundError(
-                    "Saved vector collection is missing; restore it or run the benchmark first"
+                    "Saved vector collection is missing; restore it or run fda-rag maintain --step index"
                 ) from None
 
     def index(self, progress=None):

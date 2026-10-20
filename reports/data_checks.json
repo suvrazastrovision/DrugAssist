@@ -10315,8 +10315,7 @@
     "method": "bm25",
     "checked_names": 60,
     "passed_names": 60,
-    "preserved_original_fda_label_sets": 24,
-    "original_benchmark_pointer_preserved": true,
+    "indexed_fda_label_sets": 118,
     "limitation": "Exact-name lookup and source identity smoke checks, not an independently judged relevance benchmark.",
     "names": [
       {

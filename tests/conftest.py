@@ -14,6 +14,7 @@ def offline_providers(monkeypatch):
     monkeypatch.setattr("src.embeddings.embedder.load_dotenv", lambda *args, **kwargs: False)
     monkeypatch.setattr("src.ingestion.api_client.load_dotenv", lambda *args, **kwargs: False)
     monkeypatch.setattr("src.auth.service.load_dotenv", lambda *args, **kwargs: False)
+    monkeypatch.setattr("src.services.answer_service.load_dotenv", lambda *args, **kwargs: False)
 
     def no_http(*args, **kwargs):
         raise AssertionError("External HTTP is disabled during tests")

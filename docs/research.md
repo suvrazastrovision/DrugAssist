@@ -16,7 +16,7 @@ Install notebook tools with `uv sync --locked --extra research`, then select the
 | [2. Explore and search](../notebooks/02_exploratory_data_analysis.ipynb) | How do labels become passages, and how can I search them? | Current 60-drug collection |
 | [3. Compare search methods](../notebooks/03_retrieval_pipeline_benchmark.ipynb) | How often did each method find the requested section? | Current 60-drug collection / 60 simple questions |
 
-Notebook 3 compares all six methods using one direct section-finding question per drug: 20 about uses, 20 about dosage instructions and 20 about warnings. Expected matches come from FDA identity and section fields. Finding an expected section does not prove that a passage answers a medical question. This automatic check is separate from the original 80-question draft benchmark, which still needs independent human review.
+Notebook 3 compares all six methods using one direct section-finding question per drug: 20 about uses, 20 about dosage instructions and 20 about warnings. Expected matches come from FDA identity and section fields. Finding an expected section does not prove that a passage answers a medical question. Independent human review is needed to assess passage relevance, factual correctness and citation support.
 
 ## Maintain and check the project
 
@@ -40,12 +40,8 @@ uv run --locked --extra research --extra dev pytest -q
 uv run --locked --extra research --extra dev ruff check src tests scripts frontend
 ```
 
-Acquisition reuses existing matching labels; a direct FDA name search fills gaps left by MORVS. New indexing can incur embedding API usage. The original benchmark remains separate from the expanded search index.
+Acquisition reuses existing matching labels; a direct FDA name search fills gaps left by MORVS. Indexing uses the explicit settings in `config/default.json` and can incur embedding API usage. Offline verification checks that all source label sets are indexed and every configured drug name retrieves a matching label.
 
-Notebook execution and the full `benchmark` command require `--extra research`.
+Notebook execution requires `--extra research`.
 
-The first comparison run also embeds its new questions and runs the local reranker. Later notebook runs read the saved results without API calls. The separate local embedding comparison model is optional and downloads only when explicitly requested with `benchmark --compare-embeddings`; the saved results remain available without that download.
-
-For independent relevance review, see [ANNOTATION_PROTOCOL.md](../ANNOTATION_PROTOCOL.md). Detailed metrics, configuration and source archives remain beside the original saved experiment. Keep these when sharing claims about its results.
-
-Draft review exports are optional. Generate them only when needed with `uv run --locked python scripts/export_annotation_review.py`; the questions and draft evidence remain in `data/benchmarks/benchmark.json`.
+The first comparison run also embeds its new questions and runs the local reranker. Later notebook runs read the saved results without API calls. Questions, source references, settings and method results are saved together in `reports/expanded_60/method_comparison.json`.

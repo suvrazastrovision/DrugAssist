@@ -1,4 +1,4 @@
-"""Maintain an append-only corpus; a new benchmark binding is required afterward."""
+"""Maintain an append-only corpus; rebuild the search index afterward."""
 
 import argparse
 
@@ -14,4 +14,4 @@ base = load_snapshot(args.base)
 update = ingest(load_config(args.config))
 merged = merge_snapshots(base, update, set_latest=True)
 print("Incremental snapshot", merged["manifest"]["snapshot_id"])
-print("Historical versions retained; rebind and independently review benchmark evidence before evaluation")
+print("Historical versions retained; rebuild the search index for this snapshot before searching it")

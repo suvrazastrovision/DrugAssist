@@ -29,6 +29,7 @@ The API reference is at **http://127.0.0.1:8000/docs**.
 | `GET /auth/me` | Logged in | Check the session and current user |
 | `POST /auth/logout` | Logged in | Revoke this session |
 | `POST /search` | Logged in | Search FDA evidence |
+| `POST /answer` | Logged in | Retrieve evidence, then write a cited answer |
 | `GET /health` | Public | Check the search index |
 
 To call the API directly, send the login response's `session_token` in an `Authorization: Bearer <session_token>` header. Signup and login both accept `email` and `password`. Signup returns **201**, duplicate emails **409**, invalid input **422**, rejected sessions **401**, and successful logout **204**. A no-match search remains **200**.
@@ -51,7 +52,25 @@ The parser also recognizes everyday topic wording: "What is metformin for?" sele
 
 Document and query embeddings share `data/cache/embeddings.sqlite3`, keyed by the model's fingerprint and exact text. Search reuses the saved vectors through one cache layer. The saved provider and embedding space are reused, including local models when configured. Cached queries can work during a provider outage. Uncached provider failures or unavailable databases return **503**, invalid requests return **422**, and valid requests without matches return **200** with `no_match: true`.
 
-The search API reads the existing index; it does not ingest records or generate answers. `create_app(service_factory=..., auth_factory=...)` provides dependency injection. Retrieval tests use temporary Chroma collections; authentication tests use temporary SQLite databases; Streamlit tests call the real auth routes with mocked retrieval. Tests disable external HTTP and `.env` loading. Install test and research tools with `uv sync --locked --extra research --extra dev`, then run `uv run --locked --extra research --extra dev pytest -q`.
+The `/search` endpoint reads the existing index and returns evidence. `/answer` reuses that search and adds the optional writer described below. `create_app(service_factory=..., auth_factory=..., answer_factory=...)` provides dependency injection. Retrieval tests use temporary Chroma collections; authentication tests use temporary SQLite databases; answer and Streamlit tests use controlled model responses. Tests disable external HTTP and `.env` loading. Install test and research tools with `uv sync --locked --extra research --extra dev`, then run `uv run --locked --extra research --extra dev pytest -q`.
+
+## Cited answers
+
+In the search form, leave **Write a cited answer** checked and select **Patient** or **Clinician** wording. The answer appears above the original ranked passages. Source IDs such as `S1` identify the supporting context in the **Supporting FDA context** expander, including the label date and FDA link. Uncheck answer writing to use retrieval alone.
+
+The authenticated `POST /answer` endpoint accepts the same `query` and `k` as `/search`, plus `audience` (`patient` by default, or `clinician`). It returns all search fields plus `answer`, `statements`, `citations`, `answer_status`, `answer_model`, `audience`, `insufficient_evidence` and `answer_note`. Each statement has text and supporting source IDs. Each citation includes the exact saved context, character offsets, source identifiers and a `context_partial` flag.
+
+Source IDs such as `S1` are local to that answer. A citation's `chunk_id` identifies the original retrieved anchor; its `text`, `start` and `end` describe the expanded context, which can extend beyond that chunk.
+
+The writer uses `OPENAI_API_KEY` and the OpenAI Responses API. The `answer` section of `config/default.json` selects the available `gpt-5-mini` model with `minimal` reasoning and limits: four sources, 1,600 tokens per source, a 6,000-token combined instructions/question/evidence budget, 1,500 output tokens and a 60-second HTTP read timeout. There is one generation request with no automatic retry. `answer_model` records the provider-reported model snapshot after a valid response; otherwise it shows the requested model. The configured alias may resolve differently in future. `reasoning_effort` can be set to `null` for a model that does not accept that option. Usage can incur API charges; account access must include the configured model. Responses are sent with `store=false`; this does not describe all provider retention policies. No answer history is stored locally. The implementation uses existing dependencies.
+
+Context is deduplicated by document and section. Short sections can be provided in full; long sections use exact surrounding text within the budget and are marked partial. Context budgets use the repository's `cl100k_base` token counter; provider input-token counts can differ and include schema/message overhead. The API enforces the output-token limit. Product identities and label dates remain attached. The prompt asks the writer to preserve units, negation and safety qualifications, distinguish products, cite every statement and abstain when evidence is insufficient. Patient/Clinician wording changes presentation, not the evidence.
+
+`answer_status` is `generated`, `insufficient_evidence` or `unavailable`. No-match retrieval skips the model. A model-declared lack of evidence returns no answer; `insufficient_evidence=true`. Provider errors, incomplete output, refusals, invalid JSON or invented citation IDs return `unavailable`, no written answer and `insufficient_evidence=null` (sufficiency was not determined). The original passages remain in the response. Retrieval failures still return HTTP 503; request validation and login rules are unchanged. Both evidence and answer responses use `Cache-Control: no-store`.
+
+Citation IDs and structured output are checked programmatically. These checks do **not** establish that claims follow from the citations. Generated answers require separate human evaluation for factual support, omitted qualifications, unsupported questions and citation completeness. The existing source-section comparison does not validate answer quality.
+
+API references: [Responses text generation](https://developers.openai.com/api/docs/guides/text), [Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs), and [generation model](https://developers.openai.com/api/docs/models/gpt-5-mini).
 
 ## Terminal search
 
