@@ -8,6 +8,8 @@ The app uses **three separate local databases**. Chroma stores searchable eviden
 
 [Open the full-size diagram](database-schema.svg).
 
+The image uses a traditional entity relationship style: purple table headers, alternating rows, SQL types in the left column and field names in the right column. Crow's-foot endpoints show relationship cardinality.
+
 ## Reading the annotations
 
 | Mark | Meaning |
@@ -16,10 +18,13 @@ The app uses **three separate local databases**. Chroma stores searchable eviden
 | `FK` | A foreign-key declaration pointing to an existing table |
 | `UQ` | Uniqueness constraint; a listed pair is unique together |
 | `NN` | Explicit `NOT NULL` declaration |
-| Solid arrow | Parent-to-child relationship backed by a matching foreign-key declaration |
-| Dashed arrow | Application or storage relationship; not a matching SQL foreign key |
+| Double bar (`||`) | Exactly one parent for a valid relationship |
+| Circle and bar | Zero or one parent; the foreign-key field permits null |
+| Circle and crow's foot | Zero or many child records |
+| Solid connector | Relationship backed by a matching foreign-key declaration |
+| Dashed connector | Application or storage relationship; not a matching SQL foreign key |
 
-The diagram shows core tables and selected storage details, not every Chroma maintenance table. Foreign-key declarations describe the schema; they do not establish that every Chroma connection enables SQLite foreign-key enforcement.
+The diagram shows core tables and selected storage details, not every Chroma maintenance table. Cardinalities describe valid intended records; optional parent endpoints reflect nullable foreign-key declarations. Foreign-key declarations describe the schema; they do not establish that every Chroma connection enables SQLite foreign-key enforcement. The index-files callout is a file group, so its dashed connection has no relational cardinality markers.
 
 ## 1. Chroma: passage retrieval
 
@@ -82,10 +87,12 @@ One user can have zero or more sessions. Every valid session belongs to one user
 
 FDA evidence is not linked to a user by a database foreign key, and the current schema contains no search-history table. No private account values are included in this diagram.
 
-## Editable Mermaid version
+## Mermaid relationship overview
 
 <details>
-<summary>Show the core schema as Mermaid</summary>
+<summary>Show the storage relationships as editable Mermaid</summary>
+
+This flowchart preserves the logical overview. The SVG above provides the table-grid layout and crow's-foot notation.
 
 ```mermaid
 flowchart TB

@@ -1,183 +1,459 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1640" viewBox="0 0 1600 1640" role="img" aria-labelledby="title description">
-<title id="title">DrugAssist database schema</title>
-<desc id="description">Annotated core schema of the three separate local stores. Solid arrows show matching declared SQL foreign keys. Dashed arrows show application or file relationships. Chroma segments.collection declares an unmatched singular table reference, explicitly noted as A.</desc>
-<defs>
-<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#47718a"/></marker>
-</defs>
-<rect width="1600" height="1640" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1880" viewBox="0 0 1800 1880" role="img" aria-labelledby="title description">
+<title id="title">DrugAssist entity relationship database schema</title>
+<desc id="description">Purple two-column entity tables with SQL types on the left and fields on the right. Crow's-foot connectors distinguish one, zero or one, and zero or many. Solid links are matching declared SQL foreign keys. Dashed links A and B are application relationships. Three database boundaries remain separate.</desc>
+<rect width="1800" height="1880" fill="white"/>
 
-<text x="36" y="54" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#18374b">DrugAssist database schema</text>
-<text x="38" y="84" font-family="Arial, sans-serif" font-size="18" font-weight="400" fill="#597080">Three separate local stores. Core tables and selected columns, verified 20 October 2026.</text>
-<line x1="40.0" y1="116.0" x2="80.0" y2="116.0" stroke="#47718a" stroke-width="2"/>
-<polygon points="90,116 79.0,120.0 79.0,112.0" fill="#47718a"/>
-<text x="105" y="122" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18374b">Matching declared FK: parent to child</text>
-<line x1="580.0" y1="116.0" x2="588.0" y2="116.0" stroke="#47718a" stroke-width="2"/>
-<line x1="593.0" y1="116.0" x2="601.0" y2="116.0" stroke="#47718a" stroke-width="2"/>
-<line x1="606.0" y1="116.0" x2="614.0" y2="116.0" stroke="#47718a" stroke-width="2"/>
-<line x1="619.0" y1="116.0" x2="620.0" y2="116.0" stroke="#47718a" stroke-width="2"/>
-<polygon points="630,116 619.0,120.0 619.0,112.0" fill="#47718a"/>
-<text x="645" y="122" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18374b">Application / storage link, not a matching SQL FK</text>
-<text x="1190" y="122" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#597080">PK = primary key   NN = NOT NULL</text>
-<rect x="32" y="150" width="1536" height="980" rx="18" fill="#f6f9fc" stroke="#d6e3eb" stroke-width="1.5"/>
-<text x="58" y="186" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#2b628e">01  CHROMA | FDA passage retrieval</text>
-<text x="58" y="212" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#597080">data/chroma/chroma.sqlite3  |  Active: 8,601 chunks, 1,536 dimensions, cosine HNSW</text>
-<line x1="290.0" y1="288.0" x2="345.0" y2="288.0" stroke="#47718a" stroke-width="2"/>
-<polygon points="355.0,288.0 344.0,292.0 344.0,284.0" fill="#47718a"/>
-<text x="310" y="276" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#597080">FK</text>
-<line x1="635.0" y1="288.0" x2="690.0" y2="288.0" stroke="#47718a" stroke-width="2"/>
-<polygon points="700.0,288.0 689.0,292.0 689.0,284.0" fill="#47718a"/>
-<text x="655" y="276" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#597080">FK</text>
-<line x1="1075.0" y1="288.0" x2="1130.0" y2="288.0" stroke="#47718a" stroke-width="2"/>
-<polygon points="1140.0,288.0 1129.0,292.0 1129.0,284.0" fill="#47718a"/>
-<text x="1095" y="276" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#597080">FK</text>
-<line x1="887.0" y1="470.0" x2="887.0" y2="478.0" stroke="#47718a" stroke-width="2"/>
-<line x1="887.0" y1="483.0" x2="887.0" y2="491.0" stroke="#47718a" stroke-width="2"/>
-<line x1="887.0" y1="496.0" x2="887.0" y2="504.0" stroke="#47718a" stroke-width="2"/>
-<line x1="887.0" y1="509.0" x2="887.0" y2="517.0" stroke="#47718a" stroke-width="2"/>
-<line x1="887.0" y1="522.0" x2="887.0" y2="530.0" stroke="#47718a" stroke-width="2"/>
-<polygon points="887.0,540.0 883.0,529.0 891.0,529.0" fill="#47718a"/>
-<text x="910" y="514" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#597080">A: intended collection link</text>
-<line x1="1075.0" y1="600.0" x2="1130.0" y2="600.0" stroke="#47718a" stroke-width="2"/>
-<polygon points="1140.0,600.0 1129.0,604.0 1129.0,596.0" fill="#47718a"/>
-<text x="1095" y="588" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#597080">FK</text>
-<line x1="887.0" y1="730.0" x2="887.0" y2="738.0" stroke="#47718a" stroke-width="2"/>
-<line x1="887.0" y1="743.0" x2="887.0" y2="751.0" stroke="#47718a" stroke-width="2"/>
-<line x1="887.0" y1="756.0" x2="887.0" y2="764.0" stroke="#47718a" stroke-width="2"/>
-<line x1="887.0" y1="769.0" x2="887.0" y2="777.0" stroke="#47718a" stroke-width="2"/>
-<line x1="887.0" y1="782.0" x2="887.0" y2="790.0" stroke="#47718a" stroke-width="2"/>
-<line x1="887.0" y1="795.0" x2="887.0" y2="803.0" stroke="#47718a" stroke-width="2"/>
-<line x1="887.0" y1="808.0" x2="887.0" y2="810.0" stroke="#47718a" stroke-width="2"/>
-<polygon points="887.0,820.0 883.0,809.0 891.0,809.0" fill="#47718a"/>
-<text x="910" y="783" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#597080">B: segment membership</text>
-<line x1="1075.0" y1="900.0" x2="1130.0" y2="900.0" stroke="#47718a" stroke-width="2"/>
-<polygon points="1140.0,900.0 1129.0,904.0 1129.0,896.0" fill="#47718a"/>
-<text x="1095" y="888" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#597080">FK</text>
-<line x1="700.0" y1="600.0" x2="692.0" y2="600.0" stroke="#47718a" stroke-width="2"/>
-<line x1="687.0" y1="600.0" x2="679.0" y2="600.0" stroke="#47718a" stroke-width="2"/>
-<line x1="674.0" y1="600.0" x2="666.0" y2="600.0" stroke="#47718a" stroke-width="2"/>
-<line x1="661.0" y1="600.0" x2="653.0" y2="600.0" stroke="#47718a" stroke-width="2"/>
-<line x1="648.0" y1="600.0" x2="640.0" y2="600.0" stroke="#47718a" stroke-width="2"/>
-<line x1="635.0" y1="600.0" x2="627.0" y2="600.0" stroke="#47718a" stroke-width="2"/>
-<line x1="622.0" y1="600.0" x2="614.0" y2="600.0" stroke="#47718a" stroke-width="2"/>
-<polygon points="600.0,600.0 611.0,596.0 611.0,604.0" fill="#47718a"/>
-<text x="617" y="585" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#597080">B: files</text>
-<rect x="60" y="230" width="230" height="110" rx="12" fill="white" stroke="#2b628e" stroke-width="1.5"/>
-<rect x="61" y="231" width="228" height="42" rx="10" fill="#eef6ff" stroke="none" stroke-width="1.5"/>
-<text x="77" y="258" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#2b628e">tenants</text>
-<text x="77" y="297" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">id TEXT [PK]</text>
-<rect x="355" y="230" width="280" height="178" rx="12" fill="white" stroke="#2b628e" stroke-width="1.5"/>
-<rect x="356" y="231" width="278" height="42" rx="10" fill="#eef6ff" stroke="none" stroke-width="1.5"/>
-<text x="372" y="258" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#2b628e">databases</text>
-<text x="372" y="297" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">id TEXT [PK]</text>
-<text x="372" y="321" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">tenant_id TEXT [NN, FK]</text>
-<text x="372" y="345" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">name TEXT [NN]</text>
-<text x="372" y="393" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#597080">UQ: tenant_id + name</text>
-<rect x="700" y="230" width="375" height="240" rx="12" fill="white" stroke="#2b628e" stroke-width="1.5"/>
-<rect x="701" y="231" width="373" height="42" rx="10" fill="#eef6ff" stroke="none" stroke-width="1.5"/>
-<text x="717" y="258" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#2b628e">collections</text>
-<text x="717" y="297" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">id TEXT [PK]</text>
-<text x="717" y="321" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">database_id TEXT [NN, FK]</text>
-<text x="717" y="345" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">name TEXT [NN]</text>
-<text x="717" y="369" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">dimension INTEGER</text>
-<text x="717" y="393" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">config_json_str TEXT</text>
-<text x="717" y="417" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">schema_str TEXT</text>
-<text x="717" y="455" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#597080">UQ: name + database_id</text>
-<rect x="1140" y="230" width="390" height="240" rx="12" fill="white" stroke="#198374" stroke-width="1.5"/>
-<rect x="1141" y="231" width="388" height="42" rx="10" fill="#ecf8f4" stroke="none" stroke-width="1.5"/>
-<text x="1157" y="258" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#198374">collection_metadata</text>
-<text x="1157" y="297" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">collection_id TEXT [PK, FK]</text>
-<text x="1157" y="321" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">key TEXT [NN, PK]</text>
-<text x="1157" y="345" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">str_value TEXT</text>
-<text x="1157" y="369" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">int_value INTEGER</text>
-<text x="1157" y="393" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">float_value REAL</text>
-<text x="1157" y="417" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">bool_value INTEGER</text>
-<rect x="700" y="540" width="375" height="190" rx="12" fill="white" stroke="#2b628e" stroke-width="1.5"/>
-<rect x="701" y="541" width="373" height="42" rx="10" fill="#eef6ff" stroke="none" stroke-width="1.5"/>
-<text x="717" y="568" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#2b628e">segments</text>
-<text x="717" y="607" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">id TEXT [PK]</text>
-<text x="717" y="631" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">type TEXT [NN]</text>
-<text x="717" y="655" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">scope TEXT [NN]</text>
-<text x="717" y="679" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">collection TEXT [NN] - A</text>
-<rect x="1140" y="540" width="390" height="190" rx="12" fill="white" stroke="#198374" stroke-width="1.5"/>
-<rect x="1141" y="541" width="388" height="42" rx="10" fill="#ecf8f4" stroke="none" stroke-width="1.5"/>
-<text x="1157" y="568" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#198374">segment_metadata</text>
-<text x="1157" y="607" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">segment_id TEXT [PK, FK]</text>
-<text x="1157" y="631" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">key TEXT [NN, PK]</text>
-<text x="1157" y="655" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">str_value / int_value</text>
-<text x="1157" y="679" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">float_value / bool_value</text>
-<text x="1157" y="715" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#597080">Same typed value columns as above</text>
-<rect x="60" y="500" width="540" height="215" rx="12" fill="white" stroke="#b87927" stroke-width="1.5"/>
-<rect x="61" y="501" width="538" height="42" rx="10" fill="#fff5e7" stroke="none" stroke-width="1.5"/>
-<text x="77" y="528" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#b87927">HNSW segment files</text>
-<text x="77" y="567" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">data/chroma/&lt;vector-segment-id&gt;/</text>
-<text x="77" y="591" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">data_level0.bin    header.bin</text>
-<text x="77" y="615" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">length.bin        link_lists.bin</text>
-<text x="77" y="639" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">index_metadata.pickle</text>
-<text x="77" y="700" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#597080">Vectors and graph/index bookkeeping; not SQL tables</text>
-<rect x="60" y="768" width="540" height="300" rx="12" fill="white" stroke="#b87927" stroke-width="1.5"/>
-<rect x="61" y="769" width="538" height="42" rx="10" fill="#fff5e7" stroke="none" stroke-width="1.5"/>
-<text x="77" y="796" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#b87927">embeddings_queue | internal update log</text>
-<text x="77" y="835" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">seq_id INTEGER [PK]</text>
-<text x="77" y="859" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">created_at TIMESTAMP [NN]</text>
-<text x="77" y="883" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">operation INTEGER [NN]</text>
-<text x="77" y="907" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">topic TEXT [NN]</text>
-<text x="77" y="931" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">id TEXT [NN]</text>
-<text x="77" y="955" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">vector BLOB</text>
-<text x="77" y="979" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">encoding TEXT    metadata TEXT</text>
-<text x="77" y="1053" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#597080">Vector data can also be present in this log</text>
-<rect x="700" y="820" width="375" height="248" rx="12" fill="white" stroke="#2b628e" stroke-width="1.5"/>
-<rect x="701" y="821" width="373" height="42" rx="10" fill="#eef6ff" stroke="none" stroke-width="1.5"/>
-<text x="717" y="848" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#2b628e">embeddings</text>
-<text x="717" y="887" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">id INTEGER [PK]</text>
-<text x="717" y="911" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">segment_id TEXT [NN] - B</text>
-<text x="717" y="935" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">embedding_id TEXT [NN]</text>
-<text x="717" y="959" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">seq_id BLOB [NN]</text>
-<text x="717" y="983" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">created_at TIMESTAMP [NN]</text>
-<text x="717" y="1053" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#597080">UQ: segment_id + embedding_id</text>
-<rect x="1140" y="820" width="390" height="248" rx="12" fill="white" stroke="#198374" stroke-width="1.5"/>
-<rect x="1141" y="821" width="388" height="42" rx="10" fill="#ecf8f4" stroke="none" stroke-width="1.5"/>
-<text x="1157" y="848" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#198374">embedding_metadata</text>
-<text x="1157" y="887" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">id INTEGER [PK, FK]</text>
-<text x="1157" y="911" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">key TEXT [NN, PK]</text>
-<text x="1157" y="935" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">string_value TEXT</text>
-<text x="1157" y="959" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">int_value INTEGER</text>
-<text x="1157" y="983" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">float_value REAL</text>
-<text x="1157" y="1007" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">bool_value INTEGER</text>
-<text x="700" y="1098" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#597080">embedding_id = app chunk_id; embeddings has no vector column.</text>
-<rect x="32" y="1160" width="992" height="320" rx="18" fill="#faf8fd" stroke="#e0d8eb" stroke-width="1.5"/>
-<text x="58" y="1196" font-family="Arial, sans-serif" font-size="21" font-weight="700" fill="#8060aa">02  ACCOUNTS | data/auth/users.sqlite3</text>
-<line x1="460.0" y1="1323.0" x2="570.0" y2="1323.0" stroke="#47718a" stroke-width="2"/>
-<polygon points="580.0,1323.0 569.0,1327.0 569.0,1319.0" fill="#47718a"/>
-<text x="480" y="1310" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#597080">0..many</text>
-<rect x="60" y="1235" width="400" height="178" rx="12" fill="white" stroke="#8060aa" stroke-width="1.5"/>
-<rect x="61" y="1236" width="398" height="42" rx="10" fill="#f3effa" stroke="none" stroke-width="1.5"/>
-<text x="77" y="1263" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#8060aa">users</text>
-<text x="77" y="1302" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">id INTEGER [PK]</text>
-<text x="77" y="1326" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">email TEXT [NN, UQ]</text>
-<text x="77" y="1350" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">password_hash TEXT [NN]</text>
-<text x="77" y="1374" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">created_at INTEGER [NN]</text>
-<rect x="580" y="1235" width="416" height="210" rx="12" fill="white" stroke="#8060aa" stroke-width="1.5"/>
-<rect x="581" y="1236" width="414" height="42" rx="10" fill="#f3effa" stroke="none" stroke-width="1.5"/>
-<text x="597" y="1263" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#8060aa">sessions</text>
-<text x="597" y="1302" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">id INTEGER [PK]</text>
-<text x="597" y="1326" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">user_id INTEGER [NN, FK]</text>
-<text x="597" y="1350" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">token_hash TEXT [NN, UQ]</text>
-<text x="597" y="1374" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">created_at INTEGER [NN]</text>
-<text x="597" y="1398" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">expires_at INTEGER [NN]</text>
-<text x="60" y="1460" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#597080">FK: sessions.user_id -&gt; users.id; ON DELETE CASCADE. Times are Unix seconds.</text>
-<rect x="1056" y="1160" width="512" height="320" rx="18" fill="#fffbf5" stroke="#ebdfca" stroke-width="1.5"/>
-<text x="1082" y="1196" font-family="Arial, sans-serif" font-size="21" font-weight="700" fill="#b87927">03  EMBEDDING CACHE</text>
-<text x="1082" y="1220" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#597080">data/cache/embeddings.sqlite3</text>
-<rect x="1088" y="1235" width="448" height="130" rx="12" fill="white" stroke="#b87927" stroke-width="1.5"/>
-<rect x="1089" y="1236" width="446" height="42" rx="10" fill="#fff5e7" stroke="none" stroke-width="1.5"/>
-<text x="1105" y="1263" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#b87927">vectors</text>
-<text x="1105" y="1302" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">key TEXT [PK]</text>
-<text x="1105" y="1326" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">vector BLOB</text>
-<text x="1088" y="1398" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18374b">Key: digest of embedding fingerprint + exact text.</text>
-<text x="1088" y="1424" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18374b">Value: float32 vector, checked by application code.</text>
-<text x="1088" y="1450" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#597080">No cross-database SQL foreign keys.</text>
-<text x="38" y="1520" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18374b">A  Observed DDL references collection(id), but the existing table is collections. Dashed link records the intended relationship.</text>
-<text x="38" y="1548" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18374b">B  Segment membership and index-file paths are application links, not declared matching SQL foreign keys.</text>
-<text x="38" y="1580" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#597080">UQ = unique constraint; multiple PK columns form one composite key. Additional Chroma maintenance tables are omitted.</text>
-<text x="38" y="1606" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#597080">See database-schema.md for field mapping, source-file lineage, full annotations and implementation references.</text>
+<text x="48" y="52" font-family="Arial, sans-serif" font-size="31" fill="#282336" text-anchor="start" font-weight="600">DrugAssist database schema</text>
+<text x="50" y="82" font-family="Arial, sans-serif" font-size="17" fill="#716779" text-anchor="start" font-weight="400">Entity relationship view | SQL type on the left, field name and constraints on the right</text>
+<line x1="54" y1="118" x2="164" y2="118" stroke="#66616d" stroke-width="1.1"/>
+<line x1="61.0" y1="125.0" x2="61.0" y2="111.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="68.0" y1="125.0" x2="68.0" y2="111.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="148.0" y1="118.0" x2="164.0" y2="126.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="148.0" y1="118.0" x2="164.0" y2="118.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="148.0" y1="118.0" x2="164.0" y2="110.0" stroke="#66616d" stroke-width="1.1"/>
+<circle cx="135.0" cy="118.0" r="4.5" fill="white" stroke="#66616d" stroke-width="1.1"/>
+<text x="109" y="143" font-family="Arial, sans-serif" font-size="14" fill="#716779" text-anchor="middle" font-weight="400"></text>
+<text x="184" y="124" font-family="Arial, sans-serif" font-size="15" fill="#716779" text-anchor="start" font-weight="400">One to zero-or-many</text>
+<line x1="480" y1="118" x2="590" y2="118" stroke="#66616d" stroke-width="1.1"/>
+<line x1="487.0" y1="125.0" x2="487.0" y2="111.0" stroke="#66616d" stroke-width="1.1"/>
+<circle cx="500.0" cy="118.0" r="4.5" fill="white" stroke="#66616d" stroke-width="1.1"/>
+<line x1="574.0" y1="118.0" x2="590.0" y2="126.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="574.0" y1="118.0" x2="590.0" y2="118.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="574.0" y1="118.0" x2="590.0" y2="110.0" stroke="#66616d" stroke-width="1.1"/>
+<circle cx="561.0" cy="118.0" r="4.5" fill="white" stroke="#66616d" stroke-width="1.1"/>
+<text x="535" y="143" font-family="Arial, sans-serif" font-size="14" fill="#716779" text-anchor="middle" font-weight="400"></text>
+<text x="610" y="124" font-family="Arial, sans-serif" font-size="15" fill="#716779" text-anchor="start" font-weight="400">Optional parent: zero or one</text>
+<line x1="990.0" y1="118.0" x2="997.0" y2="118.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1002.0" y1="118.0" x2="1009.0" y2="118.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1014.0" y1="118.0" x2="1021.0" y2="118.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1026.0" y1="118.0" x2="1033.0" y2="118.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1038.0" y1="118.0" x2="1045.0" y2="118.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1050.0" y1="118.0" x2="1055.0" y2="118.0" stroke="#66616d" stroke-width="1.1"/>
+<text x="1072" y="124" font-family="Arial, sans-serif" font-size="15" fill="#716779" text-anchor="start" font-weight="400">Dashed: application link (A / B)</text>
+<text x="50" y="150" font-family="Arial, sans-serif" font-size="14.5" fill="#716779" text-anchor="start" font-weight="400">PK = primary key     FK = matching declared foreign key     UQ = unique     NN = explicitly NOT NULL</text>
+<rect x="36" y="172" width="1728" height="1145" fill="white" stroke="#e3dced" stroke-width="1"/>
+<text x="60" y="205" font-family="Arial, sans-serif" font-size="19" fill="#282336" text-anchor="start" font-weight="500">CHROMA  /  data/chroma/chroma.sqlite3</text>
+<text x="60" y="228" font-family="Arial, sans-serif" font-size="15" fill="#716779" text-anchor="start" font-weight="400">Active collection: 8,601 passages | 1,536 dimensions | cosine HNSW</text>
+<line x1="350" y1="287" x2="440" y2="287" stroke="#66616d" stroke-width="1.1"/>
+<line x1="357.0" y1="294.0" x2="357.0" y2="280.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="364.0" y1="294.0" x2="364.0" y2="280.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="424.0" y1="287.0" x2="440.0" y2="295.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="424.0" y1="287.0" x2="440.0" y2="287.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="424.0" y1="287.0" x2="440.0" y2="279.0" stroke="#66616d" stroke-width="1.1"/>
+<circle cx="411.0" cy="287.0" r="4.5" fill="white" stroke="#66616d" stroke-width="1.1"/>
+<text x="395.0" y="272.0" font-family="Arial, sans-serif" font-size="14" fill="#716779" text-anchor="middle" font-weight="400">references</text>
+<line x1="790" y1="321" x2="900" y2="321" stroke="#66616d" stroke-width="1.1"/>
+<line x1="797.0" y1="328.0" x2="797.0" y2="314.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="804.0" y1="328.0" x2="804.0" y2="314.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="884.0" y1="321.0" x2="900.0" y2="329.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="884.0" y1="321.0" x2="900.0" y2="321.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="884.0" y1="321.0" x2="900.0" y2="313.0" stroke="#66616d" stroke-width="1.1"/>
+<circle cx="871.0" cy="321.0" r="4.5" fill="white" stroke="#66616d" stroke-width="1.1"/>
+<text x="845.0" y="306.0" font-family="Arial, sans-serif" font-size="14" fill="#716779" text-anchor="middle" font-weight="400">references</text>
+<line x1="1280" y1="355" x2="1370" y2="355" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1287.0" y1="362.0" x2="1287.0" y2="348.0" stroke="#66616d" stroke-width="1.1"/>
+<circle cx="1300.0" cy="355.0" r="4.5" fill="white" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1354.0" y1="355.0" x2="1370.0" y2="363.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1354.0" y1="355.0" x2="1370.0" y2="355.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1354.0" y1="355.0" x2="1370.0" y2="347.0" stroke="#66616d" stroke-width="1.1"/>
+<circle cx="1341.0" cy="355.0" r="4.5" fill="white" stroke="#66616d" stroke-width="1.1"/>
+<text x="1325.0" y="340.0" font-family="Arial, sans-serif" font-size="14" fill="#716779" text-anchor="middle" font-weight="400">references</text>
+<line x1="1200.0" y1="494.0" x2="1200.0" y2="501.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1200.0" y1="506.0" x2="1200.0" y2="513.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1200.0" y1="518.0" x2="1200.0" y2="525.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1200.0" y1="530.0" x2="1200.0" y2="537.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1200.0" y1="542.0" x2="1200.0" y2="549.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1200.0" y1="554.0" x2="1200.0" y2="561.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1200.0" y1="566.0" x2="1200.0" y2="573.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1200.0" y1="578.0" x2="1200.0" y2="585.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1200.0" y1="590.0" x2="1200.0" y2="597.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1193.0" y1="501.0" x2="1207.0" y2="501.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1193.0" y1="508.0" x2="1207.0" y2="508.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1200.0" y1="584.0" x2="1192.0" y2="600.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1200.0" y1="584.0" x2="1200.0" y2="600.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1200.0" y1="584.0" x2="1208.0" y2="600.0" stroke="#66616d" stroke-width="1.1"/>
+<circle cx="1200.0" cy="571.0" r="4.5" fill="white" stroke="#66616d" stroke-width="1.1"/>
+<text x="1220" y="553" font-family="Arial, sans-serif" font-size="14" fill="#716779" text-anchor="start" font-weight="400">A: logical collection link</text>
+<line x1="1280" y1="688" x2="1370" y2="688" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1287.0" y1="695.0" x2="1287.0" y2="681.0" stroke="#66616d" stroke-width="1.1"/>
+<circle cx="1300.0" cy="688.0" r="4.5" fill="white" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1354.0" y1="688.0" x2="1370.0" y2="696.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1354.0" y1="688.0" x2="1370.0" y2="688.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1354.0" y1="688.0" x2="1370.0" y2="680.0" stroke="#66616d" stroke-width="1.1"/>
+<circle cx="1341.0" cy="688.0" r="4.5" fill="white" stroke="#66616d" stroke-width="1.1"/>
+<text x="1325.0" y="673.0" font-family="Arial, sans-serif" font-size="14" fill="#716779" text-anchor="middle" font-weight="400">references</text>
+<line x1="1090.0" y1="776.0" x2="1090.0" y2="783.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1090.0" y1="788.0" x2="1090.0" y2="795.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1090.0" y1="800.0" x2="1090.0" y2="807.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1090.0" y1="812.0" x2="1090.0" y2="819.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1090.0" y1="824.0" x2="1090.0" y2="831.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1090.0" y1="836.0" x2="1090.0" y2="843.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1090.0" y1="848.0" x2="1090.0" y2="855.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1090.0" y1="860.0" x2="1090.0" y2="867.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1090.0" y1="872.0" x2="1090.0" y2="879.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1090.0" y1="884.0" x2="1090.0" y2="891.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1090.0" y1="896.0" x2="1090.0" y2="903.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1090.0" y1="908.0" x2="1090.0" y2="915.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1090.0" y1="920.0" x2="1090.0" y2="927.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1090.0" y1="932.0" x2="1090.0" y2="939.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1083.0" y1="783.0" x2="1097.0" y2="783.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1083.0" y1="790.0" x2="1097.0" y2="790.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1090.0" y1="924.0" x2="1082.0" y2="940.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1090.0" y1="924.0" x2="1090.0" y2="940.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1090.0" y1="924.0" x2="1098.0" y2="940.0" stroke="#66616d" stroke-width="1.1"/>
+<circle cx="1090.0" cy="911.0" r="4.5" fill="white" stroke="#66616d" stroke-width="1.1"/>
+<text x="1110" y="861" font-family="Arial, sans-serif" font-size="14" fill="#716779" text-anchor="start" font-weight="400">B: logical segment link</text>
+<line x1="1280" y1="1045" x2="1370" y2="1045" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1287.0" y1="1052.0" x2="1287.0" y2="1038.0" stroke="#66616d" stroke-width="1.1"/>
+<circle cx="1300.0" cy="1045.0" r="4.5" fill="white" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1354.0" y1="1045.0" x2="1370.0" y2="1053.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1354.0" y1="1045.0" x2="1370.0" y2="1045.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="1354.0" y1="1045.0" x2="1370.0" y2="1037.0" stroke="#66616d" stroke-width="1.1"/>
+<circle cx="1341.0" cy="1045.0" r="4.5" fill="white" stroke="#66616d" stroke-width="1.1"/>
+<text x="1325.0" y="1030.0" font-family="Arial, sans-serif" font-size="14" fill="#716779" text-anchor="middle" font-weight="400">references</text>
+<line x1="900.0" y1="688.0" x2="893.0" y2="688.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="888.0" y1="688.0" x2="881.0" y2="688.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="876.0" y1="688.0" x2="869.0" y2="688.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="864.0" y1="688.0" x2="857.0" y2="688.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="852.0" y1="688.0" x2="845.0" y2="688.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="840.0" y1="688.0" x2="833.0" y2="688.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="828.0" y1="688.0" x2="821.0" y2="688.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="816.0" y1="688.0" x2="809.0" y2="688.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="804.0" y1="688.0" x2="797.0" y2="688.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="792.0" y1="688.0" x2="785.0" y2="688.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="780.0" y1="688.0" x2="773.0" y2="688.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="768.0" y1="688.0" x2="761.0" y2="688.0" stroke="#66616d" stroke-width="1.1"/>
+<text x="830" y="671" font-family="Arial, sans-serif" font-size="14" fill="#716779" text-anchor="middle" font-weight="400">B: index files</text>
+<rect x="102" y="253" width="250" height="74" fill="#000000" opacity="0.08"/>
+<rect x="100" y="250" width="250" height="74" fill="white" stroke="#8b66ff" stroke-width="1.15"/>
+<rect x="100" y="250" width="250" height="40" fill="#eee8ff" stroke="none" stroke-width="1"/>
+<text x="225.0" y="276" font-family="Arial, sans-serif" font-size="17" fill="#282336" text-anchor="middle" font-weight="400">tenants</text>
+<rect x="100" y="290" width="250" height="34" fill="white" stroke="none" stroke-width="1"/>
+<text x="112" y="312" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="217" y="312" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">id [PK]</text>
+<line x1="100" y1="290" x2="350" y2="290" stroke="#8b66ff" stroke-width="1"/>
+<line x1="205" y1="290" x2="205" y2="324" stroke="#8b66ff" stroke-width="1"/>
+<rect x="100" y="250" width="250" height="74" fill="none" stroke="#8b66ff" stroke-width="1.15"/>
+<rect x="442" y="253" width="350" height="142" fill="#000000" opacity="0.08"/>
+<rect x="440" y="250" width="350" height="142" fill="white" stroke="#8b66ff" stroke-width="1.15"/>
+<rect x="440" y="250" width="350" height="40" fill="#eee8ff" stroke="none" stroke-width="1"/>
+<text x="615.0" y="276" font-family="Arial, sans-serif" font-size="17" fill="#282336" text-anchor="middle" font-weight="400">databases</text>
+<rect x="440" y="290" width="350" height="34" fill="white" stroke="none" stroke-width="1"/>
+<text x="452" y="312" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="567" y="312" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">id [PK]</text>
+<line x1="440" y1="290" x2="790" y2="290" stroke="#8b66ff" stroke-width="1"/>
+<rect x="440" y="324" width="350" height="34" fill="#f6f2ff" stroke="none" stroke-width="1"/>
+<text x="452" y="346" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="567" y="346" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">name [NN]</text>
+<line x1="440" y1="324" x2="790" y2="324" stroke="#8b66ff" stroke-width="1"/>
+<rect x="440" y="358" width="350" height="34" fill="white" stroke="none" stroke-width="1"/>
+<text x="452" y="380" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="567" y="380" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">tenant_id [FK, NN]</text>
+<line x1="440" y1="358" x2="790" y2="358" stroke="#8b66ff" stroke-width="1"/>
+<line x1="555" y1="290" x2="555" y2="392" stroke="#8b66ff" stroke-width="1"/>
+<rect x="440" y="250" width="350" height="142" fill="none" stroke="#8b66ff" stroke-width="1.15"/>
+<rect x="902" y="253" width="380" height="244" fill="#000000" opacity="0.08"/>
+<rect x="900" y="250" width="380" height="244" fill="white" stroke="#8b66ff" stroke-width="1.15"/>
+<rect x="900" y="250" width="380" height="40" fill="#eee8ff" stroke="none" stroke-width="1"/>
+<text x="1090.0" y="276" font-family="Arial, sans-serif" font-size="17" fill="#282336" text-anchor="middle" font-weight="400">collections</text>
+<rect x="900" y="290" width="380" height="34" fill="white" stroke="none" stroke-width="1"/>
+<text x="912" y="312" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="1027" y="312" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">id [PK]</text>
+<line x1="900" y1="290" x2="1280" y2="290" stroke="#8b66ff" stroke-width="1"/>
+<rect x="900" y="324" width="380" height="34" fill="#f6f2ff" stroke="none" stroke-width="1"/>
+<text x="912" y="346" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="1027" y="346" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">name [NN]</text>
+<line x1="900" y1="324" x2="1280" y2="324" stroke="#8b66ff" stroke-width="1"/>
+<rect x="900" y="358" width="380" height="34" fill="white" stroke="none" stroke-width="1"/>
+<text x="912" y="380" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">INTEGER</text>
+<text x="1027" y="380" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">dimension</text>
+<line x1="900" y1="358" x2="1280" y2="358" stroke="#8b66ff" stroke-width="1"/>
+<rect x="900" y="392" width="380" height="34" fill="#f6f2ff" stroke="none" stroke-width="1"/>
+<text x="912" y="414" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="1027" y="414" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">database_id [FK, NN]</text>
+<line x1="900" y1="392" x2="1280" y2="392" stroke="#8b66ff" stroke-width="1"/>
+<rect x="900" y="426" width="380" height="34" fill="white" stroke="none" stroke-width="1"/>
+<text x="912" y="448" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="1027" y="448" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">config_json_str</text>
+<line x1="900" y1="426" x2="1280" y2="426" stroke="#8b66ff" stroke-width="1"/>
+<rect x="900" y="460" width="380" height="34" fill="#f6f2ff" stroke="none" stroke-width="1"/>
+<text x="912" y="482" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="1027" y="482" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">schema_str</text>
+<line x1="900" y1="460" x2="1280" y2="460" stroke="#8b66ff" stroke-width="1"/>
+<line x1="1015" y1="290" x2="1015" y2="494" stroke="#8b66ff" stroke-width="1"/>
+<rect x="900" y="250" width="380" height="244" fill="none" stroke="#8b66ff" stroke-width="1.15"/>
+<rect x="1372" y="253" width="370" height="244" fill="#000000" opacity="0.08"/>
+<rect x="1370" y="250" width="370" height="244" fill="white" stroke="#8b66ff" stroke-width="1.15"/>
+<rect x="1370" y="250" width="370" height="40" fill="#eee8ff" stroke="none" stroke-width="1"/>
+<text x="1555.0" y="276" font-family="Arial, sans-serif" font-size="17" fill="#282336" text-anchor="middle" font-weight="400">collection_metadata</text>
+<rect x="1370" y="290" width="370" height="34" fill="white" stroke="none" stroke-width="1"/>
+<text x="1382" y="312" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="1497" y="312" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">collection_id [PK, FK]</text>
+<line x1="1370" y1="290" x2="1740" y2="290" stroke="#8b66ff" stroke-width="1"/>
+<rect x="1370" y="324" width="370" height="34" fill="#f6f2ff" stroke="none" stroke-width="1"/>
+<text x="1382" y="346" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="1497" y="346" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">key [PK, NN]</text>
+<line x1="1370" y1="324" x2="1740" y2="324" stroke="#8b66ff" stroke-width="1"/>
+<rect x="1370" y="358" width="370" height="34" fill="white" stroke="none" stroke-width="1"/>
+<text x="1382" y="380" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="1497" y="380" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">str_value</text>
+<line x1="1370" y1="358" x2="1740" y2="358" stroke="#8b66ff" stroke-width="1"/>
+<rect x="1370" y="392" width="370" height="34" fill="#f6f2ff" stroke="none" stroke-width="1"/>
+<text x="1382" y="414" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">INTEGER</text>
+<text x="1497" y="414" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">int_value</text>
+<line x1="1370" y1="392" x2="1740" y2="392" stroke="#8b66ff" stroke-width="1"/>
+<rect x="1370" y="426" width="370" height="34" fill="white" stroke="none" stroke-width="1"/>
+<text x="1382" y="448" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">REAL</text>
+<text x="1497" y="448" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">float_value</text>
+<line x1="1370" y1="426" x2="1740" y2="426" stroke="#8b66ff" stroke-width="1"/>
+<rect x="1370" y="460" width="370" height="34" fill="#f6f2ff" stroke="none" stroke-width="1"/>
+<text x="1382" y="482" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">INTEGER</text>
+<text x="1497" y="482" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">bool_value</text>
+<line x1="1370" y1="460" x2="1740" y2="460" stroke="#8b66ff" stroke-width="1"/>
+<line x1="1485" y1="290" x2="1485" y2="494" stroke="#8b66ff" stroke-width="1"/>
+<rect x="1370" y="250" width="370" height="244" fill="none" stroke="#8b66ff" stroke-width="1.15"/>
+<rect x="902" y="603" width="380" height="176" fill="#000000" opacity="0.08"/>
+<rect x="900" y="600" width="380" height="176" fill="white" stroke="#8b66ff" stroke-width="1.15"/>
+<rect x="900" y="600" width="380" height="40" fill="#eee8ff" stroke="none" stroke-width="1"/>
+<text x="1090.0" y="626" font-family="Arial, sans-serif" font-size="17" fill="#282336" text-anchor="middle" font-weight="400">segments</text>
+<rect x="900" y="640" width="380" height="34" fill="white" stroke="none" stroke-width="1"/>
+<text x="912" y="662" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="1027" y="662" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">id [PK]</text>
+<line x1="900" y1="640" x2="1280" y2="640" stroke="#8b66ff" stroke-width="1"/>
+<rect x="900" y="674" width="380" height="34" fill="#f6f2ff" stroke="none" stroke-width="1"/>
+<text x="912" y="696" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="1027" y="696" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">type [NN]</text>
+<line x1="900" y1="674" x2="1280" y2="674" stroke="#8b66ff" stroke-width="1"/>
+<rect x="900" y="708" width="380" height="34" fill="white" stroke="none" stroke-width="1"/>
+<text x="912" y="730" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="1027" y="730" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">scope [NN]</text>
+<line x1="900" y1="708" x2="1280" y2="708" stroke="#8b66ff" stroke-width="1"/>
+<rect x="900" y="742" width="380" height="34" fill="#f6f2ff" stroke="none" stroke-width="1"/>
+<text x="912" y="764" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="1027" y="764" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">collection [NN] A</text>
+<line x1="900" y1="742" x2="1280" y2="742" stroke="#8b66ff" stroke-width="1"/>
+<line x1="1015" y1="640" x2="1015" y2="776" stroke="#8b66ff" stroke-width="1"/>
+<rect x="900" y="600" width="380" height="176" fill="none" stroke="#8b66ff" stroke-width="1.15"/>
+<rect x="1372" y="603" width="370" height="244" fill="#000000" opacity="0.08"/>
+<rect x="1370" y="600" width="370" height="244" fill="white" stroke="#8b66ff" stroke-width="1.15"/>
+<rect x="1370" y="600" width="370" height="40" fill="#eee8ff" stroke="none" stroke-width="1"/>
+<text x="1555.0" y="626" font-family="Arial, sans-serif" font-size="17" fill="#282336" text-anchor="middle" font-weight="400">segment_metadata</text>
+<rect x="1370" y="640" width="370" height="34" fill="white" stroke="none" stroke-width="1"/>
+<text x="1382" y="662" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="1497" y="662" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">segment_id [PK, FK]</text>
+<line x1="1370" y1="640" x2="1740" y2="640" stroke="#8b66ff" stroke-width="1"/>
+<rect x="1370" y="674" width="370" height="34" fill="#f6f2ff" stroke="none" stroke-width="1"/>
+<text x="1382" y="696" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="1497" y="696" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">key [PK, NN]</text>
+<line x1="1370" y1="674" x2="1740" y2="674" stroke="#8b66ff" stroke-width="1"/>
+<rect x="1370" y="708" width="370" height="34" fill="white" stroke="none" stroke-width="1"/>
+<text x="1382" y="730" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="1497" y="730" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">str_value</text>
+<line x1="1370" y1="708" x2="1740" y2="708" stroke="#8b66ff" stroke-width="1"/>
+<rect x="1370" y="742" width="370" height="34" fill="#f6f2ff" stroke="none" stroke-width="1"/>
+<text x="1382" y="764" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">INTEGER</text>
+<text x="1497" y="764" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">int_value</text>
+<line x1="1370" y1="742" x2="1740" y2="742" stroke="#8b66ff" stroke-width="1"/>
+<rect x="1370" y="776" width="370" height="34" fill="white" stroke="none" stroke-width="1"/>
+<text x="1382" y="798" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">REAL</text>
+<text x="1497" y="798" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">float_value</text>
+<line x1="1370" y1="776" x2="1740" y2="776" stroke="#8b66ff" stroke-width="1"/>
+<rect x="1370" y="810" width="370" height="34" fill="#f6f2ff" stroke="none" stroke-width="1"/>
+<text x="1382" y="832" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">INTEGER</text>
+<text x="1497" y="832" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">bool_value</text>
+<line x1="1370" y1="810" x2="1740" y2="810" stroke="#8b66ff" stroke-width="1"/>
+<line x1="1485" y1="640" x2="1485" y2="844" stroke="#8b66ff" stroke-width="1"/>
+<rect x="1370" y="600" width="370" height="244" fill="none" stroke="#8b66ff" stroke-width="1.15"/>
+<rect x="902" y="943" width="380" height="210" fill="#000000" opacity="0.08"/>
+<rect x="900" y="940" width="380" height="210" fill="white" stroke="#8b66ff" stroke-width="1.15"/>
+<rect x="900" y="940" width="380" height="40" fill="#eee8ff" stroke="none" stroke-width="1"/>
+<text x="1090.0" y="966" font-family="Arial, sans-serif" font-size="17" fill="#282336" text-anchor="middle" font-weight="400">embeddings</text>
+<rect x="900" y="980" width="380" height="34" fill="white" stroke="none" stroke-width="1"/>
+<text x="912" y="1002" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">INTEGER</text>
+<text x="1027" y="1002" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">id [PK]</text>
+<line x1="900" y1="980" x2="1280" y2="980" stroke="#8b66ff" stroke-width="1"/>
+<rect x="900" y="1014" width="380" height="34" fill="#f6f2ff" stroke="none" stroke-width="1"/>
+<text x="912" y="1036" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="1027" y="1036" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">segment_id [NN] B</text>
+<line x1="900" y1="1014" x2="1280" y2="1014" stroke="#8b66ff" stroke-width="1"/>
+<rect x="900" y="1048" width="380" height="34" fill="white" stroke="none" stroke-width="1"/>
+<text x="912" y="1070" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="1027" y="1070" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">embedding_id [NN]</text>
+<line x1="900" y1="1048" x2="1280" y2="1048" stroke="#8b66ff" stroke-width="1"/>
+<rect x="900" y="1082" width="380" height="34" fill="#f6f2ff" stroke="none" stroke-width="1"/>
+<text x="912" y="1104" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">BLOB</text>
+<text x="1027" y="1104" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">seq_id [NN]</text>
+<line x1="900" y1="1082" x2="1280" y2="1082" stroke="#8b66ff" stroke-width="1"/>
+<rect x="900" y="1116" width="380" height="34" fill="white" stroke="none" stroke-width="1"/>
+<text x="912" y="1138" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TIMESTAMP</text>
+<text x="1027" y="1138" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">created_at [NN]</text>
+<line x1="900" y1="1116" x2="1280" y2="1116" stroke="#8b66ff" stroke-width="1"/>
+<line x1="1015" y1="980" x2="1015" y2="1150" stroke="#8b66ff" stroke-width="1"/>
+<rect x="900" y="940" width="380" height="210" fill="none" stroke="#8b66ff" stroke-width="1.15"/>
+<rect x="1372" y="943" width="370" height="244" fill="#000000" opacity="0.08"/>
+<rect x="1370" y="940" width="370" height="244" fill="white" stroke="#8b66ff" stroke-width="1.15"/>
+<rect x="1370" y="940" width="370" height="40" fill="#eee8ff" stroke="none" stroke-width="1"/>
+<text x="1555.0" y="966" font-family="Arial, sans-serif" font-size="17" fill="#282336" text-anchor="middle" font-weight="400">embedding_metadata</text>
+<rect x="1370" y="980" width="370" height="34" fill="white" stroke="none" stroke-width="1"/>
+<text x="1382" y="1002" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">INTEGER</text>
+<text x="1497" y="1002" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">id [PK, FK]</text>
+<line x1="1370" y1="980" x2="1740" y2="980" stroke="#8b66ff" stroke-width="1"/>
+<rect x="1370" y="1014" width="370" height="34" fill="#f6f2ff" stroke="none" stroke-width="1"/>
+<text x="1382" y="1036" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="1497" y="1036" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">key [PK, NN]</text>
+<line x1="1370" y1="1014" x2="1740" y2="1014" stroke="#8b66ff" stroke-width="1"/>
+<rect x="1370" y="1048" width="370" height="34" fill="white" stroke="none" stroke-width="1"/>
+<text x="1382" y="1070" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="1497" y="1070" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">string_value</text>
+<line x1="1370" y1="1048" x2="1740" y2="1048" stroke="#8b66ff" stroke-width="1"/>
+<rect x="1370" y="1082" width="370" height="34" fill="#f6f2ff" stroke="none" stroke-width="1"/>
+<text x="1382" y="1104" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">INTEGER</text>
+<text x="1497" y="1104" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">int_value</text>
+<line x1="1370" y1="1082" x2="1740" y2="1082" stroke="#8b66ff" stroke-width="1"/>
+<rect x="1370" y="1116" width="370" height="34" fill="white" stroke="none" stroke-width="1"/>
+<text x="1382" y="1138" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">REAL</text>
+<text x="1497" y="1138" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">float_value</text>
+<line x1="1370" y1="1116" x2="1740" y2="1116" stroke="#8b66ff" stroke-width="1"/>
+<rect x="1370" y="1150" width="370" height="34" fill="#f6f2ff" stroke="none" stroke-width="1"/>
+<text x="1382" y="1172" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">INTEGER</text>
+<text x="1497" y="1172" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">bool_value</text>
+<line x1="1370" y1="1150" x2="1740" y2="1150" stroke="#8b66ff" stroke-width="1"/>
+<line x1="1485" y1="980" x2="1485" y2="1184" stroke="#8b66ff" stroke-width="1"/>
+<rect x="1370" y="940" width="370" height="244" fill="none" stroke="#8b66ff" stroke-width="1.15"/>
+<rect x="102" y="943" width="660" height="312" fill="#000000" opacity="0.08"/>
+<rect x="100" y="940" width="660" height="312" fill="white" stroke="#8b66ff" stroke-width="1.15"/>
+<rect x="100" y="940" width="660" height="40" fill="#eee8ff" stroke="none" stroke-width="1"/>
+<text x="430.0" y="966" font-family="Arial, sans-serif" font-size="17" fill="#282336" text-anchor="middle" font-weight="400">embeddings_queue</text>
+<rect x="100" y="980" width="660" height="34" fill="white" stroke="none" stroke-width="1"/>
+<text x="112" y="1002" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">INTEGER</text>
+<text x="227" y="1002" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">seq_id [PK]</text>
+<line x1="100" y1="980" x2="760" y2="980" stroke="#8b66ff" stroke-width="1"/>
+<rect x="100" y="1014" width="660" height="34" fill="#f6f2ff" stroke="none" stroke-width="1"/>
+<text x="112" y="1036" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TIMESTAMP</text>
+<text x="227" y="1036" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">created_at [NN]</text>
+<line x1="100" y1="1014" x2="760" y2="1014" stroke="#8b66ff" stroke-width="1"/>
+<rect x="100" y="1048" width="660" height="34" fill="white" stroke="none" stroke-width="1"/>
+<text x="112" y="1070" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">INTEGER</text>
+<text x="227" y="1070" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">operation [NN]</text>
+<line x1="100" y1="1048" x2="760" y2="1048" stroke="#8b66ff" stroke-width="1"/>
+<rect x="100" y="1082" width="660" height="34" fill="#f6f2ff" stroke="none" stroke-width="1"/>
+<text x="112" y="1104" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="227" y="1104" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">topic [NN]</text>
+<line x1="100" y1="1082" x2="760" y2="1082" stroke="#8b66ff" stroke-width="1"/>
+<rect x="100" y="1116" width="660" height="34" fill="white" stroke="none" stroke-width="1"/>
+<text x="112" y="1138" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="227" y="1138" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">id [NN]</text>
+<line x1="100" y1="1116" x2="760" y2="1116" stroke="#8b66ff" stroke-width="1"/>
+<rect x="100" y="1150" width="660" height="34" fill="#f6f2ff" stroke="none" stroke-width="1"/>
+<text x="112" y="1172" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">BLOB</text>
+<text x="227" y="1172" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">vector</text>
+<line x1="100" y1="1150" x2="760" y2="1150" stroke="#8b66ff" stroke-width="1"/>
+<rect x="100" y="1184" width="660" height="34" fill="white" stroke="none" stroke-width="1"/>
+<text x="112" y="1206" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="227" y="1206" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">encoding</text>
+<line x1="100" y1="1184" x2="760" y2="1184" stroke="#8b66ff" stroke-width="1"/>
+<rect x="100" y="1218" width="660" height="34" fill="#f6f2ff" stroke="none" stroke-width="1"/>
+<text x="112" y="1240" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="227" y="1240" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">metadata</text>
+<line x1="100" y1="1218" x2="760" y2="1218" stroke="#8b66ff" stroke-width="1"/>
+<line x1="215" y1="980" x2="215" y2="1252" stroke="#8b66ff" stroke-width="1"/>
+<rect x="100" y="940" width="660" height="312" fill="none" stroke="#8b66ff" stroke-width="1.15"/>
+<text x="440" y="418" font-family="Arial, sans-serif" font-size="14" fill="#716779" text-anchor="start" font-weight="400">UQ: (tenant_id, name)</text>
+<text x="900" y="520" font-family="Arial, sans-serif" font-size="14" fill="#716779" text-anchor="start" font-weight="400">UQ: (name, database_id)</text>
+<text x="900" y="1176" font-family="Arial, sans-serif" font-size="14" fill="#716779" text-anchor="start" font-weight="400">UQ: (segment_id, embedding_id)</text>
+<text x="100" y="1278" font-family="Arial, sans-serif" font-size="15" fill="#716779" text-anchor="start" font-weight="400">Internal update log; vector BLOBs can also be present here.</text>
+<rect x="100" y="590" width="660" height="230" fill="#fcfaff" stroke="#b5a6c8" stroke-width="1"/>
+<rect x="100" y="590" width="660" height="40" fill="#f1ecf7" stroke="none" stroke-width="1"/>
+<text x="430" y="616" font-family="Arial, sans-serif" font-size="17" fill="#282336" text-anchor="middle" font-weight="400">HNSW index files - not a SQL table</text>
+<text x="122" y="655" font-family="Arial, sans-serif" font-size="16" fill="#282336" text-anchor="start" font-weight="400">data/chroma/&lt;vector-segment-id&gt;/</text>
+<text x="122" y="689" font-family="Arial, sans-serif" font-size="16" fill="#282336" text-anchor="start" font-weight="400">data_level0.bin    header.bin    length.bin</text>
+<text x="122" y="723" font-family="Arial, sans-serif" font-size="16" fill="#282336" text-anchor="start" font-weight="400">link_lists.bin    index_metadata.pickle</text>
+<text x="122" y="757" font-family="Arial, sans-serif" font-size="16" fill="#716779" text-anchor="start" font-weight="400">Vectors, graph connections and index bookkeeping.</text>
+<text x="900" y="1224" font-family="Arial, sans-serif" font-size="15" fill="#716779" text-anchor="start" font-weight="400">embeddings.embedding_id = application chunk_id</text>
+<text x="900" y="1253" font-family="Arial, sans-serif" font-size="15" fill="#716779" text-anchor="start" font-weight="400">The embeddings table itself has no vector column.</text>
+<rect x="36" y="1350" width="1090" height="350" fill="white" stroke="#e3dced" stroke-width="1"/>
+<text x="60" y="1383" font-family="Arial, sans-serif" font-size="19" fill="#282336" text-anchor="start" font-weight="500">ACCOUNTS  /  data/auth/users.sqlite3</text>
+<text x="60" y="1409" font-family="Arial, sans-serif" font-size="15" fill="#716779" text-anchor="start" font-weight="400">One user can have zero or more sessions.</text>
+<line x1="475" y1="1523" x2="620" y2="1523" stroke="#66616d" stroke-width="1.1"/>
+<line x1="482.0" y1="1530.0" x2="482.0" y2="1516.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="489.0" y1="1530.0" x2="489.0" y2="1516.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="604.0" y1="1523.0" x2="620.0" y2="1531.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="604.0" y1="1523.0" x2="620.0" y2="1523.0" stroke="#66616d" stroke-width="1.1"/>
+<line x1="604.0" y1="1523.0" x2="620.0" y2="1515.0" stroke="#66616d" stroke-width="1.1"/>
+<circle cx="591.0" cy="1523.0" r="4.5" fill="white" stroke="#66616d" stroke-width="1.1"/>
+<text x="547.5" y="1508.0" font-family="Arial, sans-serif" font-size="14" fill="#716779" text-anchor="middle" font-weight="400">references</text>
+<rect x="102" y="1438" width="375" height="176" fill="#000000" opacity="0.08"/>
+<rect x="100" y="1435" width="375" height="176" fill="white" stroke="#8b66ff" stroke-width="1.15"/>
+<rect x="100" y="1435" width="375" height="40" fill="#eee8ff" stroke="none" stroke-width="1"/>
+<text x="287.5" y="1461" font-family="Arial, sans-serif" font-size="17" fill="#282336" text-anchor="middle" font-weight="400">users</text>
+<rect x="100" y="1475" width="375" height="34" fill="white" stroke="none" stroke-width="1"/>
+<text x="112" y="1497" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">INTEGER</text>
+<text x="227" y="1497" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">id [PK]</text>
+<line x1="100" y1="1475" x2="475" y2="1475" stroke="#8b66ff" stroke-width="1"/>
+<rect x="100" y="1509" width="375" height="34" fill="#f6f2ff" stroke="none" stroke-width="1"/>
+<text x="112" y="1531" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="227" y="1531" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">email [UQ, NN]</text>
+<line x1="100" y1="1509" x2="475" y2="1509" stroke="#8b66ff" stroke-width="1"/>
+<rect x="100" y="1543" width="375" height="34" fill="white" stroke="none" stroke-width="1"/>
+<text x="112" y="1565" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="227" y="1565" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">password_hash [NN]</text>
+<line x1="100" y1="1543" x2="475" y2="1543" stroke="#8b66ff" stroke-width="1"/>
+<rect x="100" y="1577" width="375" height="34" fill="#f6f2ff" stroke="none" stroke-width="1"/>
+<text x="112" y="1599" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">INTEGER</text>
+<text x="227" y="1599" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">created_at [NN]</text>
+<line x1="100" y1="1577" x2="475" y2="1577" stroke="#8b66ff" stroke-width="1"/>
+<line x1="215" y1="1475" x2="215" y2="1611" stroke="#8b66ff" stroke-width="1"/>
+<rect x="100" y="1435" width="375" height="176" fill="none" stroke="#8b66ff" stroke-width="1.15"/>
+<rect x="622" y="1438" width="415" height="210" fill="#000000" opacity="0.08"/>
+<rect x="620" y="1435" width="415" height="210" fill="white" stroke="#8b66ff" stroke-width="1.15"/>
+<rect x="620" y="1435" width="415" height="40" fill="#eee8ff" stroke="none" stroke-width="1"/>
+<text x="827.5" y="1461" font-family="Arial, sans-serif" font-size="17" fill="#282336" text-anchor="middle" font-weight="400">sessions</text>
+<rect x="620" y="1475" width="415" height="34" fill="white" stroke="none" stroke-width="1"/>
+<text x="632" y="1497" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">INTEGER</text>
+<text x="747" y="1497" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">id [PK]</text>
+<line x1="620" y1="1475" x2="1035" y2="1475" stroke="#8b66ff" stroke-width="1"/>
+<rect x="620" y="1509" width="415" height="34" fill="#f6f2ff" stroke="none" stroke-width="1"/>
+<text x="632" y="1531" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">INTEGER</text>
+<text x="747" y="1531" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">user_id [FK, NN]</text>
+<line x1="620" y1="1509" x2="1035" y2="1509" stroke="#8b66ff" stroke-width="1"/>
+<rect x="620" y="1543" width="415" height="34" fill="white" stroke="none" stroke-width="1"/>
+<text x="632" y="1565" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="747" y="1565" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">token_hash [UQ, NN]</text>
+<line x1="620" y1="1543" x2="1035" y2="1543" stroke="#8b66ff" stroke-width="1"/>
+<rect x="620" y="1577" width="415" height="34" fill="#f6f2ff" stroke="none" stroke-width="1"/>
+<text x="632" y="1599" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">INTEGER</text>
+<text x="747" y="1599" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">created_at [NN]</text>
+<line x1="620" y1="1577" x2="1035" y2="1577" stroke="#8b66ff" stroke-width="1"/>
+<rect x="620" y="1611" width="415" height="34" fill="white" stroke="none" stroke-width="1"/>
+<text x="632" y="1633" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">INTEGER</text>
+<text x="747" y="1633" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">expires_at [NN]</text>
+<line x1="620" y1="1611" x2="1035" y2="1611" stroke="#8b66ff" stroke-width="1"/>
+<line x1="735" y1="1475" x2="735" y2="1645" stroke="#8b66ff" stroke-width="1"/>
+<rect x="620" y="1435" width="415" height="210" fill="none" stroke="#8b66ff" stroke-width="1.15"/>
+<text x="100" y="1677" font-family="Arial, sans-serif" font-size="14.5" fill="#716779" text-anchor="start" font-weight="400">sessions.user_id references users.id; ON DELETE CASCADE. Times are Unix seconds.</text>
+<rect x="1160" y="1350" width="604" height="350" fill="white" stroke="#e3dced" stroke-width="1"/>
+<text x="1184" y="1383" font-family="Arial, sans-serif" font-size="19" fill="#282336" text-anchor="start" font-weight="500">EMBEDDING CACHE</text>
+<text x="1184" y="1409" font-family="Arial, sans-serif" font-size="15" fill="#716779" text-anchor="start" font-weight="400">data/cache/embeddings.sqlite3</text>
+<rect x="1212" y="1438" width="505" height="108" fill="#000000" opacity="0.08"/>
+<rect x="1210" y="1435" width="505" height="108" fill="white" stroke="#8b66ff" stroke-width="1.15"/>
+<rect x="1210" y="1435" width="505" height="40" fill="#eee8ff" stroke="none" stroke-width="1"/>
+<text x="1462.5" y="1461" font-family="Arial, sans-serif" font-size="17" fill="#282336" text-anchor="middle" font-weight="400">vectors</text>
+<rect x="1210" y="1475" width="505" height="34" fill="white" stroke="none" stroke-width="1"/>
+<text x="1222" y="1497" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">TEXT</text>
+<text x="1337" y="1497" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">key [PK]</text>
+<line x1="1210" y1="1475" x2="1715" y2="1475" stroke="#8b66ff" stroke-width="1"/>
+<rect x="1210" y="1509" width="505" height="34" fill="#f6f2ff" stroke="none" stroke-width="1"/>
+<text x="1222" y="1531" font-family="Arial, sans-serif" font-size="14.5" fill="#282336" text-anchor="start" font-weight="400">BLOB</text>
+<text x="1337" y="1531" font-family="Arial, sans-serif" font-size="15.5" fill="#282336" text-anchor="start" font-weight="400">vector</text>
+<line x1="1210" y1="1509" x2="1715" y2="1509" stroke="#8b66ff" stroke-width="1"/>
+<line x1="1325" y1="1475" x2="1325" y2="1543" stroke="#8b66ff" stroke-width="1"/>
+<rect x="1210" y="1435" width="505" height="108" fill="none" stroke="#8b66ff" stroke-width="1.15"/>
+<text x="1210" y="1584" font-family="Arial, sans-serif" font-size="15" fill="#716779" text-anchor="start" font-weight="400">key: digest of embedding fingerprint + exact text</text>
+<text x="1210" y="1615" font-family="Arial, sans-serif" font-size="15" fill="#716779" text-anchor="start" font-weight="400">vector: float32 bytes, validated by application code</text>
+<text x="1210" y="1663" font-family="Arial, sans-serif" font-size="15" fill="#716779" text-anchor="start" font-weight="400">No SQL foreign keys between the three databases.</text>
+<text x="50" y="1737" font-family="Arial, sans-serif" font-size="15" fill="#282336" text-anchor="start" font-weight="400">A  segments.collection declares REFERENCES collection(id), but the existing table is collections. Its intended link is dashed.</text>
+<text x="50" y="1767" font-family="Arial, sans-serif" font-size="15" fill="#282336" text-anchor="start" font-weight="400">B  embeddings.segment_id and the HNSW directory are application-managed links; neither is a matching declared SQL foreign key.</text>
+<text x="50" y="1797" font-family="Arial, sans-serif" font-size="14.5" fill="#716779" text-anchor="start" font-weight="400">Crow&#x27;s feet describe valid intended records. Optional parent markers reflect nullable FK fields. Chroma enforcement is not assumed.</text>
+<text x="50" y="1827" font-family="Arial, sans-serif" font-size="14.5" fill="#716779" text-anchor="start" font-weight="400">Core schema only. Composite keys contain all marked PK columns. See database-schema.md for source mapping and full annotations.</text>
+<text x="50" y="1855" font-family="Arial, sans-serif" font-size="14" fill="#716779" text-anchor="start" font-weight="400">Verified against local schemas on 20 October 2026 | Chroma 1.5.9 | No account rows or secrets shown</text>
 </svg>
