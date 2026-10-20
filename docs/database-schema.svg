@@ -1,0 +1,183 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1640" viewBox="0 0 1600 1640" role="img" aria-labelledby="title description">
+<title id="title">DrugAssist database schema</title>
+<desc id="description">Annotated core schema of the three separate local stores. Solid arrows show matching declared SQL foreign keys. Dashed arrows show application or file relationships. Chroma segments.collection declares an unmatched singular table reference, explicitly noted as A.</desc>
+<defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#47718a"/></marker>
+</defs>
+<rect width="1600" height="1640" fill="#ffffff"/>
+
+<text x="36" y="54" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#18374b">DrugAssist database schema</text>
+<text x="38" y="84" font-family="Arial, sans-serif" font-size="18" font-weight="400" fill="#597080">Three separate local stores. Core tables and selected columns, verified 20 October 2026.</text>
+<line x1="40.0" y1="116.0" x2="80.0" y2="116.0" stroke="#47718a" stroke-width="2"/>
+<polygon points="90,116 79.0,120.0 79.0,112.0" fill="#47718a"/>
+<text x="105" y="122" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18374b">Matching declared FK: parent to child</text>
+<line x1="580.0" y1="116.0" x2="588.0" y2="116.0" stroke="#47718a" stroke-width="2"/>
+<line x1="593.0" y1="116.0" x2="601.0" y2="116.0" stroke="#47718a" stroke-width="2"/>
+<line x1="606.0" y1="116.0" x2="614.0" y2="116.0" stroke="#47718a" stroke-width="2"/>
+<line x1="619.0" y1="116.0" x2="620.0" y2="116.0" stroke="#47718a" stroke-width="2"/>
+<polygon points="630,116 619.0,120.0 619.0,112.0" fill="#47718a"/>
+<text x="645" y="122" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18374b">Application / storage link, not a matching SQL FK</text>
+<text x="1190" y="122" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#597080">PK = primary key   NN = NOT NULL</text>
+<rect x="32" y="150" width="1536" height="980" rx="18" fill="#f6f9fc" stroke="#d6e3eb" stroke-width="1.5"/>
+<text x="58" y="186" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#2b628e">01  CHROMA | FDA passage retrieval</text>
+<text x="58" y="212" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#597080">data/chroma/chroma.sqlite3  |  Active: 8,601 chunks, 1,536 dimensions, cosine HNSW</text>
+<line x1="290.0" y1="288.0" x2="345.0" y2="288.0" stroke="#47718a" stroke-width="2"/>
+<polygon points="355.0,288.0 344.0,292.0 344.0,284.0" fill="#47718a"/>
+<text x="310" y="276" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#597080">FK</text>
+<line x1="635.0" y1="288.0" x2="690.0" y2="288.0" stroke="#47718a" stroke-width="2"/>
+<polygon points="700.0,288.0 689.0,292.0 689.0,284.0" fill="#47718a"/>
+<text x="655" y="276" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#597080">FK</text>
+<line x1="1075.0" y1="288.0" x2="1130.0" y2="288.0" stroke="#47718a" stroke-width="2"/>
+<polygon points="1140.0,288.0 1129.0,292.0 1129.0,284.0" fill="#47718a"/>
+<text x="1095" y="276" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#597080">FK</text>
+<line x1="887.0" y1="470.0" x2="887.0" y2="478.0" stroke="#47718a" stroke-width="2"/>
+<line x1="887.0" y1="483.0" x2="887.0" y2="491.0" stroke="#47718a" stroke-width="2"/>
+<line x1="887.0" y1="496.0" x2="887.0" y2="504.0" stroke="#47718a" stroke-width="2"/>
+<line x1="887.0" y1="509.0" x2="887.0" y2="517.0" stroke="#47718a" stroke-width="2"/>
+<line x1="887.0" y1="522.0" x2="887.0" y2="530.0" stroke="#47718a" stroke-width="2"/>
+<polygon points="887.0,540.0 883.0,529.0 891.0,529.0" fill="#47718a"/>
+<text x="910" y="514" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#597080">A: intended collection link</text>
+<line x1="1075.0" y1="600.0" x2="1130.0" y2="600.0" stroke="#47718a" stroke-width="2"/>
+<polygon points="1140.0,600.0 1129.0,604.0 1129.0,596.0" fill="#47718a"/>
+<text x="1095" y="588" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#597080">FK</text>
+<line x1="887.0" y1="730.0" x2="887.0" y2="738.0" stroke="#47718a" stroke-width="2"/>
+<line x1="887.0" y1="743.0" x2="887.0" y2="751.0" stroke="#47718a" stroke-width="2"/>
+<line x1="887.0" y1="756.0" x2="887.0" y2="764.0" stroke="#47718a" stroke-width="2"/>
+<line x1="887.0" y1="769.0" x2="887.0" y2="777.0" stroke="#47718a" stroke-width="2"/>
+<line x1="887.0" y1="782.0" x2="887.0" y2="790.0" stroke="#47718a" stroke-width="2"/>
+<line x1="887.0" y1="795.0" x2="887.0" y2="803.0" stroke="#47718a" stroke-width="2"/>
+<line x1="887.0" y1="808.0" x2="887.0" y2="810.0" stroke="#47718a" stroke-width="2"/>
+<polygon points="887.0,820.0 883.0,809.0 891.0,809.0" fill="#47718a"/>
+<text x="910" y="783" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#597080">B: segment membership</text>
+<line x1="1075.0" y1="900.0" x2="1130.0" y2="900.0" stroke="#47718a" stroke-width="2"/>
+<polygon points="1140.0,900.0 1129.0,904.0 1129.0,896.0" fill="#47718a"/>
+<text x="1095" y="888" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#597080">FK</text>
+<line x1="700.0" y1="600.0" x2="692.0" y2="600.0" stroke="#47718a" stroke-width="2"/>
+<line x1="687.0" y1="600.0" x2="679.0" y2="600.0" stroke="#47718a" stroke-width="2"/>
+<line x1="674.0" y1="600.0" x2="666.0" y2="600.0" stroke="#47718a" stroke-width="2"/>
+<line x1="661.0" y1="600.0" x2="653.0" y2="600.0" stroke="#47718a" stroke-width="2"/>
+<line x1="648.0" y1="600.0" x2="640.0" y2="600.0" stroke="#47718a" stroke-width="2"/>
+<line x1="635.0" y1="600.0" x2="627.0" y2="600.0" stroke="#47718a" stroke-width="2"/>
+<line x1="622.0" y1="600.0" x2="614.0" y2="600.0" stroke="#47718a" stroke-width="2"/>
+<polygon points="600.0,600.0 611.0,596.0 611.0,604.0" fill="#47718a"/>
+<text x="617" y="585" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#597080">B: files</text>
+<rect x="60" y="230" width="230" height="110" rx="12" fill="white" stroke="#2b628e" stroke-width="1.5"/>
+<rect x="61" y="231" width="228" height="42" rx="10" fill="#eef6ff" stroke="none" stroke-width="1.5"/>
+<text x="77" y="258" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#2b628e">tenants</text>
+<text x="77" y="297" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">id TEXT [PK]</text>
+<rect x="355" y="230" width="280" height="178" rx="12" fill="white" stroke="#2b628e" stroke-width="1.5"/>
+<rect x="356" y="231" width="278" height="42" rx="10" fill="#eef6ff" stroke="none" stroke-width="1.5"/>
+<text x="372" y="258" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#2b628e">databases</text>
+<text x="372" y="297" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">id TEXT [PK]</text>
+<text x="372" y="321" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">tenant_id TEXT [NN, FK]</text>
+<text x="372" y="345" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">name TEXT [NN]</text>
+<text x="372" y="393" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#597080">UQ: tenant_id + name</text>
+<rect x="700" y="230" width="375" height="240" rx="12" fill="white" stroke="#2b628e" stroke-width="1.5"/>
+<rect x="701" y="231" width="373" height="42" rx="10" fill="#eef6ff" stroke="none" stroke-width="1.5"/>
+<text x="717" y="258" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#2b628e">collections</text>
+<text x="717" y="297" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">id TEXT [PK]</text>
+<text x="717" y="321" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">database_id TEXT [NN, FK]</text>
+<text x="717" y="345" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">name TEXT [NN]</text>
+<text x="717" y="369" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">dimension INTEGER</text>
+<text x="717" y="393" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">config_json_str TEXT</text>
+<text x="717" y="417" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">schema_str TEXT</text>
+<text x="717" y="455" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#597080">UQ: name + database_id</text>
+<rect x="1140" y="230" width="390" height="240" rx="12" fill="white" stroke="#198374" stroke-width="1.5"/>
+<rect x="1141" y="231" width="388" height="42" rx="10" fill="#ecf8f4" stroke="none" stroke-width="1.5"/>
+<text x="1157" y="258" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#198374">collection_metadata</text>
+<text x="1157" y="297" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">collection_id TEXT [PK, FK]</text>
+<text x="1157" y="321" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">key TEXT [NN, PK]</text>
+<text x="1157" y="345" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">str_value TEXT</text>
+<text x="1157" y="369" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">int_value INTEGER</text>
+<text x="1157" y="393" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">float_value REAL</text>
+<text x="1157" y="417" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">bool_value INTEGER</text>
+<rect x="700" y="540" width="375" height="190" rx="12" fill="white" stroke="#2b628e" stroke-width="1.5"/>
+<rect x="701" y="541" width="373" height="42" rx="10" fill="#eef6ff" stroke="none" stroke-width="1.5"/>
+<text x="717" y="568" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#2b628e">segments</text>
+<text x="717" y="607" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">id TEXT [PK]</text>
+<text x="717" y="631" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">type TEXT [NN]</text>
+<text x="717" y="655" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">scope TEXT [NN]</text>
+<text x="717" y="679" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">collection TEXT [NN] - A</text>
+<rect x="1140" y="540" width="390" height="190" rx="12" fill="white" stroke="#198374" stroke-width="1.5"/>
+<rect x="1141" y="541" width="388" height="42" rx="10" fill="#ecf8f4" stroke="none" stroke-width="1.5"/>
+<text x="1157" y="568" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#198374">segment_metadata</text>
+<text x="1157" y="607" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">segment_id TEXT [PK, FK]</text>
+<text x="1157" y="631" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">key TEXT [NN, PK]</text>
+<text x="1157" y="655" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">str_value / int_value</text>
+<text x="1157" y="679" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">float_value / bool_value</text>
+<text x="1157" y="715" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#597080">Same typed value columns as above</text>
+<rect x="60" y="500" width="540" height="215" rx="12" fill="white" stroke="#b87927" stroke-width="1.5"/>
+<rect x="61" y="501" width="538" height="42" rx="10" fill="#fff5e7" stroke="none" stroke-width="1.5"/>
+<text x="77" y="528" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#b87927">HNSW segment files</text>
+<text x="77" y="567" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">data/chroma/&lt;vector-segment-id&gt;/</text>
+<text x="77" y="591" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">data_level0.bin    header.bin</text>
+<text x="77" y="615" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">length.bin        link_lists.bin</text>
+<text x="77" y="639" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">index_metadata.pickle</text>
+<text x="77" y="700" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#597080">Vectors and graph/index bookkeeping; not SQL tables</text>
+<rect x="60" y="768" width="540" height="300" rx="12" fill="white" stroke="#b87927" stroke-width="1.5"/>
+<rect x="61" y="769" width="538" height="42" rx="10" fill="#fff5e7" stroke="none" stroke-width="1.5"/>
+<text x="77" y="796" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#b87927">embeddings_queue | internal update log</text>
+<text x="77" y="835" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">seq_id INTEGER [PK]</text>
+<text x="77" y="859" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">created_at TIMESTAMP [NN]</text>
+<text x="77" y="883" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">operation INTEGER [NN]</text>
+<text x="77" y="907" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">topic TEXT [NN]</text>
+<text x="77" y="931" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">id TEXT [NN]</text>
+<text x="77" y="955" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">vector BLOB</text>
+<text x="77" y="979" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">encoding TEXT    metadata TEXT</text>
+<text x="77" y="1053" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#597080">Vector data can also be present in this log</text>
+<rect x="700" y="820" width="375" height="248" rx="12" fill="white" stroke="#2b628e" stroke-width="1.5"/>
+<rect x="701" y="821" width="373" height="42" rx="10" fill="#eef6ff" stroke="none" stroke-width="1.5"/>
+<text x="717" y="848" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#2b628e">embeddings</text>
+<text x="717" y="887" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">id INTEGER [PK]</text>
+<text x="717" y="911" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">segment_id TEXT [NN] - B</text>
+<text x="717" y="935" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">embedding_id TEXT [NN]</text>
+<text x="717" y="959" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">seq_id BLOB [NN]</text>
+<text x="717" y="983" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">created_at TIMESTAMP [NN]</text>
+<text x="717" y="1053" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#597080">UQ: segment_id + embedding_id</text>
+<rect x="1140" y="820" width="390" height="248" rx="12" fill="white" stroke="#198374" stroke-width="1.5"/>
+<rect x="1141" y="821" width="388" height="42" rx="10" fill="#ecf8f4" stroke="none" stroke-width="1.5"/>
+<text x="1157" y="848" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#198374">embedding_metadata</text>
+<text x="1157" y="887" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">id INTEGER [PK, FK]</text>
+<text x="1157" y="911" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">key TEXT [NN, PK]</text>
+<text x="1157" y="935" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">string_value TEXT</text>
+<text x="1157" y="959" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">int_value INTEGER</text>
+<text x="1157" y="983" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">float_value REAL</text>
+<text x="1157" y="1007" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">bool_value INTEGER</text>
+<text x="700" y="1098" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#597080">embedding_id = app chunk_id; embeddings has no vector column.</text>
+<rect x="32" y="1160" width="992" height="320" rx="18" fill="#faf8fd" stroke="#e0d8eb" stroke-width="1.5"/>
+<text x="58" y="1196" font-family="Arial, sans-serif" font-size="21" font-weight="700" fill="#8060aa">02  ACCOUNTS | data/auth/users.sqlite3</text>
+<line x1="460.0" y1="1323.0" x2="570.0" y2="1323.0" stroke="#47718a" stroke-width="2"/>
+<polygon points="580.0,1323.0 569.0,1327.0 569.0,1319.0" fill="#47718a"/>
+<text x="480" y="1310" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#597080">0..many</text>
+<rect x="60" y="1235" width="400" height="178" rx="12" fill="white" stroke="#8060aa" stroke-width="1.5"/>
+<rect x="61" y="1236" width="398" height="42" rx="10" fill="#f3effa" stroke="none" stroke-width="1.5"/>
+<text x="77" y="1263" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#8060aa">users</text>
+<text x="77" y="1302" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">id INTEGER [PK]</text>
+<text x="77" y="1326" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">email TEXT [NN, UQ]</text>
+<text x="77" y="1350" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">password_hash TEXT [NN]</text>
+<text x="77" y="1374" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">created_at INTEGER [NN]</text>
+<rect x="580" y="1235" width="416" height="210" rx="12" fill="white" stroke="#8060aa" stroke-width="1.5"/>
+<rect x="581" y="1236" width="414" height="42" rx="10" fill="#f3effa" stroke="none" stroke-width="1.5"/>
+<text x="597" y="1263" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#8060aa">sessions</text>
+<text x="597" y="1302" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">id INTEGER [PK]</text>
+<text x="597" y="1326" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">user_id INTEGER [NN, FK]</text>
+<text x="597" y="1350" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">token_hash TEXT [NN, UQ]</text>
+<text x="597" y="1374" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">created_at INTEGER [NN]</text>
+<text x="597" y="1398" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">expires_at INTEGER [NN]</text>
+<text x="60" y="1460" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#597080">FK: sessions.user_id -&gt; users.id; ON DELETE CASCADE. Times are Unix seconds.</text>
+<rect x="1056" y="1160" width="512" height="320" rx="18" fill="#fffbf5" stroke="#ebdfca" stroke-width="1.5"/>
+<text x="1082" y="1196" font-family="Arial, sans-serif" font-size="21" font-weight="700" fill="#b87927">03  EMBEDDING CACHE</text>
+<text x="1082" y="1220" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#597080">data/cache/embeddings.sqlite3</text>
+<rect x="1088" y="1235" width="448" height="130" rx="12" fill="white" stroke="#b87927" stroke-width="1.5"/>
+<rect x="1089" y="1236" width="446" height="42" rx="10" fill="#fff5e7" stroke="none" stroke-width="1.5"/>
+<text x="1105" y="1263" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#b87927">vectors</text>
+<text x="1105" y="1302" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">key TEXT [PK]</text>
+<text x="1105" y="1326" font-family="Consolas, monospace" font-size="15.5" font-weight="400" fill="#18374b">vector BLOB</text>
+<text x="1088" y="1398" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18374b">Key: digest of embedding fingerprint + exact text.</text>
+<text x="1088" y="1424" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18374b">Value: float32 vector, checked by application code.</text>
+<text x="1088" y="1450" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#597080">No cross-database SQL foreign keys.</text>
+<text x="38" y="1520" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18374b">A  Observed DDL references collection(id), but the existing table is collections. Dashed link records the intended relationship.</text>
+<text x="38" y="1548" font-family="Arial, sans-serif" font-size="16" font-weight="400" fill="#18374b">B  Segment membership and index-file paths are application links, not declared matching SQL foreign keys.</text>
+<text x="38" y="1580" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#597080">UQ = unique constraint; multiple PK columns form one composite key. Additional Chroma maintenance tables are omitted.</text>
+<text x="38" y="1606" font-family="Arial, sans-serif" font-size="15" font-weight="400" fill="#597080">See database-schema.md for field mapping, source-file lineage, full annotations and implementation references.</text>
+</svg>

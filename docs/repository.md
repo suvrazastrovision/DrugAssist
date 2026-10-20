@@ -4,6 +4,8 @@
 
 This guide explains the main folders, saved artifacts and local files needed to reproduce a search or research result.
 
+See the [annotated database schema](database-schema.md) for Chroma tables, vector-index files, the embedding cache and account relationships.
+
 ## Files worth knowing
 
 | Location | Purpose |

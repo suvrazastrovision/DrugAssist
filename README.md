@@ -37,6 +37,7 @@ The app uses saved local data, models and a Chroma index. These large files are 
 |---|---|
 | [Run and search](docs/usage.md) | Setup, accounts, API, terminal search and filters |
 | [App flow diagram](docs/app-flow.md) | Data preparation, login, hybrid reranking and result display |
+| [Database schema](docs/database-schema.md) | Annotated Chroma, embedding-cache and account-storage diagram |
 | [Notebooks and evaluation](docs/research.md) | Notebook walkthroughs, scientific limits, checks and maintenance |
 | [Repository and saved data](docs/repository.md) | Folder roles, local databases, reports and reproducibility |
 
