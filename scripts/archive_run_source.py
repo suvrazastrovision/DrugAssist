@@ -16,6 +16,7 @@ for name, expected in run["source_files"].items():
 with zipfile.ZipFile(run_path.parent / "source.zip", "w", compression=zipfile.ZIP_DEFLATED) as archive:
     files = [ROOT / name for name in run["source_files"]]
     files.extend(p for p in (ROOT / "config").glob("*.json"))
+    files.append(ROOT / "data/benchmarks/query_specs.json")
     files.extend(ROOT / name for name in ("pyproject.toml", "uv.lock", "README.md", "ANNOTATION_PROTOCOL.md"))
     for path in files:
         archive.write(path, arcname=str(path.relative_to(ROOT)))

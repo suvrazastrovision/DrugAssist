@@ -17,7 +17,7 @@ DIFFICULTY = {
 
 
 def make_benchmark(snapshot, specs_path=None):
-    specs = read_json(specs_path or ROOT / "config/query_intents.json")
+    specs = read_json(specs_path or ROOT / "data/benchmarks/query_specs.json")
     documents = [d for d in snapshot["documents"] if d["kind"] == "fda_full"]
     queries = []
     dev_drugs = {"aspirin", "metformin", "sertraline", "levothyroxine"}

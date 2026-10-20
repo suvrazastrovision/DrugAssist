@@ -200,6 +200,7 @@ The search API reads the existing index; it does not ingest records or generate 
 | `frontend/app.py` | Minimal Streamlit signup, login and search screens |
 | `src/auth/` | Separate account database and session authentication |
 | `config/default.json` | Drug names, models and search settings |
+| `data/benchmarks/query_specs.json` | Curated question templates for building the original benchmark; app vocabulary rules live in `src/query_parser.py` |
 | `data/raw/` and `data/processed/` | Original downloads and saved datasets |
 | `data/cache/`, `data/chroma/`, `data/models/` | Cached embeddings, search index and local models |
 | `data/benchmarks/benchmark.json` | Original test questions and draft source evidence |
@@ -209,6 +210,8 @@ The search API reads the existing index; it does not ingest records or generate 
 | `reports/expanded_60/method_comparison.json` | Saved questions, source references and results used by notebook 3 |
 | `reports/api_contract.json` | Recorded external data API capabilities |
 | `tests/` | Checks that the implementation behaves as intended |
+
+VS Code workspace settings hide generated environment, Python cache, test cache, lint cache and package metadata folders in the Explorer. The files stay on disk and remain available to the app and tools.
 
 Recent summaries and name-lookup records come from MORVS. Full records come from FDA and supply the searchable text. Some MORVS text is shortened. Source files and fingerprints are retained so results can be checked. An FDA label record does not by itself establish product approval or medical accuracy.
 
