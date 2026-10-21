@@ -2,33 +2,51 @@
 
 [README](../README.md) | [Run and search](usage.md) | [App flow](app-flow.md) | [Research](research.md) | [Repository guide](repository.md)
 
-This guide explains the main folders, saved artifacts and local files needed to reproduce a search or research result.
+## Project files
 
-See the [annotated database schema](database-schema.md) for Chroma tables, vector-index files, the embedding cache and account relationships.
+| Location | Role |
+|---|---|
+| `config/default.json` | Drug list, models, indexing and search settings |
+| `docs/` | Usage, architecture, storage and research guides |
+| `frontend/app.py` | Streamlit signup, login, search and answer display |
+| `notebooks/` | Data inspection and saved comparison results |
+| `scripts/` | Maintenance helpers, method comparison, notebook execution and artifact checks |
+| `src/` | Shared data, retrieval, evaluation, API and authentication implementation |
+| `src/query_parser.py` | Drug aliases and topic vocabulary rules |
+| `src/services/answer_service.py` | FDA context, one model call and citation checks |
+| `tests/` | Automated implementation checks |
 
-## Files worth knowing
+## Local data and databases
+
+| Location | Contents |
+|---|---|
+| `data/raw/` | Original API responses and provenance metadata |
+| `data/processed/` | Normalized snapshots and complete saved sections |
+| `data/chroma/` | Chroma database and vector-index files |
+| `data/cache/` | Reusable document and question embeddings |
+| `data/models/` | Downloaded local model assets |
+| `data/auth/users.sqlite3` | Separate accounts and sessions |
+
+- Search uses full FDA records; MORVS summaries/lookups may be shortened.
+- Fingerprints trace versions, not medical accuracy or approval.
+- Table relationships: [database schema](database-schema.md).
+
+## Indexes and reports
 
 | Location | Purpose |
 |---|---|
-| `docs/` | Detailed usage, app flow, evaluation and repository guides |
-| `notebooks/` | The reviewer-facing explanation and results |
-| `src/` | Shared retrieval, evaluation, API and authentication code |
-| `src/services/answer_service.py` | Bounded FDA context preparation, one LLM writing call and citation validation |
-| `frontend/app.py` | Minimal Streamlit signup, login and search screens |
-| `src/auth/` | Separate account database and session authentication |
-| `config/default.json` | Drug names, models and search settings |
-| `data/raw/` and `data/processed/` | Original downloads and saved datasets |
-| `data/cache/`, `data/chroma/`, `data/models/` | Cached embeddings, search index and local models |
-| `results/search_latest.json` | Pointer to the active 60-drug index |
-| `reports/data_checks.json` | Dataset ID, drug coverage, data quality, file integrity and name-search checks |
-| `reports/expanded_60/method_comparison.json` | Saved questions, source references and results used by notebook 3 |
-| `reports/api_contract.json` | Recorded external data API capabilities |
-| `tests/` | Checks that the implementation behaves as intended |
+| `results/search_latest.json` | Select the active index |
+| `results/search_indexes/<index-id>/` | Index descriptor, passages and settings |
+| `reports/data_checks.json` | Data-quality/coverage checks and maintenance acquisition checkpoint |
+| `reports/expanded_60/method_comparison.json` | Questions, expected sections and results for notebook 3 |
+| `reports/api_contract.json` | Recorded external API capabilities |
 
-VS Code workspace settings hide generated environment, Python cache, test cache, lint cache and package metadata folders in the Explorer. The files stay on disk and remain available to the app and tools.
+- API: runs without `reports/`; notebook 3 needs its saved comparison.
+- Maintenance: uses `data_checks.json`, falling back to the active dataset when absent.
 
-Recent summaries and name-lookup records come from MORVS. Full records come from FDA and supply the searchable text. Some MORVS text is shortened. Source files and fingerprints are retained so results can be checked. An FDA label record does not by itself establish product approval or medical accuracy.
+## Reproduce or transfer the project
 
-Large local datasets, models and indexes are ignored by Git. To reproduce the saved results on another computer, transfer those files as well as the repository. Fresh downloads can differ from the saved versions.
-
-The API runs without `reports/`. Notebook 3 reads the saved method comparison; the maintenance command uses `data_checks.json` as an acquisition checkpoint and can fall back to the active saved dataset when it is absent. Keep the source data, configuration, active index and saved comparison to reproduce these checks. App vocabulary rules live in `src/query_parser.py`.
+- Transfer source data, models, active index and comparison alongside code/configuration; large artifacts are Git-ignored.
+- Fresh downloads may differ from saved versions.
+- VS Code hides generated environments/caches; files remain on disk.
+- Commands and evaluation limits: [Research](research.md).

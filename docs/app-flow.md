@@ -2,9 +2,15 @@
 
 [README](../README.md) | [Run and search](usage.md) | [App flow](app-flow.md) | [Research](research.md) | [Repository guide](repository.md)
 
-This diagram separates collection preparation, login, live search, optional answer writing and evaluation.
+## Workflow at a glance
 
-Solid arrows show processing; dotted arrows connect saved data to the steps that read it. Data preparation happens during maintenance. Answer writing is an optional step after retrieval and reranking.
+1. **Maintenance:** download, validate, split, embed and index FDA labels.
+2. **App:** log in → filter → hybrid retrieval → rerank → optional cited answer.
+3. **Research:** inspect data and compare retrieval separately.
+
+## Detailed diagram
+
+- **Solid arrows:** processing. **Dotted arrows:** saved-data connections.
 
 ```mermaid
 flowchart TB
@@ -112,6 +118,19 @@ flowchart TB
 
 ```
 
-The original question reaches lexical search, semantic search and reranking without the parser rewriting its meaning. The API filters by recognized drug and section; it does not interpret manufacturer, route, version or date constraints in natural language. Conditions are not database filters. Terminal search uses the shared retrievers with explicit command-line filters and bypasses the app's login, parser, scope gate and relevance cutoff.
+## Important boundaries
 
-Each current result is a passage from a longer section, so it can end mid-list. The complete section remains in the saved dataset. Expanding an original passage shows that chunk only. Answer mode additionally supplies expanded saved section context: already-covered passages are skipped, overlapping windows are merged when budgets permit, and distinct useful windows from one section can remain separate sources. Short sections can be supplied in full; longer sections use bounded windows and are marked partial. The Supporting FDA context expander shows exactly the context cited by the writer. Generated answers need independent factual and citation-support review. The implementation checks citation identities and response structure; it does not automatically establish that each claim is supported. No-match searches skip generation. Generation failures keep the retrieved evidence available.
+- Streamlit communicates through FastAPI, without direct database access.
+- The parser preserves questions and filters recognized documents/sections.
+- The score cutoff is experimental, not a probability of correctness.
+- Scope rules and CLI differences: [usage guide](usage.md#search-behavior).
+
+## Passages and written answers
+
+- Passage expanders show chunks, which can end mid-list.
+- Answer mode expands exact saved text; overlapping windows may merge. Long sections remain partial.
+- **Supporting FDA context** shows the writer's excerpts.
+- No-match skips writing; generation failures preserve passages.
+- Format/source checks do not establish factual support; human review is required.
+
+See [answer settings and states](usage.md#cited-answers), [database relationships](database-schema.md) and [evaluation limits](research.md).

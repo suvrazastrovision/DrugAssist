@@ -1,100 +1,115 @@
 # Database schema
 
-[README](../README.md) | [Repository guide](repository.md) | [Application flow](app-flow.md)
+[README](../README.md) | [Run and search](usage.md) | [App flow](app-flow.md) | [Research](research.md) | [Repository guide](repository.md)
 
-The app uses **three separate local databases**. Chroma stores searchable evidence, an embedding cache avoids repeated encoding, and the account database manages logins. They have no SQL foreign keys between them.
+## Storage overview
 
-Optional answer writing reuses these stores and the saved FDA sections. It adds no database tables or locally persisted answer history.
+| Store | Purpose | Location |
+|---|---|---|
+| Chroma | Passage metadata and vector retrieval | `data/chroma/` |
+| Embedding cache | Reuse document/question vectors | `data/cache/embeddings.sqlite3` |
+| Accounts | Users and login sessions | `data/auth/users.sqlite3` |
+
+- These are separate databases, with **no SQL foreign keys between them**.
+- Answer writing reuses saved evidence; it adds no tables or local answer history.
 
 ![DrugAssist database schema: Chroma tables, vector-index files, embedding cache, and separate account tables](database-schema.svg)
 
 [Open the full-size diagram](database-schema.svg).
 
-The image uses a traditional entity relationship style: purple table headers, alternating rows, SQL types in the left column and field names in the right column. Crow's-foot endpoints show relationship cardinality.
-
-## Reading the annotations
+## Diagram key
 
 | Mark | Meaning |
 |---|---|
 | `PK` | Primary key; multiple marked columns form a composite key |
-| `FK` | A foreign-key declaration pointing to an existing table |
-| `UQ` | Uniqueness constraint; a listed pair is unique together |
+| `FK` | Foreign-key declaration matching an existing table |
+| `UQ` | Unique column or column combination |
 | `NN` | Explicit `NOT NULL` declaration |
-| Double bar (`||`) | Exactly one parent for a valid relationship |
-| Circle and bar | Zero or one parent; the foreign-key field permits null |
-| Circle and crow's foot | Zero or many child records |
-| Solid connector | Relationship backed by a matching foreign-key declaration |
-| Dashed connector | Application or storage relationship; not a matching SQL foreign key |
+| Double bar | Exactly one parent in a valid relationship |
+| Circle and bar | Zero or one parent; nullable foreign key |
+| Circle and crow's foot | Zero or many children |
+| Solid connector | Matching SQL foreign-key declaration |
+| Dashed connector | Application/storage link, not a matching SQL foreign key |
 
-The diagram shows core tables and selected storage details, not every Chroma maintenance table. Cardinalities describe valid intended records; optional parent endpoints reflect nullable foreign-key declarations. Foreign-key declarations describe the schema; they do not establish that every Chroma connection enables SQLite foreign-key enforcement. The index-files callout is a file group, so its dashed connection has no relational cardinality markers.
+- Core tables only; cardinalities describe valid records.
+- Chroma's declared foreign keys do not guarantee enforcement on every connection.
+- The vector-file group is not a table and has no cardinality markers.
 
-## 1. Chroma: passage retrieval
+## Chroma: searchable evidence
 
-**Location:** `data/chroma/chroma.sqlite3`, with generated vector-index files in `data/chroma/<vector-segment-id>/`.
+- Database: `data/chroma/chroma.sqlite3`.
+- Vector files: `data/chroma/<vector-segment-id>/`.
+- Active: **8,601 passages, 118 label sets, 60 drug names**.
+- Embeddings: `text-embedding-3-small`, 1,536 dimensions; cosine HNSW.
+- Historical collections may differ.
 
-The inspected active collection contains **8,601 chunks**, covering **118 full FDA label sets** and **60 selected drug names**. It uses **1,536-dimensional `text-embedding-3-small` embeddings** and a cosine HNSW index. Other saved collections can use different corpora or embedding dimensions.
-
-| Table or component | What it represents |
+| Component | Role |
 |---|---|
-| `tenants`, `databases` | Chroma's namespace hierarchy, separate from DrugAssist login accounts |
-| `collections` | A named group of records with dimensions and index configuration |
-| `collection_metadata` | Typed collection attributes, including corpus and embedding fingerprints |
-| `segments` | Internal metadata or vector-storage segments belonging to a collection |
-| `segment_metadata` | Typed attributes of a segment |
-| `embeddings` | Internal record identifiers, segment membership and update sequence information |
-| `embedding_metadata` | Scalar metadata and stored document text associated with a record |
-| HNSW segment files | Numerical vector-search index and its generated bookkeeping |
-| `embeddings_queue` | Internal update log, which can also contain vector BLOBs and metadata |
+| `tenants`, `databases` | Chroma namespaces, separate from user accounts |
+| `collections`, `collection_metadata` | Named record groups, configuration and fingerprints |
+| `segments`, `segment_metadata` | Storage segments and attributes |
+| `embeddings` | Record IDs, segment membership and update sequence; **no vector column** |
+| `embedding_metadata` | Scalar attributes and stored document text |
+| HNSW files | Numerical vector-search index |
+| `embeddings_queue` | Internal update log; can contain vector BLOBs |
 
-**A. Observed schema detail:** `segments.collection` declares `REFERENCES collection(id)` in this installed database, but the existing table is named `collections`. The dashed connection shows the intended application relationship, not a matching declared foreign key. This guide records the observed schema without modifying Chroma internals.
+### Schema details A and B
 
-**B. Application-managed links:** `embeddings.segment_id` has no declared SQL foreign key to `segments.id`. A vector segment's ID also identifies its on-disk directory. These are shown as dashed connections.
+- **A:** `segments.collection` references `collection(id)`, while the table is named `collections`; intended link shown dashed.
+- **B:** `embeddings.segment_id` has no SQL foreign key to `segments.id`; directory links are application-managed.
+- Other internals handle arrays, FTS and maintenance. Chroma's trigram FTS is separate from Python BM25.
 
-The `embeddings` table itself has **no vector column**. Vector-search files and the update log hold vector-related data; the separate cache also stores reusable vectors. Treating `embeddings` as a table containing every numerical vector would be inaccurate.
+### Passage mapping
 
-Additional inspected internals include `embedding_metadata_array`, `embedding_fulltext_search` and its FTS shadow tables, `max_seq_id`, `embeddings_queue_config`, `migrations`, `maintenance_log` and `acquire_write`. These are omitted from the image to keep it readable. The array table references `embeddings.id`; it supports array metadata, while the app currently writes scalar chunk attributes. The FTS5 table uses trigram tokenization; the app's BM25 retriever is implemented separately in Python.
+These are **Chroma record API fields**, not a separate SQL `chunks` table.
 
-### How an FDA passage maps into Chroma
-
-These are fields in the **Chroma record API**, not columns of a fictional `chunks` SQL table:
-
-| Record field | Value written by this app |
+| Field | App value |
 |---|---|
-| `id` | The deterministic `chunk_id`; internally stored as `embeddings.embedding_id` |
-| `embedding` | The numerical vector for `embedding_text` |
-| `document` | `identity` + newline + `Section: <section>` + newline + original chunk `text` |
-| `metadata` | The 16 scalar chunk attributes listed below |
+| `id` | Deterministic `chunk_id`; internally `embeddings.embedding_id` |
+| `embedding` | Vector for `embedding_text` |
+| `document` | Identity + section heading + original passage text |
+| `metadata` | The 16 scalar attributes below |
 
-Metadata keys are `chunk_id`, `document_id`, `snapshot_id`, `set_id`, `section`, `start`, `end`, `token_count`, `kind`, `source_record_hash`, `source_body_sha256`, `effective_time`, `authority_url`, `strategy`, `size` and `overlap`. Chroma stores the document under its internal `chroma:document` metadata key. The separate `text` and `identity` fields remain in the saved chunk JSON; they are not separate metadata keys written by this app.
+```text
+chunk_id, document_id, snapshot_id, set_id, section,
+start, end, token_count, kind, source_record_hash,
+source_body_sha256, effective_time, authority_url,
+strategy, size, overlap
+```
 
-`start` and `end` are Python character offsets within the original section, with an exclusive end: `section_text[start:end]`. They are not token or byte offsets. `set_id` identifies a label set, `document_id` identifies a normalized document, and `chunk_id` identifies a particular passage and splitting configuration. These identifiers do not all mean "drug ID."
+- Document text uses `chroma:document`; separate `text`/`identity` fields remain in JSON.
+- Offsets: Python characters, `section_text[start:end]`, end exclusive.
+- IDs identify label sets (`set_id`), documents (`document_id`) or passages/splitting settings (`chunk_id`).
 
-Full normalized section text lives under `data/processed/<snapshot-id>/documents.json`. The passage inventory lives under `results/search_indexes/<index-id>/chunks.json`. `results/search_latest.json` selects the active index descriptor. Links between these files and Chroma are verified by application identifiers and fingerprints, not SQL foreign keys.
+| Saved file | Role |
+|---|---|
+| `data/processed/<snapshot-id>/documents.json` | Complete normalized sections |
+| `results/search_indexes/<index-id>/chunks.json` | Passage inventory |
+| `results/search_latest.json` | Active index pointer |
 
-## 2. Embedding cache: reuse numerical vectors
+File/database links use identifiers and fingerprints, not SQL foreign keys.
 
-**Location:** `data/cache/embeddings.sqlite3`.
+## Embedding cache
 
-Its actual table is `vectors(key TEXT PRIMARY KEY, vector BLOB)`. The key is the SHA-256 digest of the canonical JSON pair `[embedding_fingerprint, exact_input_text]`. The BLOB is a NumPy `float32` vector; application code checks dimensions and finite values when reading or writing it.
+- Table: `vectors(key TEXT PRIMARY KEY, vector BLOB)`.
+- Key: SHA-256 of canonical JSON `[embedding_fingerprint, exact_input_text]`.
+- Value: `float32` vector; dimensions/finite values checked.
+- Shared document/question cache; no separate model, drug or chunk columns.
 
-Document and question embeddings share this cache. The table does not store separate model, question, drug or chunk-ID columns. A cache key is different from a Chroma record ID, and there is no foreign key between these databases.
+## Accounts and sessions
 
-## 3. Accounts: users and sessions
+- Default: `data/auth/users.sqlite3`; override with `DRUGASSIST_AUTH_DB`.
+- `sessions.user_id -> users.id`: one user, many sessions; foreign keys enabled, delete cascades.
+- Unique: `email`, `token_hash`. Hashes: Argon2 passwords, SHA-256 session tokens.
+- Creation/expiry: Unix seconds; session user ID and expiry indexed.
+- No search-history table or user-to-FDA foreign key.
 
-**Default location:** `data/auth/users.sqlite3`; `DRUGASSIST_AUTH_DB` can override it.
-
-One user can have zero or more sessions. Every valid session belongs to one user through `sessions.user_id -> users.id`. The app enables foreign keys on its authentication connections, and deleting a user cascades to that user's sessions.
-
-`email` and `token_hash` are individually unique. Passwords are stored as Argon2 hashes; random bearer tokens are stored as SHA-256 hashes. Account `created_at` and session `created_at` / `expires_at` are integer Unix timestamps in seconds. The app also indexes `sessions.user_id` and `sessions.expires_at`.
-
-FDA evidence is not linked to a user by a database foreign key, and the current schema contains no search-history table. No private account values are included in this diagram.
-
-## Mermaid relationship overview
+## Editable relationship diagram
 
 <details>
-<summary>Show the storage relationships as editable Mermaid</summary>
+<summary>Show Mermaid source</summary>
 
-This flowchart preserves the logical overview. The SVG above provides the table-grid layout and crow's-foot notation.
+The SVG above provides the table-grid layout and crow's-foot notation.
 
 ```mermaid
 flowchart TB
@@ -144,8 +159,9 @@ flowchart TB
 
 ## Verification and scope
 
-Checked on **20 October 2026**, against the on-disk schemas for **Chroma 1.5.9**, the active index descriptor, and the application code. Database access used SQLite read-only connections and schema inspection; account rows and secret values were not read. Chroma's internal schema can change with package migrations.
+- Schema audit: **20 October 2026**, Chroma **1.5.9**, on-disk schemas and active index.
+- Inspection used read-only SQLite connections; no account rows or secrets were read.
+- Chroma internals may change after migrations.
+- Traceability and correct storage do not establish medical relevance or clinical correctness.
 
-Implementation references: [Chroma adapter](../src/indexing/chroma_store.py), [chunk fields and offsets](../src/preprocessing/chunking.py), [cache schema and serialization](../src/embeddings/cache.py), [authentication schema](../src/auth/database.py), [password and session handling](../src/auth/service.py), and [configuration hashing](../src/utils/config.py).
-
-Source hashes support traceability; vector storage and schema correctness do not establish medical relevance or clinical correctness. For the query pipeline, see the [application flow](app-flow.md).
+Implementation: [Chroma](../src/indexing/chroma_store.py), [chunk offsets](../src/preprocessing/chunking.py), [cache](../src/embeddings/cache.py), [auth schema](../src/auth/database.py), [sessions](../src/auth/service.py), [fingerprints](../src/utils/config.py).

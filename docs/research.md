@@ -2,46 +2,65 @@
 
 [README](../README.md) | [Run and search](usage.md) | [App flow](app-flow.md) | [Research](research.md) | [Repository guide](repository.md)
 
-Data checks, source-section matching and human relevance review answer different questions. The saved comparisons should be read with their stated limitations.
-
 ## Read the notebooks
 
-Open them in order and run their cells from top to bottom. They use saved local files without API calls.
+- Run cells in order using `.venv`; notebooks read saved files without API calls.
+- Stop servers/notebooks before installing research and test tools:
 
-Install notebook tools with `uv sync --locked --extra research`, then select the Python interpreter in `.venv`.
+```powershell
+uv sync --locked --extra research --extra dev
+```
 
-| Notebook | Main question | Data used |
-|---|---|---|
-| [1. Data quality](../notebooks/01_data_quality_analysis.ipynb) | Are the downloaded files usable, and what is missing? | Current 60-drug collection |
-| [2. Explore and search](../notebooks/02_exploratory_data_analysis.ipynb) | How do labels become passages, and how can I search them? | Current 60-drug collection |
-| [3. Compare search methods](../notebooks/03_retrieval_pipeline_benchmark.ipynb) | How often did each method find the requested section? | Current 60-drug collection / 60 simple questions |
+| Notebook | Purpose |
+|---|---|
+| [1. Data quality](../notebooks/01_data_quality_analysis.ipynb) | Check downloaded files, missing fields and source integrity |
+| [2. Explore and search](../notebooks/02_exploratory_data_analysis.ipynb) | Inspect section lengths, passage splitting and a local search example |
+| [3. Compare search methods](../notebooks/03_retrieval_pipeline_benchmark.ipynb) | Display saved six-method results for 60 drugs |
 
-Notebook 3 compares all six methods using one direct section-finding question per drug: 20 about uses, 20 about dosage instructions and 20 about warnings. Expected matches come from FDA identity and section fields. Finding an expected section does not prove that a passage answers a medical question. Independent human review is needed to assess passage relevance, factual correctness and citation support.
+## What the comparison measures
+
+- **60 questions:** one/drug; 20 uses, 20 dosage, 20 warnings.
+- **Reference:** automatically matched FDA drug identity and section.
+- **Scope:** unfiltered retrieval, without the app's score cutoff.
+- **Timing:** excludes model loading, question embedding and index building.
+- **Limits:** no independent relevance judgments, untouched test set or clinical/answer-quality validation.
 
 ## Maintain and check the project
 
+| Command suffix | Action |
+|---|---|
+| `maintain` or `maintain --step verify` | Offline source coverage and name-search checks |
+| `maintain --step acquire` | Reuse matching labels; fetch gaps through MORVS/openFDA |
+| `maintain --step index` | Build using `config/default.json`; embedding charges may apply |
+| `maintain --step all` | Acquire, index and verify |
+
+Examples:
+
 ```powershell
-# Check all configured drug names offline. This is also the default maintenance step.
-uv run --locked fda-rag maintain
-
-# Fetch missing labels, build the index, then check it. Indexing can use the embedding API.
-uv run --locked fda-rag maintain --step all
-
-# Individual steps are available with --step acquire, index or verify.
-
-# Run or resume the six-method comparison used by notebook 3.
-uv run --locked --extra research python scripts/compare_search_methods.py
-
-# Execute all three notebooks using this project's Python environment.
-uv run --locked --extra research python scripts/execute_notebooks.py
-
-# Run implementation checks.
-uv run --locked --extra research --extra dev pytest -q
-uv run --locked --extra research --extra dev ruff check src tests scripts frontend
+uv run --locked --no-sync fda-rag maintain
+uv run --locked --no-sync fda-rag maintain --step all
 ```
 
-Acquisition reuses existing matching labels; a direct FDA name search fills gaps left by MORVS. Indexing uses the explicit settings in `config/default.json` and can incur embedding API usage. Offline verification checks that all source label sets are indexed and every configured drug name retrieves a matching label.
+Verification checks indexed label coverage and matching-label retrieval for each configured drug.
 
-Notebook execution requires `--extra research`.
+### Refresh results and notebook outputs
 
-The first comparison run also embeds its new questions and runs the local reranker. Later notebook runs read the saved results without API calls. Questions, source references, settings and method results are saved together in `reports/expanded_60/method_comparison.json`.
+```powershell
+uv run --locked --no-sync python scripts/compare_search_methods.py
+uv run --locked --no-sync python scripts/execute_notebooks.py
+```
+
+- Results: `reports/expanded_60/method_comparison.json`.
+- Comparison can incur embedding usage and runs the local reranker; matching completed runs are reused.
+- Reuse checks index/settings, questions and comparison-module hash, not every code/dependency change.
+- Notebook execution refreshes displays from saved results.
+
+### Check implementation behavior
+
+```powershell
+uv run --locked --no-sync pytest -q
+uv run --locked --no-sync ruff check src tests scripts frontend
+```
+
+- Tests use temporary stores and simulated responses; external HTTP/`.env` loading are disabled.
+- Human review remains necessary for relevance, factual support, qualifications and citation completeness.
