@@ -11,6 +11,8 @@
 | `frontend/app.py` | Streamlit signup, login, search and answer display |
 | `notebooks/` | Data inspection and saved comparison results |
 | `scripts/` | Maintenance helpers, method comparison, notebook execution and artifact checks |
+| `scripts/share_data.py` | Export public prepared data/models; check restored bundles |
+| `start.ps1` | Windows dependency setup, key prompt and two-server launcher |
 | `src/` | Shared data, retrieval, evaluation, API and authentication implementation |
 | `src/query_parser.py` | Drug aliases and topic vocabulary rules |
 | `src/services/answer_service.py` | FDA context, one model call and citation checks |

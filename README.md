@@ -7,31 +7,39 @@ The saved collection covers **60 selected drug names**, **118 full FDA labels** 
 
 ## Quick start
 
-Use Python 3.11 or 3.12 and [uv](https://docs.astral.sh/uv/). Configure your private `.env` using [.env.example](.env.example); hybrid search needs `OPENAI_API_KEY` and the local reranker assets.
+**Windows, using prepared data:**
 
-Stop app servers and notebook executions before installing dependencies:
-
-```powershell
-uv sync --locked
-```
-
-Start the app in two terminals:
+1. Install [uv](https://docs.astral.sh/uv/) and clone/download this repository.
+2. Get `drugassist-data.zip` from the repository owner and extract it **into the repository root**, merging `data/` and `results/`.
+3. Run:
 
 ```powershell
-# Terminal 1 - backend
-uv run --locked --no-sync uvicorn src.api.main:app --host 127.0.0.1 --port 8000
+powershell -ExecutionPolicy Bypass -File .\start.ps1
 ```
+
+- First run installs locked dependencies and asks for **your own OpenAI API key**, saved in local `.env`.
+- Checks the prepared collection, starts both servers and opens the browser. No FDA download or document re-embedding.
+- Sign up locally, log in and ask a question. New question embeddings and written answers use your API key.
+- Keep the terminal open; **Ctrl+C** stops both servers. Logs: `results/private/startup/`.
+- Requires internet for installation and OpenAI requests. The ZIP is shared separately, not stored in Git.
+
+For manual startup, see [Run and search](docs/usage.md#start-the-app). Use the matching repository version; the launcher checks configuration, project metadata and `uv.lock`. Prepared Chroma files are intended for compatible Windows environments.
+
+## Share prepared data
+
+**Repository owner:** stop app servers and ingestion/indexing jobs before exporting:
 
 ```powershell
-# Terminal 2 - frontend
-uv run --locked --no-sync streamlit run frontend/app.py
+uv run --locked --no-sync python scripts/share_data.py
 ```
 
-Open **http://localhost:8501**, sign up, log in and enter a drug-label question. The API reference is at **http://127.0.0.1:8000/docs**.
+- Creates `drugassist-data.zip` in the repository root; share it alongside the matching repository version.
+- Includes the active FDA snapshot, referenced raw responses, index descriptors, complete Chroma store and pinned reranker assets.
+- Excludes `.env`, accounts, embedding/query cache, reports and Python environment. Recipients create fresh accounts/cache.
+- SQLite is backed up consistently; export fails if source data changes during packaging.
+- Includes checksums and configuration/lockfile hashes. Startup verifies original files once, immutable files and Chroma counts on later runs.
 
-**Write a cited answer** adds a short summary above the evidence, with Patient or Clinician wording. It uses your existing `OPENAI_API_KEY`; model and token limits are in `config/default.json`. Uncheck it for evidence-only search. See [answer writing](docs/usage.md#cited-answers).
-
-The app uses saved local data, models and a Chroma index. These large files are ignored by Git. For a new machine, see [data transfer](docs/repository.md) and [collection preparation](docs/research.md#maintain-and-check-the-project).
+**Write a cited answer** adds Patient or Clinician wording above the evidence. Uncheck it for evidence-only search. See [answer writing](docs/usage.md#cited-answers). API reference: **http://127.0.0.1:8000/docs**.
 
 ## Documentation
 

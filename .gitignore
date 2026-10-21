@@ -15,3 +15,6 @@ data/cache/
 data/models/
 data/auth/
 results/private/
+drugassist-data.zip
+drugassist-data.zip.tmp
+data/bundle.json

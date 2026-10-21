@@ -4,6 +4,8 @@
 
 ## Start the app
 
+For prepared-data setup on Windows, use the [single-command launcher](../README.md#quick-start). Manual startup follows below.
+
 1. Use Python 3.11 or 3.12 and [uv](https://docs.astral.sh/uv/).
 2. Configure private settings using [`.env.example`](../.env.example). Keep `OPENAI_API_KEY` in the ignored `.env`.
 3. Stop servers and notebooks before installing dependencies:
