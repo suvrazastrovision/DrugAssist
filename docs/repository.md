@@ -52,3 +52,18 @@
 - Fresh downloads may differ from saved versions.
 - VS Code hides generated environments/caches; files remain on disk.
 - Commands and evaluation limits: [Research](research.md).
+
+## Export a prepared bundle — repository owner
+
+Stop app servers and ingestion/indexing jobs, then run:
+
+```powershell
+uv run --locked --no-sync python scripts/share_data.py
+```
+
+- Share the generated `drugassist-data.zip` alongside the matching repository version; the ZIP is Git-ignored.
+- Includes the active snapshot, referenced raw responses, index descriptors, complete Chroma store and pinned reranker.
+- Excludes credentials, accounts, query/embedding cache, reports and Python environment.
+- Export backs up SQLite and rejects source changes during packaging.
+- Startup verifies checksums once, then immutable files and Chroma counts on later runs.
+- Recipients follow the [quick start](../README.md#quick-start); they create their own accounts and use their own API keys.

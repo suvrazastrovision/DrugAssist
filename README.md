@@ -1,60 +1,51 @@
 # DrugAssist
 
-Search FDA drug labels, get an optional cited answer and read the supporting passages.
-The app uses **hybrid retrieval with cross-encoder reranking**, followed by one optional LLM writing step. Outputs are informational, not personalized medical advice.
-
-The saved collection covers **60 selected drug names**, **118 full FDA labels** and **8,601 passages**. It is a sample of FDA data. See the [drug list and settings](config/default.json).
+Search FDA drug labels using hybrid retrieval and reranking, with optional cited answers.
+The prepared collection covers **60 drug names, 118 FDA labels and 8,601 passages**.
 
 ## Quick start
 
-**Windows, using prepared data:**
+1. **On Windows, install** [Git](https://git-scm.com/downloads) and [uv](https://docs.astral.sh/uv/getting-started/installation/). Internet access and your own OpenAI API key are required.
 
-1. Install [uv](https://docs.astral.sh/uv/) and clone/download this repository.
-2. Get `drugassist-data.zip` from the repository owner and extract it **into the repository root**, merging `data/` and `results/`.
-3. Run:
+2. **Clone the repository** and enter its folder:
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\start.ps1
-```
+   ```powershell
+   git clone https://github.com/suvrazastrovision/drug_rag.git
+   cd drug_rag
+   ```
 
-- First run installs locked dependencies and asks for **your own OpenAI API key**, saved in local `.env`.
-- Checks the prepared collection, starts both servers and opens the browser. No FDA download or document re-embedding.
-- Sign up locally, log in and ask a question. New question embeddings and written answers use your API key.
-- Keep the terminal open; **Ctrl+C** stops both servers. Logs: `results/private/startup/`.
-- Requires internet for installation and OpenAI requests. The ZIP is shared separately, not stored in Git.
+3. **Add the prepared data.** Get `drugassist-data.zip` from the repository owner, matching this repository version. Extract its `data/` and `results/` folders beside `start.ps1`, merging existing folders. Check that `data/chroma/chroma.sqlite3` now exists.
 
-For manual startup, see [Run and search](docs/usage.md#start-the-app). Use the matching repository version; the launcher checks configuration, project metadata and `uv.lock`. Prepared Chroma files are intended for compatible Windows environments.
+   The ZIP is shared separately; cloning alone does not include the data or models.
 
-## Share prepared data
+4. **Start the app** from PowerShell in the repository folder:
 
-**Repository owner:** stop app servers and ingestion/indexing jobs before exporting:
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File .\start.ps1
+   ```
 
-```powershell
-uv run --locked --no-sync python scripts/share_data.py
-```
+   The launcher installs dependencies, checks the prepared collection and asks for your API key once, saving it in local `.env`. It starts both servers without downloading labels or rebuilding document embeddings. The first launch may take several minutes.
 
-- Creates `drugassist-data.zip` in the repository root; share it alongside the matching repository version.
-- Includes the active FDA snapshot, referenced raw responses, index descriptors, complete Chroma store and pinned reranker assets.
-- Excludes `.env`, accounts, embedding/query cache, reports and Python environment. Recipients create fresh accounts/cache.
-- SQLite is backed up consistently; export fails if source data changes during packaging.
-- Includes checksums and configuration/lockfile hashes. Startup verifies original files once, immutable files and Chroma counts on later runs.
+5. **Use the app.** Your browser opens at **http://127.0.0.1:8501**. Sign up, log in and ask a drug-label question. Leave **Write a cited answer** checked for a summary, or uncheck it for passages only.
 
-**Write a cited answer** adds Patient or Clinician wording above the evidence. Uncheck it for evidence-only search. See [answer writing](docs/usage.md#cited-answers). API reference: **http://127.0.0.1:8000/docs**.
+- **Stop:** keep the terminal open; press **Ctrl+C** to stop both servers.
+- **API usage:** new question embeddings and written answers can incur OpenAI charges.
+- **Troubleshooting:** stop existing servers/notebooks before retrying dependency setup. Logs: `results/private/startup/`; [manual startup and settings](docs/usage.md).
+- **Compatibility:** the launcher checks configuration, project metadata and `uv.lock`. Use the matching data bundle and repository version in a compatible Windows environment.
 
 ## Documentation
 
-| Guide | What it explains |
+| Guide | Details |
 |---|---|
-| [Run and search](docs/usage.md) | Setup, accounts, API, terminal search and filters |
-| [App flow diagram](docs/app-flow.md) | Data preparation, login, hybrid reranking and result display |
-| [Database schema](docs/database-schema.md) | Annotated Chroma, embedding-cache and account-storage diagram |
-| [Notebooks and evaluation](docs/research.md) | Notebook walkthroughs, scientific limits, checks and maintenance |
-| [Repository and saved data](docs/repository.md) | Folder roles, local databases, reports and reproducibility |
+| [Run and search](docs/usage.md) | Manual startup, accounts, API, answer settings and terminal search |
+| [Application flow](docs/app-flow.md) | How data preparation, retrieval, reranking and answer writing connect |
+| [Database schema](docs/database-schema.md) | Chroma, embedding cache and account tables |
+| [Notebooks and evaluation](docs/research.md) | Data checks, saved comparisons, maintenance and scientific limits |
+| [Repository and saved data](docs/repository.md) | Folder roles, required artifacts and data transfer |
+| [Drug list and configuration](config/default.json) | Selected drugs, models, chunking and retrieval settings |
 
-## Interpreting results
+Interactive API reference, while running: **http://127.0.0.1:8000/docs**.
 
-Results are chunks of label sections and can end before the full section does. Scores rank passages; they are not medical confidence values.
+## Read results carefully
 
-Written answers use expanded saved context and checked source IDs. These checks do not prove factual support; review the cited FDA text. If writing fails, the retrieved passages remain available.
-
-The 60-question comparison checks drug and section matching. It does not establish clinical answer quality; that needs independent human review. See [evaluation details](docs/research.md).
+Passages can end mid-section. Scores are relevance rankings, not medical confidence. Review cited FDA text: format and source-ID checks do not prove factual support. The saved comparison checks drug/section matching, not clinical answer quality. Outputs are informational, not personalized medical advice.
