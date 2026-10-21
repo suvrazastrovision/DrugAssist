@@ -109,6 +109,7 @@ class AnswerResponse(SearchResponse):
     answer_model: str
     answer_status: Literal["generated", "insufficient_evidence", "unavailable"]
     insufficient_evidence: bool | None
+    evidence_note: str | None
     answer_note: str
 
 

@@ -66,7 +66,9 @@ def ui(auth_service, monkeypatch):
     service.writer = Mock()
     service.writer.write.return_value = {
         "insufficient_evidence": False,
-        "statements": [{"text": "Engineering summary for interface testing.", "source_ids": ["S1"]}],
+        "evidence_note": None,
+        "statements": [{"section": "answer", "text": "Engineering summary for interface testing.",
+                        "source_ids": ["S1"]}],
     }
     monkeypatch.setenv("DRUGASSIST_API_URL", "http://127.0.0.1:8000")
     monkeypatch.setenv("DRUGASSIST_REQUEST_TIMEOUT", "120")
@@ -236,9 +238,46 @@ def test_cited_answer_and_selected_wording_persist_without_regeneration(ui, auth
     assert any("Engineering summary" in element.value for element in app.text)
     assert any("Sources: S1" in element.value for element in app.caption)
     assert any("Additional saved context" in element.value for element in app.text)
+    assert not any("Important warnings" in element.value for element in app.markdown)
     assert json.loads(service.writer.write.call_args.args[0])["audience"] == "clinician"
     app.run()
     service.writer.write.assert_called_once()
+    assert not app.exception
+
+
+def test_structured_answer_sections_and_specific_gap_are_visible(ui, auth_service):
+    app, _calls, service = ui
+    log_in(app, auth_service)
+    service.writer.write.return_value.update(
+        evidence_note="The supplied excerpts do not report frequency information.",
+        statements=[
+            service.writer.write.return_value["statements"][0],
+            {"section": "details", "text": "Engineering supporting detail.", "source_ids": ["S1"]},
+            {"section": "warnings", "text": "Engineering qualification.", "source_ids": ["S1"]},
+        ],
+    )
+    app.text_area[0].set_value("metformin contraindications")
+    click(app, "Search FDA labels")
+    assert any(element.value == "**Details**" for element in app.markdown)
+    assert any(element.value == "**Important warnings**" for element in app.markdown)
+    assert any(element.value == "**What this answer covers**" for element in app.markdown)
+    assert any("do not report frequency" in element.value for element in app.text)
+    assert sum("Sources: S1" in element.value for element in app.caption) == 3
+    assert not app.exception
+
+
+def test_abstention_explains_the_gap_as_literal_text_and_keeps_passages(ui, auth_service):
+    app, _calls, service = ui
+    log_in(app, auth_service)
+    note = "Missing requested detail. [Untrusted text](https://example.invalid)"
+    service.writer.write.return_value = {
+        "insufficient_evidence": True, "statements": [], "evidence_note": note,
+    }
+    app.text_area[0].set_value("metformin contraindications")
+    click(app, "Search FDA labels")
+    assert any(element.value == note for element in app.text)
+    assert all(note not in element.value for element in app.markdown)
+    assert any("Engineering FDA excerpt" in element.value for element in app.text)
     assert not app.exception
 
 

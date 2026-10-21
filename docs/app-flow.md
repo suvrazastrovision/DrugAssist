@@ -88,11 +88,11 @@ flowchart TB
 
     subgraph writing["4. Write a cited answer - optional"]
         Audience["User selects Patient or Clinician wording"]
-        Context["Expand exact saved section context<br/>Up to 4 sources, 1600 tokens each<br/>6000-token instructions and context budget"]
+        Context["Expand exact saved section context<br/>Merge overlapping excerpts when budgets permit<br/>Up to 4 sources, 1600 tokens each; 6000 tokens total"]
         Generate["One OpenAI Responses request<br/>Configured model and reasoning; structured output<br/>1500 output tokens; 60-second read timeout"]
         Complete{"Complete response with valid structure<br/>and citations to supplied source IDs?"}
         Supported{"Model reports sufficient evidence?"}
-        Written["Cited answer with source IDs<br/>Expanded supporting FDA context"]
+        Written["Direct cited answer, optional details and warnings<br/>Specific evidence gaps and supporting FDA context"]
         Fallback["Written answer unavailable<br/>Keep the retrieved passages"]
         Abstain["Evidence insufficient for an answer<br/>Keep the retrieved passages"]
         Mode -->|"Yes"| Context
@@ -114,4 +114,4 @@ flowchart TB
 
 The original question reaches lexical search, semantic search and reranking without the parser rewriting its meaning. The API filters by recognized drug and section; it does not interpret manufacturer, route, version or date constraints in natural language. Conditions are not database filters. Terminal search uses the shared retrievers with explicit command-line filters and bypasses the app's login, parser, scope gate and relevance cutoff.
 
-Each current result is a passage from a longer section, so it can end mid-list. The complete section remains in the saved dataset. Expanding an original passage shows that chunk only. Answer mode additionally supplies expanded saved section context, deduplicated by document and section. Short sections can be supplied in full; longer sections use bounded windows and are marked partial. The Supporting FDA context expander shows exactly the context cited by the writer. Generated answers need independent factual and citation-support review. The implementation checks citation identities and response structure; it does not automatically establish that each claim is supported. No-match searches skip generation. Generation failures keep the retrieved evidence available.
+Each current result is a passage from a longer section, so it can end mid-list. The complete section remains in the saved dataset. Expanding an original passage shows that chunk only. Answer mode additionally supplies expanded saved section context: already-covered passages are skipped, overlapping windows are merged when budgets permit, and distinct useful windows from one section can remain separate sources. Short sections can be supplied in full; longer sections use bounded windows and are marked partial. The Supporting FDA context expander shows exactly the context cited by the writer. Generated answers need independent factual and citation-support review. The implementation checks citation identities and response structure; it does not automatically establish that each claim is supported. No-match searches skip generation. Generation failures keep the retrieved evidence available.

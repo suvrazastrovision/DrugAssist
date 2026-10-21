@@ -117,12 +117,27 @@ def show_answer(result: dict) -> None:
     status = result.get("answer_status")
     if status != "generated":
         st.info(result["answer_note"])
+        if result.get("evidence_note"):
+            st.text(result["evidence_note"])
         return
     st.caption("AI-written from the FDA evidence below. Review the sources for important qualifications.")
+    current_section = "answer"
+    headings = {"details": "Details", "warnings": "Important warnings"}
     for statement in result["statements"]:
+        section = statement.get("section", "answer")
+        if section != current_section and section in headings:
+            st.markdown(f"**{headings[section]}**")
+            current_section = section
         # Model text is displayed literally, so it cannot introduce clickable invented URLs or HTML.
         st.text(statement["text"])
         st.caption("Sources: " + ", ".join(dict.fromkeys(statement["source_ids"])))
+    partial = any(source["context_partial"] for source in result["citations"])
+    if result.get("evidence_note") or partial:
+        st.markdown("**What this answer covers**")
+        if result.get("evidence_note"):
+            st.text(result["evidence_note"])
+        if partial:
+            st.caption("The supporting excerpts include part of a longer section; this may not be a complete answer.")
     with st.expander("Supporting FDA context"):
         for source in result["citations"]:
             st.markdown(f"**{source['source_id']} | {source['section'].replace('_', ' ').title()}**")
