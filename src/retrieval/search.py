@@ -40,7 +40,11 @@ class SearchSession:
             raise FileNotFoundError(
                 "No active search index; restore it or run fda-rag maintain --step index"
             )
-        path = Path(run_path) if run_path else ROOT / read_json(pointer)["run_path"]
+        # Prepared bundles can contain paths saved on Windows; accept either separator on every OS.
+        path = (
+            Path(str(run_path).replace("\\", "/"))
+            if run_path else ROOT / read_json(pointer)["run_path"].replace("\\", "/")
+        )
         self.run = read_json(path)
         self.snapshot_id = self.run["snapshot_id"]
         if snapshot_id and snapshot_id != self.snapshot_id:

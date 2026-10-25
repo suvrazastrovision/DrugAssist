@@ -84,6 +84,22 @@ def test_unknown_label_filter_is_not_silently_relaxed(saved_run):
     assert "No filters were relaxed" in format_results(response)
 
 
+@pytest.mark.parametrize("separator", ["/", "\\"])
+def test_active_pointer_accepts_paths_saved_on_either_os(saved_run, tmp_path, monkeypatch, separator):
+    from src.retrieval import search
+
+    folder = tmp_path / "results/search_indexes/shared"
+    write_json(folder / "index.json", read_json(saved_run))
+    write_json(folder / "chunks.json", read_json(saved_run.parent / "chunks.json"))
+    write_json(tmp_path / "results/search_latest.json", {
+        "run_path": separator.join(["results", "search_indexes", "shared", "index.json"]),
+    })
+    monkeypatch.setattr(search, "ROOT", tmp_path)
+    response = SearchSession().search("safety")
+    assert response["run_id"] == "test-search-run"
+    assert response["results"]
+
+
 def test_missing_active_index_gives_current_rebuild_command(tmp_path, monkeypatch):
     from src.retrieval import search
 

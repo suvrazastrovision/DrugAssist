@@ -1,51 +1,95 @@
 # DrugAssist
 
-Search FDA drug labels using hybrid retrieval and reranking, with optional cited answers.
-The prepared collection covers **60 drug names, 118 FDA labels and 8,601 passages**.
+Search FDA drug labels with hybrid retrieval, reranking and optional cited answers.
+The prepared collection contains **60 drug names, 118 FDA labels and 8,601 passages**.
 
 ## Quick start
 
-1. **On Windows, install** [Git](https://git-scm.com/downloads) and [uv](https://docs.astral.sh/uv/getting-started/installation/). Internet access and your own OpenAI API key are required.
+1. **Install prerequisites:** [Git](https://git-scm.com/downloads), [uv](https://docs.astral.sh/uv/getting-started/installation/) and Python 3.11 or 3.12. Have your own OpenAI API key and internet access.
 
-2. **Clone the repository** and enter its folder:
+2. **Clone and enter the repository** on Windows, Linux or macOS:
 
-   ```powershell
+   ```sh
    git clone https://github.com/suvrazastrovision/drug_rag.git
    cd drug_rag
    ```
 
-3. **Add the prepared data.** Get `drugassist-data.zip` from the repository owner, matching this repository version. Extract its `data/` and `results/` folders beside `start.ps1`, merging existing folders. Check that `data/chroma/chroma.sqlite3` now exists.
+3. **Add prepared data:** get the matching `drugassist-data.zip` from the owner. Extract its `data/` and `results/` folders into the repository root, merging existing folders. Confirm `data/chroma/chroma.sqlite3` exists. The ZIP is shared separately from Git.
 
-   The ZIP is shared separately; cloning alone does not include the data or models.
+4. **Choose a startup method:**
+   - **Windows:** use the launcher below, or start both services manually.
+   - **Linux/macOS:** follow the manual setup and terminal commands below.
 
-4. **Start the app** from PowerShell in the repository folder:
+### Windows launcher
 
-   ```powershell
-   powershell -ExecutionPolicy Bypass -File .\start.ps1
-   ```
+Run in PowerShell from the repository folder:
 
-   The launcher installs dependencies, checks the prepared collection and asks for your API key once, saving it in local `.env`. It starts both servers without downloading labels or rebuilding document embeddings. The first launch may take several minutes.
+```powershell
+powershell -ExecutionPolicy Bypass -File .\start.ps1
+```
 
-5. **Use the app.** Your browser opens at **http://127.0.0.1:8501**. Sign up, log in and ask a drug-label question. Leave **Write a cited answer** checked for a summary, or uncheck it for passages only.
+The launcher installs dependencies, requests your API key once, starts both services and opens the browser. Keep the terminal open; **Ctrl+C** stops both services.
 
-- **Stop:** keep the terminal open; press **Ctrl+C** to stop both servers.
-- **API usage:** new question embeddings and written answers can incur OpenAI charges.
-- **Troubleshooting:** stop existing servers/notebooks before retrying dependency setup. Logs: `results/private/startup/`; [manual startup and settings](docs/usage.md).
-- **Compatibility:** the launcher checks configuration, project metadata and `uv.lock`. Use the matching data bundle and repository version in a compatible Windows environment.
+### Manual setup — Windows, Linux and macOS
+
+Stop running app servers/notebooks before dependency setup:
+
+```sh
+uv sync --locked --inexact
+```
+
+Create `.env` from [.env.example](.env.example) **once**:
+
+| Platform | Command |
+|---|---|
+| Windows PowerShell | `Copy-Item .env.example .env` |
+| Linux/macOS terminal | `cp .env.example .env` |
+
+Edit `.env`, enter your key and point the model loader to the prepared assets:
+
+```dotenv
+OPENAI_API_KEY=your-own-api-key
+HF_HUB_CACHE=./data/models
+```
+
+Then check the extracted collection:
+
+```sh
+uv run --locked --no-sync python scripts/share_data.py --check
+```
+
+### Start backend and frontend from terminals
+
+Open **two terminals**, both in the repository folder. These commands work in PowerShell, Bash and Zsh.
+
+**Terminal 1 — backend:**
+
+```sh
+uv run --locked --no-sync uvicorn src.api.main:app --host 127.0.0.1 --port 8000
+```
+
+**Terminal 2 — frontend:**
+
+```sh
+uv run --locked --no-sync streamlit run frontend/app.py
+```
+
+- **App:** http://127.0.0.1:8501 — sign up, log in and ask a drug-label question.
+- **API reference:** http://127.0.0.1:8000/docs
+- **Stop manual servers:** press **Ctrl+C in each terminal**.
+- **Answers:** uncheck **Write a cited answer** for evidence-only search.
+- **Usage:** first setup may take several minutes; new question embeddings and answers can incur OpenAI charges.
+- **Compatibility:** use matching code/configuration and a compatible Chroma bundle. Windows startup has been tested; Linux/macOS runtime and transferred native indexes have not been verified.
 
 ## Documentation
 
 | Guide | Details |
 |---|---|
-| [Run and search](docs/usage.md) | Manual startup, accounts, API, answer settings and terminal search |
-| [Application flow](docs/app-flow.md) | How data preparation, retrieval, reranking and answer writing connect |
+| [Run and search](docs/usage.md) | Accounts, settings, API, answer writing and terminal search |
+| [Application flow](docs/app-flow.md) | Data preparation, retrieval, reranking and answer writing |
 | [Database schema](docs/database-schema.md) | Chroma, embedding cache and account tables |
-| [Notebooks and evaluation](docs/research.md) | Data checks, saved comparisons, maintenance and scientific limits |
+| [Notebooks and evaluation](docs/research.md) | Data checks, comparisons, maintenance and scientific limits |
 | [Repository and saved data](docs/repository.md) | Folder roles, required artifacts and data transfer |
-| [Drug list and configuration](config/default.json) | Selected drugs, models, chunking and retrieval settings |
+| [Configuration](config/default.json) | Drug list, models, chunking and retrieval settings |
 
-Interactive API reference, while running: **http://127.0.0.1:8000/docs**.
-
-## Read results carefully
-
-Passages can end mid-section. Scores are relevance rankings, not medical confidence. Review cited FDA text: format and source-ID checks do not prove factual support. The saved comparison checks drug/section matching, not clinical answer quality. Outputs are informational, not personalized medical advice.
+Outputs are informational, not personalized medical advice. Scores are relevance rankings, not confidence. Review the cited FDA text; the saved comparison does not validate clinical answer quality.
