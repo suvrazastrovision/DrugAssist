@@ -15,15 +15,19 @@ uv sync --locked --extra research --extra dev
 |---|---|
 | [1. Data quality](../notebooks/01_data_quality_analysis.ipynb) | Check downloaded files, missing fields and source integrity |
 | [2. Explore and search](../notebooks/02_exploratory_data_analysis.ipynb) | Inspect section lengths, passage splitting and a local search example |
-| [3. Compare search methods](../notebooks/03_retrieval_pipeline_benchmark.ipynb) | Display saved six-method results for 60 drugs |
+| [3. Compare search methods](../notebooks/03_retrieval_pipeline_benchmark.ipynb) | Compare six methods: 60 baseline + 10 hard questions across 60 drugs |
 
 ## What the comparison measures
 
-- **60 questions:** one/drug; 20 uses, 20 dosage, 20 warnings.
-- **Reference:** automatically matched FDA drug identity and section.
+- **60 baseline questions:** unchanged; 20 uses, 20 dosage, 20 warnings. Hits match FDA identity and section.
+- **10 hard questions:** 3 vocabulary, 3 constraint, 2 multi-section and 2 near-match challenges.
+- **Hard references:** 25 required evidence items, anchored to exact saved text, character offsets and source hashes before retrieval.
+- **Hard scores:** any required evidence in top 10, mean requirement coverage and complete-evidence success; duplicate chunks earn no extra credit.
+- **Separate groups:** baseline section matches and hard evidence coverage have different meanings; their percentages are not combined.
 - **Scope:** unfiltered retrieval, without the app's score cutoff.
 - **Timing:** excludes model loading, question embedding and index building.
-- **Limits:** no independent relevance judgments, untouched test set or clinical/answer-quality validation.
+- **Limits:** source anchors are repository-reviewed, not independently clinically reviewed or exhaustive relevance judgments. Equivalent evidence may be missed.
+- Ten authored challenges are a small stress test, without validated difficulty, an untouched test set or clinical/answer-quality validation.
 
 ## Maintain and check the project
 
@@ -51,6 +55,7 @@ uv run --locked --no-sync python scripts/execute_notebooks.py
 ```
 
 - Results: `reports/expanded_60/method_comparison.json`.
+- The original collection/index is reused. New questions need no Chroma rebuild or document re-embedding.
 - Comparison can incur embedding usage and runs the local reranker; matching completed runs are reused.
 - Reuse checks index/settings, questions and comparison-module hash, not every code/dependency change.
 - Notebook execution refreshes displays from saved results.

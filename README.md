@@ -3,6 +3,8 @@
 Search FDA drug labels with hybrid retrieval, reranking and optional cited answers.
 The prepared collection contains **60 drug names, 118 FDA labels and 8,601 passages**.
 
+[Notebook 3](notebooks/03_retrieval_pipeline_benchmark.ipynb) compares six retrieval methods on **60 baseline + 10 hard questions**, reporting each group separately. See [evaluation details](docs/research.md).
+
 ## Quick start
 
 1. **Install prerequisites:** [Git](https://git-scm.com/downloads), [uv](https://docs.astral.sh/uv/getting-started/installation/) and Python 3.11 or 3.12. Have your own OpenAI API key and internet access.
