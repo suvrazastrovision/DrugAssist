@@ -47,7 +47,14 @@ Run the remaining commands inside `drug_rag`.
 Have your own [OpenAI API key](https://platform.openai.com/api-keys) ready.
 New semantic searches, written answers and source-build embeddings can incur API charges.
 
-**Windows x64:**
+Cloning the code does not include the searchable data. Choose either setup path:
+
+| Path | What happens | Use on |
+|---|---|---|
+| Download prepared data | The launcher downloads the ZIP automatically; nobody needs to send it to you. Requires a published data release. | Windows x64 + Python 3.11 |
+| Build from source | Downloads FDA labels and builds the index locally; no prepared ZIP is needed. Takes longer and incurs embedding charges. | macOS/Linux, or Windows as an alternative |
+
+**Windows x64 — automatic ZIP download:**
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\start.ps1
@@ -58,13 +65,16 @@ and opens the app. Wait for `DrugAssist is ready: http://127.0.0.1:8501`.
 
 Prepared data requires **Windows x64 + Python 3.11** and the published
 [data release](https://github.com/suvrazastrovision/drug_rag/releases/tag/data-v0.1.0).
-If unavailable, explicitly build fresh data instead (embedding charges apply):
+
+**Windows alternative — build from source without a ZIP:**
+
+If the release is unavailable, or you prefer to build the data yourself, run:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\start.ps1 -FromSource
 ```
 
-**macOS / Linux:**
+**macOS / Linux — build from source without a ZIP:**
 
 ```sh
 cp .env.example .env
