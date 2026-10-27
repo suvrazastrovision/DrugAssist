@@ -3,6 +3,16 @@
 Search FDA drug labels and get optional AI-written answers with supporting sources.
 Prepared collection: **60 drug names · 118 FDA labels · 8,601 passages**.
 
+After signing in, ask a question such as **“What warnings are listed for warfarin?”**
+DrugAssist searches a saved collection of FDA labels using both word matching and meaning-based
+search, then uses a local model to rank the most relevant passages. Results include label dates
+and links to the original FDA sources.
+
+Enable **Write a cited answer** to have OpenAI turn the retrieved evidence into an answer with
+source references, using patient or clinician wording. You can also read the passages directly.
+The app reports when no matching evidence is found; answers still need review against the sources.
+See [how the app works](docs/app-flow.md) for the full workflow.
+
 [Setup](#quick-start) · [Tests](#tests) · [Troubleshooting](#troubleshooting) · [Guides](#documentation)
 
 ## Quick start
