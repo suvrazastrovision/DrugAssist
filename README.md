@@ -34,13 +34,13 @@ uv downloads Python when needed, so no separate Python installation is required.
 Use a local folder outside OneDrive or other cloud-sync folders:
 
 ```sh
-git clone https://github.com/suvrazastrovision/drug_rag.git
-cd drug_rag
+git clone https://github.com/suvrazastrovision/drug_rag.git DrugAssist
+cd DrugAssist
 uv sync --locked --inexact --python 3.11
 ```
 
 Downloads may take several minutes. Python 3.11–3.12 is supported; these steps use 3.11.
-Run the remaining commands inside `drug_rag`.
+Run the remaining commands inside `DrugAssist`.
 
 ### 3. Set up and launch
 
@@ -91,7 +91,7 @@ This downloads FDA data and the local model, then builds the index. It may take 
 and produce different data from the saved benchmark. Other architectures and Python 3.12 also
 need a source build; dependency availability varies. Live setup needs checking on each target platform.
 
-Open **two terminals**, both inside `drug_rag`:
+Open **two terminals**, both inside `DrugAssist`:
 
 ```sh
 # Terminal 1: search API
