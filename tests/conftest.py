@@ -7,6 +7,7 @@ import os
 import socket
 import sys
 import tempfile
+from contextvars import ContextVar
 from pathlib import Path
 
 # Set cache locations before test collection imports third-party model libraries.
@@ -33,11 +34,25 @@ _protected.extend([
     Path(tempfile.gettempdir()) / "data-gym-cache",
 ])
 _guard_active = False
+_opening_path = ContextVar("opening_path", default=None)
+
+
+def _directory_path(descriptor):
+    # Linux rmtree opens children relative to an already-open directory. The
+    # open audit event omits dir_fd, so resolve it before calling os.open.
+    for folder in ("/proc/self/fd", "/dev/fd"):
+        try:
+            return Path(os.readlink(f"{folder}/{descriptor}"))
+        except OSError:
+            continue
+    raise AssertionError("Cannot resolve directory descriptor for the test filesystem guard")
 
 
 def _protect_runtime_files(event, args):
     if _guard_active and event in {"open", "os.mkdir", "os.listdir", "os.scandir", "sqlite3.connect"}:
-        path = args[0]
+        path = _opening_path.get() if event == "open" and _opening_path.get() is not None else args[0]
+        if event == "os.mkdir" and args[2] != -1 and not Path(os.fsdecode(path)).is_absolute():
+            path = _directory_path(args[2]) / os.fsdecode(path)
         if isinstance(path, (str, bytes, os.PathLike)):
             target = Path(os.fsdecode(path)).resolve()
             if any(target == parent or target.is_relative_to(parent) for parent in _protected):
@@ -84,6 +99,21 @@ def offline_providers(monkeypatch, tmp_path, request):
         raise AssertionError("External sockets are disabled during tests")
 
     monkeypatch.setattr(socket.socket, "connect", no_connect)
+    original_open = os.open
+
+    def guarded_open(path, flags, mode=0o777, *, dir_fd=None):
+        target = path
+        if dir_fd is not None and not Path(os.fsdecode(path)).is_absolute():
+            target = _directory_path(dir_fd) / os.fsdecode(path)
+        token = _opening_path.set(target)
+        try:
+            return original_open(path, flags, mode, dir_fd=dir_fd)
+        finally:
+            _opening_path.reset(token)
+
+    monkeypatch.setattr(os, "open", guarded_open)
+    monkeypatch.setattr(os, "supports_dir_fd", os.supports_dir_fd | {guarded_open}
+                        if original_open in os.supports_dir_fd else os.supports_dir_fd)
     monkeypatch.setenv("DRUGASSIST_AUTH_DB", str(tmp_path / "accounts.sqlite3"))
     for name, folder in _CACHE_FOLDERS.items():
         monkeypatch.setenv(name, str(tmp_path / "caches" / folder))

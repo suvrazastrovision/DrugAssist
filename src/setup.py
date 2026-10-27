@@ -19,6 +19,7 @@ from src.bundles import COMPATIBILITY, check_bundle, local_path, sha256
 from src.utils.config import CODE_ROOT, ROOT, load_config, read_json
 
 POINTER = "results/search_latest.json"
+RECEIPT = "results/private/bundle-checked.sha256"
 
 
 def model_folder(root, settings):
@@ -189,6 +190,14 @@ def setup_lock(root):
 def install_stage(stage, root, *, from_source=False):
     """Replace files transactionally; preserve unrelated files and activate last."""
     files = [p for p in stage.rglob("*") if p.is_file() and public_member(p.relative_to(stage).as_posix())]
+    # This receipt is generated locally by check_bundle, never accepted from an
+    # archive. Preserve it before the native smoke check's bookkeeping changes
+    # would otherwise be mistaken for corruption on the next launch.
+    receipt = stage / RECEIPT
+    if receipt.is_file():
+        if receipt.read_text() != sha256(stage / "data/bundle.json"):
+            raise ValueError("Staged bundle validation receipt does not match its manifest")
+        files.append(receipt)
     if from_source:
         files.append(stage / "reports/data_checks.json")
     files.sort(key=lambda p: (p.relative_to(stage).as_posix() == POINTER, p.as_posix()))
@@ -232,11 +241,16 @@ def smoke_installation(root):
                TRANSFORMERS_CACHE=str(root / "data/models"))
     for name in ("OPENAI_API_KEY", "FDA_API_KEY"):
         env.pop(name, None)
-    subprocess.run(
-        [sys.executable, "-c", ("from src.services.search_service import build_search_service; "
-         "service = build_search_service(); print(service.health()); service.close()")],
-        cwd=root, env=env, check=True, timeout=120,
-    )
+    try:
+        subprocess.run(
+            [sys.executable, "-c", ("from src.services.search_service import build_search_service; "
+             "service = build_search_service(); print(service.health()); service.close()")],
+            cwd=root, env=env, check=True, timeout=120,
+        )
+    except (OSError, subprocess.SubprocessError):
+        raise RuntimeError(
+            "Native index/model readiness check failed or timed out; setup did not activate a new installation."
+        ) from None
 
 
 def build_source(stage, config_path):
@@ -266,6 +280,7 @@ def setup(*, from_source=False, config_path=None, root=ROOT):
             # Refuse to overwrite an incompatible installation, including private user state.
             check_installation(root, config, require_models=False)
             prepare_models(root, config["reranker"])
+            smoke_installation(root)
             print("Existing compatible installation and model assets are ready.")
             return
         with tempfile.TemporaryDirectory(prefix=".drugassist-setup-", dir=root) as scratch:
@@ -289,5 +304,6 @@ def setup(*, from_source=False, config_path=None, root=ROOT):
                     target.parent.mkdir(parents=True, exist_ok=True)
                     shutil.copyfile(root / name, target)
             check_installation(stage, config)
+            smoke_installation(stage)
             install_stage(stage, root, from_source=from_source)
     print("DrugAssist is ready. Start the backend and frontend using the README commands.")

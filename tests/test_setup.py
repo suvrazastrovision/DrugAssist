@@ -1,6 +1,9 @@
 """First-run installs use staged public data and never a paid implicit fallback."""
 
 import json
+import sqlite3
+import subprocess
+from contextlib import closing
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import Mock
@@ -12,6 +15,7 @@ from test_share_data import prepared as bundle_data  # noqa: F401 -- Register th
 
 from src import bundles
 from src import setup as installer
+from src.setup import smoke_installation
 from src.utils.config import write_json
 
 
@@ -39,6 +43,9 @@ def release(request, tmp_path, monkeypatch):
     # The real corpus identifier validation is covered by SearchSession tests; this fixture
     # intentionally contains only a minimal SQLite schema instead of a real vector index.
     monkeypatch.setattr("src.retrieval.search.SearchSession", Mock())
+    # Placeholder model files cannot be loaded; native subprocess behavior is
+    # exercised separately below rather than using real downloaded weights.
+    monkeypatch.setattr(installer, "smoke_installation", Mock())
     asset = {"url": "https://github.com/suvrazastrovision/drug_rag/releases/download/data-v0.1.0/data.zip",
              "sha256": bundles.sha256(archive)}
     key = installer.platform.system().lower() + "-" + installer.platform.machine().lower()
@@ -61,6 +68,25 @@ def test_bundle_setup_installs_and_then_reuses_without_provider_calls(release, m
     assert not (root / ".env").exists()
     run_setup(root)
     assert download.call_count == 1
+    assert installer.smoke_installation.call_count == 2
+
+
+def test_native_bookkeeping_and_later_launch_preserve_bundle_validation(release, monkeypatch):
+    root, archive, _ = release
+    monkeypatch.setattr(installer, "download_bundle", lambda asset, output: output.write_bytes(archive.read_bytes()))
+
+    def smoke(stage):
+        assert (stage / installer.RECEIPT).read_text() == bundles.sha256(stage / "data/bundle.json")
+        with closing(sqlite3.connect(stage / "data/chroma/chroma.sqlite3")) as db, db:
+            db.execute("CREATE TABLE IF NOT EXISTS bookkeeping(value TEXT)")
+
+    monkeypatch.setattr(installer, "smoke_installation", smoke)
+    run_setup(root)
+    assert (root / installer.RECEIPT).read_text() == bundles.sha256(root / "data/bundle.json")
+    run_setup(root)
+    (root / "data/processed/snapshot/documents.json").write_text("corrupt")
+    with pytest.raises(ValueError, match="checksum mismatch"):
+        run_setup(root)
 
 
 def test_download_failure_never_builds_or_overwrites_private_files(release, monkeypatch):
@@ -122,7 +148,7 @@ def test_incompatible_existing_installation_is_not_replaced(release, monkeypatch
     download.assert_not_called()
 
 
-@pytest.mark.parametrize("name", ["../escape", "data/auth/users.sqlite3", ".env", "C:/escape",
+@pytest.mark.parametrize("name", ["../escape", "data/auth/users.sqlite3", installer.RECEIPT, ".env", "C:/escape",
                                       "data/chroma/../../auth", "data\\chroma\\file"])
 def test_unsafe_archive_members_are_rejected(tmp_path, name):
     if "\\" in name:
@@ -206,7 +232,12 @@ def test_install_failure_rolls_back_and_activates_pointer_last(tmp_path, monkeyp
     for folder in (root, stage):
         write_json(folder / installer.POINTER, {"run_path": str(folder)})
         write_json(folder / "data/processed/latest.json", {"snapshot_id": str(folder)})
+        write_json(folder / "data/bundle.json", {"stage": str(folder)})
+        receipt = folder / installer.RECEIPT
+        receipt.parent.mkdir(parents=True, exist_ok=True)
+        receipt.write_text(bundles.sha256(folder / "data/bundle.json"))
     before = (root / installer.POINTER).read_bytes()
+    before_receipt = (root / installer.RECEIPT).read_bytes()
     original = installer.shutil.copyfile
     order = []
 
@@ -221,4 +252,60 @@ def test_install_failure_rolls_back_and_activates_pointer_last(tmp_path, monkeyp
         installer.install_stage(stage, root)
     assert order[-1] == installer.POINTER
     assert (root / installer.POINTER).read_bytes() == before
+    assert installer.RECEIPT in order
+    assert (root / installer.RECEIPT).read_bytes() == before_receipt
     assert json.loads((root / "data/processed/latest.json").read_text())["snapshot_id"] == str(root)
+
+
+@pytest.mark.parametrize("from_source", [False, True])
+@pytest.mark.parametrize("failure", [subprocess.CalledProcessError(1, "native-check"),
+                                   subprocess.TimeoutExpired("native-check", 120)])
+def test_native_failure_never_activates_staged_installation(release, monkeypatch, from_source, failure):
+    root, archive, _ = release
+    write_json(root / installer.POINTER, {"run_path": "previous-index"})
+    before = (root / installer.POINTER).read_bytes()
+    private = root / "data/auth/users.sqlite3"
+    private.parent.mkdir(parents=True)
+    private.write_bytes(b"private accounts")
+    monkeypatch.setattr(installer, "download_bundle", lambda asset, output: output.write_bytes(archive.read_bytes()))
+
+    def build(stage, config_path):
+        with ZipFile(archive) as zipped:
+            zipped.extractall(stage)
+        (stage / "data/bundle.json").unlink()
+        write_json(stage / "reports/data_checks.json", {"snapshot_id": "snapshot"})
+
+    monkeypatch.setattr(installer, "build_source", build)
+    monkeypatch.setattr(installer, "smoke_installation", smoke_installation)
+    monkeypatch.setattr(installer.subprocess, "run", Mock(side_effect=failure))
+    with pytest.raises(RuntimeError, match="readiness check failed or timed out"):
+        run_setup(root, from_source=from_source)
+    assert (root / installer.POINTER).read_bytes() == before
+    assert private.read_bytes() == b"private accounts"
+    assert not (root / "data/chroma").exists()
+    assert not (root / "results/private/setup.lock").exists()
+
+
+def test_native_smoke_uses_offline_workspace_without_provider_credentials(tmp_path, monkeypatch):
+    monkeypatch.setenv("OPENAI_API_KEY", "private-test-key")
+    monkeypatch.setenv("FDA_API_KEY", "private-test-key")
+    run = Mock()
+    monkeypatch.setattr(installer.subprocess, "run", run)
+    smoke_installation(tmp_path)
+    options = run.call_args.kwargs
+    assert options["cwd"] == tmp_path.resolve()
+    assert options["check"] is True and options["timeout"] == 120
+    assert options["env"]["DRUGASSIST_WORKSPACE"] == str(tmp_path.resolve())
+    assert options["env"]["HF_HUB_OFFLINE"] == options["env"]["TRANSFORMERS_OFFLINE"] == "1"
+    assert "OPENAI_API_KEY" not in options["env"] and "FDA_API_KEY" not in options["env"]
+
+
+def test_mismatched_staged_receipt_is_rejected_before_installation(tmp_path):
+    stage, root = tmp_path / "stage", tmp_path / "root"
+    write_json(stage / "data/bundle.json", {})
+    receipt = stage / installer.RECEIPT
+    receipt.parent.mkdir(parents=True)
+    receipt.write_text("invalid")
+    with pytest.raises(ValueError, match="receipt does not match"):
+        installer.install_stage(stage, root)
+    assert not root.exists()
