@@ -160,3 +160,8 @@ Prepared downloads verify checksums, preserve credentials/accounts and never aut
 
 For information, not personalized medical advice. Scores rank relevance, not correctness or confidence.
 Review FDA sources. The saved benchmark does not validate clinical answer quality or a rebuilt collection.
+
+## License
+
+Project code is available under the [MIT License](LICENSE).
+Third-party dependencies, model weights and datasets retain their own licenses and terms.
