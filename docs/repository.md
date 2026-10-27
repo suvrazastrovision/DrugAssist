@@ -48,6 +48,9 @@
 
 ## Reproduce or transfer the project
 
+- A fresh clone can run `fda-rag setup` to download a pinned release bundle, or
+  `fda-rag setup --from-source` to acquire data and create embeddings locally.
+- The default path never automatically falls back to paid source rebuilding.
 - Transfer source data, models, active index and comparison alongside code/configuration; large artifacts are Git-ignored.
 - Fresh downloads may differ from saved versions.
 - VS Code hides generated environments/caches; files remain on disk.
@@ -67,3 +70,28 @@ uv run --locked --no-sync python scripts/share_data.py
 - Export backs up SQLite and rejects source changes during packaging.
 - Startup verifies checksums once, then immutable files and Chroma counts on later runs.
 - Recipients follow the [quick start](../README.md#quick-start); they create their own accounts and use their own API keys.
+
+## Prepare and publish a release asset
+
+Stop services and ingestion jobs. From the matching code checkout, run:
+
+```sh
+uv run --locked --no-sync python scripts/prepare_release.py --tag data-v0.1.0
+```
+
+This exports the public collection into `results/private/release/`, restores it into a
+temporary directory, checks readiness, and writes `config/distribution.json` with its
+exact URL, checksum, platform and Python version. It does not publish anything.
+The restoration check loads the real reranker and native Chroma index in an offline
+child process, without issuing a question or using an API key.
+
+1. Review the exported contents and rerun the offline tests.
+2. Commit the matching code, configuration, lockfile and distribution descriptor.
+3. Create the immutable GitHub Release tag specified above at that commit.
+4. Upload the exact ZIP printed by the command; do not recompress or replace it.
+5. Run `fda-rag setup` in a clean checkout on the advertised platform and test startup.
+6. Use a new release tag when data/configuration changes. Only advertise platforms
+   whose restored native indexes have been tested. Other platforms use `--from-source`.
+
+Archive checksums refer to the exact uploaded bytes. Generated archives stay outside
+Git history. Keep published comparison reports separate from source-built collections.

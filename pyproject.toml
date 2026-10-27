@@ -27,7 +27,8 @@ include = ["src*"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+addopts = "-m 'not live'"
+markers = ["live: explicit opt-in integration checks requiring external services or models"]
 [tool.ruff]
 line-length = 110
 target-version = "py311"
-

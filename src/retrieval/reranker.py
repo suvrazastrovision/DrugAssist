@@ -14,8 +14,13 @@ class CrossEncoderReranker:
             raise ValueError("Reranker requires an immutable Hugging Face commit")
         self.retriever, self.candidates = retriever, candidates
         self.model_id, self.revision, self.batch_size = model, revision, batch_size
+        # A local snapshot also keeps CrossEncoder's separate AutoConfig lookup offline.
+        from src.setup import model_folder
+
+        prepared = model_folder(ROOT, {"model": model, "revision": revision})
+        model_path = str(prepared) if (prepared / "config.json").is_file() else model
         self.model = CrossEncoder(
-            model,
+            model_path,
             revision=revision,
             max_length=max_length,
             device="cpu",

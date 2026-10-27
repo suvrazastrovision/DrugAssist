@@ -76,6 +76,8 @@ class APIClient:
 
     def discover(self):
         spec, meta = self.get("https://api.morvs.ai/openapi.json")
+        if not isinstance(spec, dict) or not isinstance(spec.get("paths"), dict):
+            raise APIError("MORVS contract changed: invalid OpenAPI response")
         paths = {p: v for p, v in spec.get("paths", {}).items() if "/fda/labels/" in p}
         if "/api/v1/fda/labels/recent" not in paths:
             raise APIError("MORVS contract changed: recent label path missing")

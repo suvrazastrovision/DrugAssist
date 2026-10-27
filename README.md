@@ -7,81 +7,95 @@ The prepared collection contains **60 drug names, 118 FDA labels and 8,601 passa
 
 ## Quick start
 
-1. **Install prerequisites:** [Git](https://git-scm.com/downloads), [uv](https://docs.astral.sh/uv/getting-started/installation/) and Python 3.11 or 3.12. Have your own OpenAI API key and internet access.
+Install Git, [uv](https://docs.astral.sh/uv/getting-started/installation/), and Python
+3.11 or 3.12. Clone the repository, then install dependencies:
 
-2. **Clone and enter the repository** on Windows, Linux or macOS:
+```sh
+git clone https://github.com/suvrazastrovision/drug_rag.git
+cd drug_rag
+uv sync --locked --inexact
+```
 
-   ```sh
-   git clone https://github.com/suvrazastrovision/drug_rag.git
-   cd drug_rag
-   ```
+Create `.env` from [.env.example](.env.example) once (`Copy-Item .env.example .env`
+in PowerShell, or `cp .env.example .env` in Bash). Enter your own `OPENAI_API_KEY`.
+New query embeddings and optional written answers can incur OpenAI charges.
 
-3. **Add prepared data:** get the matching `drugassist-data.zip` from the owner. Extract its `data/` and `results/` folders into the repository root, merging existing folders. Confirm `data/chroma/chroma.sqlite3` exists. The ZIP is shared separately from Git.
+### Choose a setup path
 
-4. **Choose a startup method:**
-   - **Windows:** use the launcher below, or start both services manually.
-   - **Linux/macOS:** follow the manual setup and terminal commands below.
+| Path | Command | Requirements |
+|---|---|---|
+| Download prepared data (default) | `uv run --locked --no-sync fda-rag setup` | Internet; published release asset for your platform/Python |
+| Build fresh data | `uv run --locked --no-sync fda-rag setup --from-source` | Internet and your OpenAI key; document embedding charges apply |
+
+The default downloads an exact versioned GitHub Release asset and verifies its SHA-256,
+member checksums, configuration, runtime, source inventory and model files before activation.
+No personal ZIP handoff is needed. The matching asset must first be published by the maintainer;
+until it is published, use the source-build command. A failed download never starts a paid build.
+
+The prepared native index currently targets **Windows x64, Python 3.11**. On Linux, macOS,
+other architectures, or Python 3.12, use `--from-source`. These source-build paths have automated
+engineering coverage; live provider setup must still be checked on each target platform.
+
+Fresh builds use direct openFDA lookups if MORVS is unavailable, build an isolated collection,
+and download the pinned reranker. They can take several minutes and produce different labels
+from the saved benchmark. The saved benchmark does not evaluate a rebuilt collection.
+
+Setup reuses a compatible existing installation. For a different configuration or fresh rebuild,
+use a separate checkout. Stop services before setup. Credentials, accounts and query caches are
+excluded from downloaded bundles and are preserved during installation.
 
 ### Windows launcher
-
-Run in PowerShell from the repository folder:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\start.ps1
 ```
 
-The launcher installs dependencies, requests your API key once, starts both services and opens the browser. Keep the terminal open; **Ctrl+C** stops both services.
+For the source-build path:
 
-### Manual setup — Windows, Linux and macOS
-
-Stop running app servers/notebooks before dependency setup:
-
-```sh
-uv sync --locked --inexact
+```powershell
+powershell -ExecutionPolicy Bypass -File .\start.ps1 -FromSource
 ```
 
-Create `.env` from [.env.example](.env.example) **once**:
+The launcher installs dependencies, requests your key if needed, runs setup, starts both
+services and opens the browser. Keep the terminal open; **Ctrl+C** stops both services.
 
-| Platform | Command |
-|---|---|
-| Windows PowerShell | `Copy-Item .env.example .env` |
-| Linux/macOS terminal | `cp .env.example .env` |
+### Manual startup on all platforms
 
-Edit `.env`, enter your key and point the model loader to the prepared assets:
+After setup, open two terminals in the repository folder.
 
-```dotenv
-OPENAI_API_KEY=your-own-api-key
-HF_HUB_CACHE=./data/models
-```
-
-Then check the extracted collection:
-
-```sh
-uv run --locked --no-sync python scripts/share_data.py --check
-```
-
-### Start backend and frontend from terminals
-
-Open **two terminals**, both in the repository folder. These commands work in PowerShell, Bash and Zsh.
-
-**Terminal 1 — backend:**
+**Backend:**
 
 ```sh
 uv run --locked --no-sync uvicorn src.api.main:app --host 127.0.0.1 --port 8000
 ```
 
-**Terminal 2 — frontend:**
+**Frontend:**
 
 ```sh
 uv run --locked --no-sync streamlit run frontend/app.py
 ```
 
-- **App:** http://127.0.0.1:8501 — sign up, log in and ask a drug-label question.
-- **API reference:** http://127.0.0.1:8000/docs
-- **Stop manual servers:** press **Ctrl+C in each terminal**.
-- **Answers:** uncheck **Write a cited answer** for evidence-only search.
-- **Usage:** first setup may take several minutes; new question embeddings and answers can incur OpenAI charges.
-- **Compatibility:** use matching code/configuration and a compatible Chroma bundle. Windows startup has been tested; Linux/macOS runtime and transferred native indexes have not been verified.
+- App: http://127.0.0.1:8501 - sign up, log in and ask a drug-label question.
+- API reference: http://127.0.0.1:8000/docs
+- Stop: press **Ctrl+C** in each terminal.
+- Uncheck **Write a cited answer** for evidence-only search.
+
+### Run tests without prepared data or existing caches
+
+```sh
+uv sync --locked --extra dev
+uv run --locked --no-sync python scripts/test_clean.py
+uv run --locked --no-sync ruff check src tests scripts frontend
+```
+
+The test runner performs two runs in fresh source copies, excluding prepared data, reports,
+`.env`, and runtime caches. Each process uses empty temporary model/tokenizer cache paths.
+Tests use a checked-in, hash-verified real tokenizer vocabulary, temporary databases, and
+simulated providers. External HTTP and non-loopback sockets are blocked. No API key or ZIP is required.
+
+For a single ordinary run: `uv run --locked --no-sync pytest -q -p no:cacheprovider`.
+Tests marked `live` are excluded by default; select them explicitly with `pytest -m live`.
+Installing dependencies requires internet or an available package cache; test execution does not.
 
 ## Documentation
 

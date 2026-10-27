@@ -19,16 +19,30 @@ def ingest(config, client=None, base_snapshot=None, report_dir=None, set_latest=
     ):
         raise ValueError("Configure nonempty, unique drug search names")
     client = client or APIClient(timeout=settings["timeout"], retries=settings["retries"])
-    discovery = client.discover()
+    errors = []
+    morvs_available = True
+    try:
+        discovery = client.discover()
+    except APIError as exc:
+        morvs_available = False
+        discovery = {"scope": "bounded direct openFDA name lookups; MORVS discovery unavailable"}
+        errors.append({"stage": "morvs_discovery", "error": str(exc)})
     write_json(Path(report_dir or ROOT / "reports") / "api_contract.json", discovery)
     responses = list(base_snapshot["manifest"]["responses"]) if base_snapshot else []
     source_records = [r for r in base_snapshot["records"] if r["kind"] != "fda_full"] if base_snapshot else []
     fda_records = [r for r in base_snapshot["records"] if r["kind"] == "fda_full"] if base_snapshot else []
-    errors, comparisons = [], list(base_snapshot["verification"]) if base_snapshot else []
-    recent, meta = client.recent(settings["recent_limit"])
-    responses.append(meta)
-    if not isinstance(recent.get("labels"), list):
-        raise APIError("MORVS recent response schema changed")
+    comparisons = list(base_snapshot["verification"]) if base_snapshot else []
+    recent = {"labels": []}
+    if morvs_available:
+        try:
+            recent, meta = client.recent(settings["recent_limit"])
+            if not isinstance(recent, dict) or not isinstance(recent.get("labels"), list):
+                raise APIError("MORVS recent response schema changed")
+            responses.append(meta)
+        except APIError as exc:
+            morvs_available = False
+            errors.append({"stage": "morvs_recent", "error": str(exc)})
+            recent = {"labels": []}
     for record in recent["labels"]:
         source_records.append({"record": record, "provenance": meta, "kind": "recent_summary"})
     verified = {r["record"]["set_id"] for r in fda_records}
@@ -39,10 +53,12 @@ def ingest(config, client=None, base_snapshot=None, report_dir=None, set_latest=
             print(f"Reused {name}: {len(covered)} matching full FDA labels", flush=True)
             continue
         try:
-            payload, meta = client.lookup(name)
-            if not isinstance(payload.get("labels"), list):
-                raise APIError("MORVS lookup response schema changed")
-            responses.append(meta)
+            payload = {"labels": []}
+            if morvs_available:
+                payload, meta = client.lookup(name)
+                if not isinstance(payload, dict) or not isinstance(payload.get("labels"), list):
+                    raise APIError("MORVS lookup response schema changed")
+                responses.append(meta)
         except APIError as exc:
             errors.append({"stage": "morvs_lookup", "name": name, "error": str(exc)})
             payload = {"labels": []}

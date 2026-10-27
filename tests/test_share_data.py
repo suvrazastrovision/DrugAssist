@@ -137,3 +137,12 @@ def test_modified_raw_source_is_rejected(prepared):
     write(prepared, "data/raw/http/public.body", "modified")
     with pytest.raises(ValueError, match="Raw response checksum"):
         share_data.export_bundle(prepared, prepared / "drugassist-data.zip")
+
+
+def test_git_line_endings_do_not_break_bundle_compatibility(prepared, tmp_path):
+    for name in share_data.COMPATIBILITY:
+        (prepared / name).write_bytes(b"{}\n")
+    destination = extract(prepared, tmp_path / "recipient")
+    for name in share_data.COMPATIBILITY:
+        (destination / name).write_bytes(b"{}\r\n")
+    share_data.check_bundle(destination)

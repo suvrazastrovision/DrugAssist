@@ -104,3 +104,35 @@ def test_invalid_names_fail_before_network(names):
     config["ingestion"]["lookup_names"] = names
     with pytest.raises(ValueError, match="unique"):
         ingest(config)
+
+
+@pytest.mark.parametrize("failure", ["discovery", "recent", "both"])
+def test_optional_morvs_failures_allow_direct_fda_acquisition(record, tmp_path, monkeypatch, failure):
+    from src.ingestion import data_loader
+    from src.ingestion.api_client import APIError
+
+    monkeypatch.setattr(data_loader, "ROOT", tmp_path)
+    meta = {"body_sha256": "fixture", "raw_file": "test.body"}
+
+    class Client:
+        def discover(self):
+            if failure in {"discovery", "both"}:
+                raise APIError("discovery unavailable")
+            return {"scope": "fixture"}
+
+        def recent(self, limit):
+            if failure in {"recent", "both"}:
+                raise APIError("recent unavailable")
+            return {"labels": []}, meta
+
+        def lookup(self, name):
+            raise APIError("lookup unavailable")
+
+        def fda_name(self, name):
+            return {"results": [record]}, meta
+
+    config = load_config()
+    config["ingestion"].update(lookup_names=["test compound"], fda_verify_per_name=1)
+    snapshot = ingest(config, Client())
+    assert coverage_report(snapshot, ["test compound"])["covered_names"] == 1
+    assert snapshot["manifest"]["errors"]

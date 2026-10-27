@@ -84,7 +84,7 @@ def test_retry_after_and_no_secret_in_metadata(tmp_path, monkeypatch):
     assert all("FAKE-SECRET" not in p.read_text() for p in tmp_path.glob("*.json"))
 
 
-def test_unsupported_pagination_limit():
-    client = APIClient()
+def test_unsupported_pagination_limit(tmp_path):
+    client = APIClient(raw_dir=tmp_path)
     with pytest.raises(ValueError, match="pagination"):
         client.recent(201)

@@ -2,10 +2,13 @@
 
 import hashlib
 import json
+import os
 from datetime import UTC, datetime
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+CODE_ROOT = Path(__file__).resolve().parents[2]
+# A separate process uses this only while preparing an isolated source installation.
+ROOT = Path(os.getenv("DRUGASSIST_WORKSPACE", CODE_ROOT)).resolve()
 
 
 def canonical(value):
@@ -33,4 +36,4 @@ def write_json(path, value):
 
 
 def load_config(path=None):
-    return read_json(path or ROOT / "config/default.json")
+    return read_json(path or CODE_ROOT / "config/default.json")

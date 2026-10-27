@@ -1,0 +1,10 @@
+{
+  "format": 1,
+  "assets": {
+    "windows-amd64": {
+      "url": "https://github.com/suvrazastrovision/drug_rag/releases/download/data-v0.1.0/drugassist-data-windows-amd64-py311.zip",
+      "sha256": "02ed462152303e0ff02032e1b04da7b41d0d5678f9176ddf99303267fc72bba0",
+      "python": "3.11"
+    }
+  }
+}

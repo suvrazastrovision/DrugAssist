@@ -1,7 +1,8 @@
 param(
     [ValidateRange(1024, 65535)][int]$ApiPort = 8000,
     [ValidateRange(1024, 65535)][int]$UiPort = 8501,
-    [switch]$NoBrowser
+    [switch]$NoBrowser,
+    [switch]$FromSource
 )
 
 $ErrorActionPreference = 'Stop'
@@ -37,11 +38,6 @@ try {
     if (-not (Get-Command uv -ErrorAction SilentlyContinue)) {
         throw 'Install uv first: https://docs.astral.sh/uv/getting-started/installation/'
     }
-    foreach ($required in @('results/search_latest.json', 'data/chroma/chroma.sqlite3')) {
-        if (-not (Test-Path -LiteralPath $required)) {
-            throw 'Extract drugassist-data.zip into this repository first; see README.md.'
-        }
-    }
     if ($ApiPort -eq $UiPort) { throw 'Backend and frontend ports must be different.' }
     foreach ($port in @($ApiPort, $UiPort)) {
         $listener = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::Loopback, $port)
@@ -55,9 +51,6 @@ try {
     & uv sync --locked --inexact
     Require-Success 'Dependency setup failed. Stop running notebooks/servers, then retry.'
     $python = Join-Path $root '.venv\Scripts\python.exe'
-    & $python scripts/share_data.py --check
-    Require-Success 'Prepared data check failed. See the message above.'
-
     if (-not (Test-Path -LiteralPath '.env')) {
         Copy-Item -LiteralPath '.env.example' -Destination '.env'
     }
@@ -78,11 +71,20 @@ try {
         }
     }
 
-    # Bundled model configuration and weights must use the same local HF cache.
-    if (Test-Path -LiteralPath 'data/bundle.json') {
-        $env:HF_HUB_CACHE = Join-Path $root 'data\models'
-        $env:TRANSFORMERS_CACHE = $env:HF_HUB_CACHE
+    Write-Host 'Preparing or checking the local collection...'
+    # Setup may download public assets; offline flags apply only after it completes.
+    $env:HF_HUB_OFFLINE = '0'
+    $env:TRANSFORMERS_OFFLINE = '0'
+    if ($FromSource) {
+        & $python -m src.cli setup --from-source
+    } else {
+        & $python -m src.cli setup
     }
+    Require-Success 'Setup failed. See the message above; no paid fallback was attempted.'
+
+    # Bundled model configuration and weights must use the same local HF cache.
+    $env:HF_HUB_CACHE = Join-Path $root 'data\models'
+    $env:TRANSFORMERS_CACHE = $env:HF_HUB_CACHE
     $env:HF_HUB_OFFLINE = '1'
     $env:TRANSFORMERS_OFFLINE = '1'
     $env:DRUGASSIST_API_URL = "http://127.0.0.1:$ApiPort"

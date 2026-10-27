@@ -69,3 +69,11 @@ uv run --locked --no-sync ruff check src tests scripts frontend
 
 - Tests use temporary stores and simulated responses; external HTTP/`.env` loading are disabled.
 - Human review remains necessary for relevance, factual support, qualifications and citation completeness.
+
+For cache-independent verification, run `uv run --locked --no-sync python scripts/test_clean.py`.
+It runs the suite twice in fresh source copies without prepared data, reports or credentials.
+Tokenizer/model caches start empty in each process; the actual tokenizer vocabulary is
+supplied by the checked-in test asset and checked against its upstream SHA-256. Cache behavior
+tests populate and reopen their own temporary stores. Tests cannot read the repository's
+runtime stores or the user's default model/tokenizer caches. Dependency installation is a
+separate network-enabled step. `live` tests are opt-in with `pytest -m live`.

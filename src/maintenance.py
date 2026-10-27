@@ -9,10 +9,20 @@ from src.retrieval.search import SearchSession
 from src.utils.config import ROOT, read_json, write_json
 
 
+def available_snapshot(snapshot_id=None):
+    """A clone includes report pointers, but not necessarily the referenced data."""
+    try:
+        return load_snapshot(snapshot_id)
+    except FileNotFoundError:
+        return None
+
+
 def acquire(config):
     checkpoint = ROOT / "reports/data_checks.json"
     previous = read_json(checkpoint) if checkpoint.exists() else {}
-    baseline = load_snapshot(previous.get("snapshot_id"))
+    baseline = available_snapshot(previous.get("snapshot_id"))
+    if baseline is None:
+        baseline = available_snapshot()
     snapshot = ingest(
         config, base_snapshot=baseline, report_dir=checkpoint.parent, set_latest=False
     )
@@ -36,7 +46,10 @@ def acquire(config):
 def index(config):
     checkpoint = ROOT / "reports/data_checks.json"
     snapshot_id = read_json(checkpoint)["snapshot_id"] if checkpoint.exists() else None
-    descriptor = build_search_index(load_snapshot(snapshot_id), config)
+    snapshot = available_snapshot(snapshot_id) or available_snapshot()
+    if snapshot is None:
+        raise FileNotFoundError("No local source data. Run fda-rag setup --from-source first.")
+    descriptor = build_search_index(snapshot, config)
     print("Activated searchable corpus:", descriptor["coverage"]["covered_names"], "drug names")
 
 

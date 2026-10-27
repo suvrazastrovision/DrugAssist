@@ -9,11 +9,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "command",
-        choices=["ingest", "search", "maintain"],
+        choices=["setup", "ingest", "search", "maintain"],
     )
     parser.add_argument("question", nargs="?", help="Question for search; omit to enter interactive mode")
     parser.add_argument("--config")
     parser.add_argument("--snapshot")
+    parser.add_argument("--from-source", action="store_true", help="Build fresh data; embedding charges apply")
     parser.add_argument(
         "--step", choices=["acquire", "index", "verify", "all"], default="verify",
         help="Maintenance step; defaults to offline verification. 'all' acquires, indexes and verifies.",
@@ -31,6 +32,18 @@ def main():
     parser.add_argument("--effective-time", help="Restrict search to a label effective date (YYYYMMDD)")
     parser.add_argument("--json", action="store_true", help="Print structured results for a single question")
     args = parser.parse_args()
+    if args.from_source and args.command != "setup":
+        parser.error("--from-source is only supported by setup")
+    if args.command == "setup":
+        if args.question is not None:
+            parser.error("setup does not accept a question")
+        from src.setup import setup
+
+        try:
+            setup(from_source=args.from_source, config_path=args.config)
+        except (OSError, ValueError, RuntimeError) as exc:
+            parser.exit(1, f"Setup failed: {exc}\n")
+        return
     if args.command == "search":
         import sys
 

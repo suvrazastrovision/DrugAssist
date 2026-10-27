@@ -1,0 +1,2 @@
+# This upstream vocabulary is checked against an exact SHA-256 on every platform.
+tests/assets/*.tiktoken -text

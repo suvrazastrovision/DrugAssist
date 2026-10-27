@@ -18,3 +18,4 @@ results/private/
 drugassist-data.zip
 drugassist-data.zip.tmp
 data/bundle.json
+.drugassist-setup-*/
