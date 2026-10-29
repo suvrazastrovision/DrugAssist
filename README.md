@@ -2,17 +2,20 @@
 
 [![Offline tests](https://github.com/suvrazastrovision/DrugAssist/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/suvrazastrovision/DrugAssist/actions/workflows/tests.yml) [![Python 3.11–3.12](https://img.shields.io/badge/Python-3.11%E2%80%933.12-3776AB?logo=python&logoColor=white)](pyproject.toml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) [![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/) [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io/) [![ChromaDB](https://img.shields.io/badge/ChromaDB-FFDE2D)](https://www.trychroma.com/) [![OpenAI](https://img.shields.io/badge/OpenAI-412991)](https://platform.openai.com/docs/)
 
-Search FDA drug labels and get optional AI-written answers with supporting sources.
-Prepared collection: **60 drug names · 118 FDA labels · 8,601 passages**.
+DrugAssist retrieves prescribing information from FDA drug labels in response to natural-language
+questions. It combines keyword search, semantic search, and local reranking to find relevant evidence
+within a prepared collection of **60 drug names · 118 FDA labels · 8,601 passages**.
+This minimum viable product (MVP) is the foundation for ongoing development, with further improvements
+planned for future releases.
 
-After signing in, ask a question such as **“What warnings are listed for warfarin?”**
-DrugAssist searches a saved collection of FDA labels using both word matching and meaning-based
-search, then uses a local model to rank the most relevant passages. Results include label dates
-and links to the original FDA sources.
+Ask **“What warnings are listed for warfarin?”** to retrieve supporting label passages, label dates,
+and links to the original FDA sources. Each result provides the evidence needed to check the information
+in its source context.
 
-Enable **Write a cited answer** to have OpenAI turn the retrieved evidence into an answer with
-source references, using patient or clinician wording. You can also read the passages directly.
-The app reports when no matching evidence is found; answers still need review against the sources.
+For a written response, enable **Write a cited answer**. OpenAI summarizes the retrieved passages
+with source references and wording tailored to patients or clinicians. The passages remain available
+for review, and the app reports when no matching evidence is found. Generated answers require
+verification against the cited labels.
 See [how the app works](docs/app-flow.md) for the full workflow.
 
 [Setup](#quick-start) · [Tests](#tests) · [Troubleshooting](#troubleshooting) · [Guides](#documentation)
