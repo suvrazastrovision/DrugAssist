@@ -201,4 +201,4 @@ All 445 tests pass in CI on Linux and Windows. Full macOS support is planned for
 
 ## Contributor
 
-Developed by **Suvra Nath**.
+Designed & developed by **Suvra Nath**.
