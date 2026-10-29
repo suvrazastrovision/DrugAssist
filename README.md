@@ -194,3 +194,5 @@ Third-party dependencies, model weights and datasets retain their own licenses a
 ## Special remarks
 
 All 445 tests pass in CI on Linux and Windows. Full macOS support is planned for a future update.
+
+Developed by **Suvra Nath**.
