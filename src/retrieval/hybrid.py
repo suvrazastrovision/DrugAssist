@@ -1,7 +1,10 @@
+"""Combine lexical and semantic rankings with explicit fusion weights."""
+
 from src.retrieval.base import SearchResult
 
 
 def fuse(rankings, method="rrf", rrf_k=60, alpha=0.5):
+    """Merge rankings by weighted reciprocal rank or min-max normalized scores."""
     if method not in {"rrf", "normalized"} or rrf_k <= 0 or not 0 <= alpha <= 1:
         raise ValueError("Invalid fusion parameters")
     scores, chunks = {}, {}
@@ -29,12 +32,16 @@ def fuse(rankings, method="rrf", rrf_k=60, alpha=0.5):
 
 
 class HybridRetriever:
+    """A fusion of lexical and semantic candidate rankings."""
+
     def __init__(self, lexical, semantic, candidates=30, fusion="rrf", rrf_k=60, alpha=0.5):
+        """Store the retrievers, candidate count, and ranking fusion settings."""
         self.lexical, self.semantic = lexical, semantic
         self.candidates = candidates
         self.fusion, self.rrf_k, self.alpha = fusion, rrf_k, alpha
 
     def search(self, query, k=10, filters=None):
+        """Retrieve candidates from both methods and return the top fused results."""
         if k < 1:
             raise ValueError("k must be positive")
         count = max(k, self.candidates)

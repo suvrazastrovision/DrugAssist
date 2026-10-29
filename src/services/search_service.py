@@ -9,7 +9,10 @@ from src.query_parser import QueryParser
 from src.retrieval.search import SearchSession
 from src.utils.config import ROOT, load_config
 
-DISCLAIMER = "FDA label excerpts are for information only, not medical advice. Consult a qualified healthcare professional."
+DISCLAIMER = (
+    "FDA label excerpts are for information only, not medical advice. Consult a "
+    "qualified healthcare professional."
+)
 SCORE_KINDS = {
     "keyword": "weighted_keyword_count",
     "bm25": "bm25_score",
@@ -25,11 +28,16 @@ OUTSIDE_LABEL_SCOPE = re.compile(
 
 
 class ServiceUnavailable(RuntimeError):
+    """A sanitized failure at the public search-service boundary."""
+
     pass
 
 
 class SearchService:
+    """Read-only search with literal query filters and an experimental score cutoff."""
+
     def __init__(self, session, documents, *, min_score, threshold_method, known_names=()):
+        """Validate the scoring cutoff and map indexed documents for query parsing."""
         if threshold_method != session.method:
             raise ValueError("The threshold must name the active scoring method")
         if isinstance(min_score, bool) or not math.isfinite(min_score):
@@ -43,6 +51,7 @@ class SearchService:
         self.lock = RLock()
 
     def health(self):
+        """Verify index completeness and return public readiness counts."""
         try:
             with self.lock:
                 count = self.session.store.collection.count()
@@ -58,6 +67,7 @@ class SearchService:
             raise ServiceUnavailable() from None
 
     def search(self, query, k=5):
+        """Return filtered label evidence with provenance and explicit no-match reasons."""
         parsed = self.parser.parse(query)
         filters = self.parser.filters(parsed)
         reason, hits = None, []
@@ -95,10 +105,14 @@ class SearchService:
             "applied_filters": filters,
             "score_kind": SCORE_KINDS[self.session.method],
             "score_note": (
-                "Raw cross-encoder relevance scores; higher ranks first and values can be negative or exceed 1. "
+                "Raw cross-encoder relevance scores; higher ranks first and values can be "
+                "negative or exceed 1. "
                 "Scores are not correctness probabilities and are different from the hybrid candidate scores."
                 if self.session.method == "hybrid_rerank"
-                else "Higher scores rank first within this method. Scores are not correctness probabilities; normalized fusion is candidate-relative."
+                else (
+                    "Higher scores rank first within this method. Scores are not correctness "
+                    "probabilities; normalized fusion is candidate-relative."
+                )
             ),
             "threshold": {
                 "method": self.session.method,
@@ -110,12 +124,14 @@ class SearchService:
         }
 
     def close(self):
+        """Release the session's embedding provider when it supports cleanup."""
         close = getattr(self.session.embedder, "close", None)
         if close is not None:
             close()
 
 
 def build_search_service():
+    """Load the configured search pipeline and its matching source snapshot."""
     settings = dict(load_config()["api"])
     method = settings.pop("method", "selected")
     session = SearchSession(method=method, query_cache=ROOT / "data/cache/embeddings.sqlite3")

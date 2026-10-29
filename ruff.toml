@@ -1,0 +1,12 @@
+# Keep lint policy separate from the dependency metadata hashed by data bundles.
+extend = "pyproject.toml"
+
+[lint]
+select = ["E", "F", "W", "D"]
+
+[lint.pydocstyle]
+convention = "pep257"
+
+[lint.per-file-ignores]
+# Descriptive test and fixture names serve as documentation; check existing docstrings.
+"tests/**" = ["D100", "D101", "D102", "D103", "D104", "D107"]

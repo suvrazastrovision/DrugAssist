@@ -18,10 +18,12 @@ SNAPSHOT_FILES = ("documents.json", "records.json", "manifest.json", "verificati
 
 
 def read_json(path):
+    """Read a UTF-8 JSON document from a Path object."""
     return json.loads(path.read_text(encoding="utf-8"))
 
 
 def sha256(path):
+    """Return the SHA-256 checksum of a file's bytes."""
     with path.open("rb") as stream:
         return hashlib.file_digest(stream, "sha256").hexdigest()
 
@@ -32,6 +34,7 @@ def compatibility_hash(path):
 
 
 def local_path(root, relative):
+    """Resolve a relative data path and reject paths outside the repository root."""
     path = root / relative.replace("\\", "/")
     if not path.resolve().is_relative_to(root.resolve()):
         raise ValueError("Data path leaves the repository")
@@ -85,6 +88,7 @@ def active_files(root):
 
 
 def export_bundle(root, output):
+    """Export active public data and model assets with a checksummed manifest."""
     root = root.resolve()
     files, index = active_files(root)
     database = root / "data/chroma/chroma.sqlite3"
@@ -136,6 +140,7 @@ def export_bundle(root, output):
 
 
 def check_bundle(root):
+    """Verify bundle compatibility, file checksums, and the active passage count."""
     root = root.resolve()
     manifest_path = root / "data/bundle.json"
     if manifest_path.exists():
@@ -152,7 +157,9 @@ def check_bundle(root):
         for name in COMPATIBILITY:
             checksum = compatibility_hash if manifest.get("compatibility_encoding") == "utf8-lf" else sha256
             if checksum(root / name) != manifest["compatibility"][name]:
-                raise ValueError(f"Bundle and repository differ: {name}. Use the matching repository version.")
+                raise ValueError(
+                    f"Bundle and repository differ: {name}. Use the matching repository version."
+                )
         receipt = root / "results/private/bundle-checked.sha256"
         checked = receipt.exists() and receipt.read_text() == sha256(manifest_path)
         for name, expected in manifest["files"].items():
@@ -184,6 +191,7 @@ def check_bundle(root):
 
 
 def main():
+    """Dispatch bundle export or validation from command-line arguments."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true", help="Check local data without exporting")
     parser.add_argument("--output", type=Path, default=ROOT / "drugassist-data.zip")

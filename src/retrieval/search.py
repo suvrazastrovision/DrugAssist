@@ -22,6 +22,8 @@ FILTER_FIELDS = {"section", "set_id", "document_id", "effective_time"}
 
 
 class SearchSession:
+    """A validated saved corpus and its configured retrieval pipeline."""
+
     def __init__(
         self,
         run_path=None,
@@ -31,6 +33,7 @@ class SearchSession:
         chroma_path=None,
         query_cache=None,
     ):
+        """Load a saved index, validate chunk lineage, and initialize retrieval."""
         self.embedder = embedder
         self.chroma_path = chroma_path
         self.query_cache = query_cache
@@ -119,6 +122,12 @@ class SearchSession:
         return CrossEncoderReranker(hybrid, candidates=candidates, **self.run["selection"]["reranker"])
 
     def search(self, question, k=5, filters=None):
+        """Return ranked source passages and run metadata for a validated question.
+
+        Accept 1 to 100 results and optional section, set_id, document_id, or
+        effective_time filters. Never relax filters when no passages match.
+        Raise ValueError for an empty question, invalid k, or unsupported filter.
+        """
         if not question or not question.strip():
             raise ValueError("Enter a nonempty question")
         if not 1 <= k <= 100:
@@ -140,7 +149,10 @@ class SearchSession:
             "corpus_chunks": len(self.chunks),
             "filters": filters,
             "latency_ms": (time.perf_counter() - begin) * 1000,
-            "score_note": "Scores rank candidates within this method; they are not correctness probabilities.",
+            "score_note": (
+                "Scores rank candidates within this method; they are not correctness "
+                "probabilities."
+            ),
             "result_note": "Retrieved source passages; no generated answer or automatic clinical validation.",
             "results": [
                 {"rank": i, "score": row.score, **row.chunk.to_dict()} for i, row in enumerate(rows, 1)
@@ -149,6 +161,7 @@ class SearchSession:
 
 
 def format_results(response):
+    """Format a search response as readable text with original source links."""
     lines = [
         f"Question: {response['question']}",
         f"Method: {response['method']}",
@@ -182,6 +195,7 @@ def format_results(response):
 def run_search(
     question=None, method="selected", k=5, filters=None, run_path=None, snapshot_id=None, as_json=False
 ):
+    """Print one search response or run an interactive terminal search session."""
     session = SearchSession(run_path, method, snapshot_id)
     if question is not None:
         response = session.search(question, k, filters)

@@ -6,6 +6,7 @@ from src.utils.config import load_config
 
 
 def main():
+    """Parse command-line options and dispatch setup, ingestion, or search work."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "command",
@@ -14,7 +15,9 @@ def main():
     parser.add_argument("question", nargs="?", help="Question for search; omit to enter interactive mode")
     parser.add_argument("--config")
     parser.add_argument("--snapshot")
-    parser.add_argument("--from-source", action="store_true", help="Build fresh data; embedding charges apply")
+    parser.add_argument(
+        "--from-source", action="store_true", help="Build fresh data; embedding charges apply"
+    )
     parser.add_argument(
         "--step", choices=["acquire", "index", "verify", "all"], default="verify",
         help="Maintenance step; defaults to offline verification. 'all' acquires, indexes and verifies.",

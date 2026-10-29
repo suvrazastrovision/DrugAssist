@@ -6,6 +6,7 @@ from src.utils.config import ROOT, digest
 
 
 def verify_snapshot(snapshot):
+    """Verify raw-response checksums and record lineage or raise ValueError."""
     bodies = {}
     for envelope in snapshot["records"]:
         provenance = envelope["provenance"]

@@ -13,6 +13,7 @@ from src.utils.config import ROOT, load_config, write_json
 
 
 def main():
+    """Export and verify a data bundle, then save its pinned release descriptor."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--tag", required=True, help="Immutable GitHub Release tag, e.g. data-v0.1.0")
     args = parser.parse_args()

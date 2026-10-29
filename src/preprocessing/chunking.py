@@ -14,6 +14,8 @@ from src.utils.config import digest
 
 @dataclass(frozen=True)
 class Chunk:
+    """An exact source-text span with identity, offsets, and processing lineage."""
+
     chunk_id: str
     document_id: str
     snapshot_id: str
@@ -35,13 +37,16 @@ class Chunk:
 
     @property
     def embedding_text(self):
+        """Return the label identity, section name, and passage used for embedding."""
         return f"{self.identity}\nSection: {self.section}\n{self.text}"
 
     def to_dict(self):
+        """Return all chunk fields as a serializable dictionary."""
         return asdict(self)
 
 
 def token_count(text, encoding="cl100k_base"):
+    """Count model tokens while treating special-token spellings as ordinary text."""
     return len(tiktoken.get_encoding(encoding).encode(text, disallowed_special=()))
 
 
@@ -61,6 +66,13 @@ def _token_char_ends(text, encoding):
 
 
 def spans(text, strategy="section", size=256, overlap=32, encoding="cl100k_base"):
+    """Yield character offsets for token-bounded spans within one label section.
+
+    Interpret size and overlap as model-token counts using the named encoding.
+    Yield (start, end) offsets into the original text, with end excluded. Strategy
+    selects fixed, recursive, paragraph-aware section, or sentence-based semantic
+    boundaries. Raise ValueError for unsupported strategies or invalid bounds.
+    """
     if strategy not in {"fixed", "recursive", "section", "semantic"}:
         raise ValueError("Unknown chunking strategy")
     if size < 8 or not 0 <= overlap < size:
@@ -107,6 +119,7 @@ def spans(text, strategy="section", size=256, overlap=32, encoding="cl100k_base"
 
 
 def chunk_documents(documents, strategy="section", size=256, overlap=32, encoding="cl100k_base"):
+    """Create source-traceable chunks with stable identifiers from label sections."""
     chunks = []
     for doc in documents:
         names = doc["metadata"]

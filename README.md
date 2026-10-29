@@ -150,6 +150,10 @@ still needs internet or cached packages. For one ordinary run: `uv run --locked 
 and lint checks on pushes/PRs, using Windows/Linux and Python 3.11/3.12. Open a run to see results;
 macOS is not in the CI matrix.
 
+Ruff enforces code-style and PEP 257 docstring checks through `ruff.toml`, inheriting the
+project's 110-character line limit. Public application interfaces require docstrings;
+test and fixture names are exempt from missing-docstring checks.
+
 **Real online check:** start the app with internet and a valid API key (charges apply):
 
 1. Open [health](http://127.0.0.1:8000/health); expect `"status": "ready"`. This checks the index, not API access.

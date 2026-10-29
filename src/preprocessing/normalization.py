@@ -41,6 +41,7 @@ ATTRIBUTES = (
 
 
 def strings(value):
+    """Return nonblank strings from a string or list, ignoring other value types."""
     if isinstance(value, str):
         return [value] if value.strip() else []
     if isinstance(value, list):
@@ -49,6 +50,7 @@ def strings(value):
 
 
 def normalize_record(envelope, snapshot_id):
+    """Build a normalized document while preserving source text and provenance."""
     record, kind, provenance = envelope["record"], envelope["kind"], envelope["provenance"]
     attributes = record.get("openfda", {}) if kind == "fda_full" else record
     metadata = {key: strings(attributes.get(key)) for key in ATTRIBUTES}

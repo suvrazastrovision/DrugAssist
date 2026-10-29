@@ -10,11 +10,13 @@ from src.utils.config import digest
 
 
 def validate_record(record, kind="lookup"):
+    """Return schema errors and quality warnings for a source record and its kind."""
     issues = []
     if not isinstance(record, dict):
         return [{"field": "$", "severity": "error", "issue": "record must be an object"}]
 
     def add(field, issue, severity="error"):
+        """Append a structured field-level validation issue."""
         issues.append({"field": field, "severity": severity, "issue": issue})
 
     try:
@@ -61,6 +63,7 @@ def validate_record(record, kind="lookup"):
 
 
 def quality_report(snapshot):
+    """Summarize field coverage, schema issues, and source acceptance indicators."""
     records, documents = snapshot["records"], snapshot["documents"]
     field_rows, violations = [], []
     for kind in sorted({r["kind"] for r in records}):

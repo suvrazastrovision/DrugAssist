@@ -13,7 +13,10 @@ from src.utils.config import ROOT, digest
 
 
 class OpenAIEmbedder(EmbeddingCache):
+    """A cached OpenAI embedding client with explicit model and dimension lineage."""
+
     def __init__(self, model="text-embedding-3-small", dimensions=1536, batch_size=32, cache=None):
+        """Load credentials and open the embedding cache and HTTP session."""
         load_dotenv(ROOT / ".env")
         self.key = os.getenv("OPENAI_API_KEY")
         self.model, self.dimensions, self.batch_size = model, dimensions, batch_size
@@ -23,6 +26,7 @@ class OpenAIEmbedder(EmbeddingCache):
         self.session = requests.Session()
 
     def encode(self, texts):
+        """Return validated cached embeddings, requesting only missing inputs."""
         return super().encode(texts, self._encode_missing)
 
     def _encode_missing(self, texts):
@@ -75,6 +79,7 @@ class OpenAIEmbedder(EmbeddingCache):
         return np.asarray(vectors, dtype=np.float32).reshape(-1, self.dimensions)
 
     def close(self):
+        """Close the embedding cache and HTTP session."""
         super().close()
         self.session.close()
 
@@ -83,6 +88,7 @@ class LocalEmbedder:
     """Optional local candidate; callers must pin an immutable HF revision."""
 
     def __init__(self, model, revision, max_length=256, batch_size=32, cache=None):
+        """Load a pinned CPU model and initialize its in-memory embedding cache."""
         from sentence_transformers import SentenceTransformer
 
         if revision == "main" or not revision:
@@ -98,6 +104,7 @@ class LocalEmbedder:
         self._cache = {}
 
     def encode(self, texts):
+        """Return normalized local embeddings in input order, reusing cached texts."""
         missing = list(dict.fromkeys(text for text in texts if text not in self._cache))
         if missing:
             vectors = self.model.encode(

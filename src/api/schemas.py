@@ -10,6 +10,8 @@ from src.services.answer_service import AnswerStatement
 
 
 class Credentials(BaseModel):
+    """Validated account credentials with bounded email and password fields."""
+
     model_config = ConfigDict(extra="forbid")
     email: EmailStr = Field(max_length=254)
     password: str = Field(strict=True, min_length=8, max_length=128)
@@ -17,29 +19,37 @@ class Credentials(BaseModel):
     @field_validator("email", mode="before")
     @classmethod
     def trim_email(cls, value):
+        """Strip surrounding whitespace from a submitted email string."""
         return value.strip() if isinstance(value, str) else value
 
     @field_validator("password")
     @classmethod
     def not_blank_password(cls, value):
+        """Reject passwords containing only whitespace."""
         if not value.strip():
             raise ValueError("Enter a nonempty password")
         return value
 
 
 class UserResponse(BaseModel):
+    """Public account details that exclude passwords and session tokens."""
+
     id: int
     email: str
     created_at: datetime
 
 
 class LoginResponse(BaseModel):
+    """A bearer token and its expiration time for a successful login."""
+
     session_token: str
     token_type: Literal["bearer"]
     expires_at: datetime
 
 
 class SearchRequest(BaseModel):
+    """A nonempty question and a bounded number of requested results."""
+
     model_config = ConfigDict(extra="forbid")
     query: str = Field(strict=True, min_length=1, max_length=2000)
     k: int = Field(default=5, strict=True, ge=1, le=20)
@@ -47,18 +57,23 @@ class SearchRequest(BaseModel):
     @field_validator("query")
     @classmethod
     def not_blank(cls, value):
+        """Reject queries containing only whitespace."""
         if not value.strip():
             raise ValueError("Enter a nonempty query")
         return value
 
 
 class ThresholdInfo(BaseModel):
+    """The active method's experimental relevance cutoff."""
+
     method: str
     min_score: float = Field(allow_inf_nan=False)
     status: Literal["experimental"]
 
 
 class SearchHit(BaseModel):
+    """A ranked label passage with offsets and source provenance."""
+
     rank: int = Field(ge=1)
     score: float = Field(allow_inf_nan=False)
     drug_name: str
@@ -78,6 +93,8 @@ class SearchHit(BaseModel):
 
 
 class SearchResponse(BaseModel):
+    """Retrieved evidence, applied filters, and explicit no-match information."""
+
     query: str
     parsed: ParsedQuery
     no_match: bool
@@ -93,15 +110,21 @@ class SearchResponse(BaseModel):
 
 
 class AnswerRequest(SearchRequest):
+    """A search request with patient or clinician wording preferences."""
+
     audience: Literal["patient", "clinician"] = "patient"
 
 
 class AnswerCitation(SearchHit):
+    """A cited source window with its identifier and context completeness."""
+
     source_id: str
     context_partial: bool
 
 
 class AnswerResponse(SearchResponse):
+    """A written answer, checked citation identifiers, and retrieval evidence."""
+
     answer: str | None
     statements: list[AnswerStatement]
     citations: list[AnswerCitation]
@@ -114,6 +137,8 @@ class AnswerResponse(SearchResponse):
 
 
 class HealthResponse(BaseModel):
+    """Index connectivity and document counts reported by the health endpoint."""
+
     status: Literal["ready", "unavailable"]
     chromadb: Literal["connected", "unavailable"]
     indexed_documents: int | None = Field(ge=0)

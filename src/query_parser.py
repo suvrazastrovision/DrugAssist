@@ -59,6 +59,8 @@ SECTION_FILTERS = {
 
 @dataclass(frozen=True)
 class ParsedQuery:
+    """Unambiguous drug, condition, and label-topic mentions found in a query."""
+
     drug: str | None
     condition: str | None
     information_type: InformationType | None
@@ -83,7 +85,10 @@ def _single(values):
 
 
 class QueryParser:
+    """Literal query parsing based on source-backed drug aliases and label topics."""
+
     def __init__(self, documents, known_names=()):
+        """Build the alias-to-document mapping from full FDA label identity fields."""
         self.drug_documents = {}
         for doc in documents:
             if doc["kind"] != "fda_full":
@@ -108,6 +113,7 @@ class QueryParser:
                 self.drug_documents.setdefault(alias, set()).add(doc["document_id"])
 
     def parse(self, query):
+        """Extract unambiguous literal mentions without rewriting the question."""
         drugs = _literal_matches(query, self.drug_documents)
         intent_text = query
         for alias in sorted(drugs, key=len, reverse=True):
@@ -129,9 +135,11 @@ class QueryParser:
         )
 
     def recognizes_drug(self, query):
+        """Return whether the query contains a known source-backed drug alias."""
         return bool(_literal_matches(query, self.drug_documents))
 
     def filters(self, parsed):
+        """Build document and section filters from an unambiguous parsed query."""
         filters = {}
         if parsed.drug:
             filters["document_id"] = sorted(self.drug_documents[parsed.drug])

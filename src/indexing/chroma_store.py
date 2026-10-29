@@ -10,7 +10,10 @@ from src.utils.config import ROOT, digest
 
 
 class ChromaStore:
+    """A persistent vector collection isolated by corpus and embedding fingerprints."""
+
     def __init__(self, chunks, embedder, path=None, settings=None, create=True):
+        """Create or open a collection matching the corpus, embedder, and HNSW settings."""
         os.environ.setdefault("ANONYMIZED_TELEMETRY", "False")
         import chromadb
         from chromadb.config import Settings
@@ -50,6 +53,7 @@ class ChromaStore:
                 ) from None
 
     def index(self, progress=None):
+        """Embed missing chunks in batches and verify the final collection count."""
         existing = set(self.collection.get(include=[])["ids"])
         pending = [c for key, c in self.chunks.items() if key not in existing]
         for offset in range(0, len(pending), 64):
@@ -70,6 +74,7 @@ class ChromaStore:
             raise RuntimeError("Index/corpus cardinality mismatch")
 
     def query(self, query, k, filters=None):
+        """Return filtered source chunks and cosine similarity scores for a query."""
         if k < 1:
             raise ValueError("k must be positive")
         if not self.chunks:

@@ -22,10 +22,10 @@ for _name, _folder in _CACHE_FOLDERS.items():
     os.environ[_name] = str(Path(_session_directory.name) / _folder)
 os.environ.update(HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1", HF_HUB_DISABLE_TELEMETRY="1")
 
-import numpy as np
-import pytest
+import numpy as np  # noqa: E402 -- Set model cache locations before importing providers.
+import pytest  # noqa: E402 -- Keep test imports after isolated environment setup.
 
-from src.preprocessing.normalization import normalize_record
+from src.preprocessing.normalization import normalize_record  # noqa: E402 -- Requires the isolated environment.
 
 _ROOT = Path(__file__).resolve().parents[1]
 _protected = [_ROOT / name for name in ("data", "results", "reports", ".env")]
@@ -64,7 +64,7 @@ sys.addaudithook(_protect_runtime_files)
 
 @pytest.fixture(autouse=True)
 def offline_providers(monkeypatch, tmp_path, request):
-    """Tests neither read .env nor call an external HTTP provider."""
+    """Prevent offline tests from reading .env or calling external HTTP providers."""
     if request.node.get_closest_marker("live"):
         yield
         return
@@ -76,7 +76,9 @@ def offline_providers(monkeypatch, tmp_path, request):
     monkeypatch.setattr("src.services.answer_service.load_dotenv", lambda *args, **kwargs: False)
     monkeypatch.setattr("src.setup.dotenv_values", lambda *args, **kwargs: {})
     # Chroma's Pydantic settings independently inspect .env when first imported.
-    monkeypatch.setattr("pydantic_settings.sources.providers.dotenv.dotenv_values", lambda *args, **kwargs: {})
+    monkeypatch.setattr(
+        "pydantic_settings.sources.providers.dotenv.dotenv_values", lambda *args, **kwargs: {}
+    )
 
     def no_http(*args, **kwargs):
         raise AssertionError("External HTTP is disabled during tests")

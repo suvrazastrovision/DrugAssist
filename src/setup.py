@@ -23,11 +23,13 @@ RECEIPT = "results/private/bundle-checked.sha256"
 
 
 def model_folder(root, settings):
+    """Resolve the workspace path for a specific model and pinned revision."""
     return local_path(root, "data/models/models--" + settings["model"].replace("/", "--")
                       + "/snapshots/" + settings["revision"])
 
 
 def check_models(root, settings):
+    """Raise FileNotFoundError when required pinned model assets are incomplete."""
     folder = model_folder(root, settings)
     required = ("config.json", "tokenizer_config.json", "vocab.txt")
     if not all((folder / name).is_file() for name in required) or not any(
@@ -37,6 +39,7 @@ def check_models(root, settings):
 
 
 def prepare_models(root, settings):
+    """Download missing pinned model assets and verify their required files."""
     try:
         check_models(root, settings)
         return
@@ -53,7 +56,7 @@ def prepare_models(root, settings):
 
 
 def check_installation(root, config, *, require_models=True):
-    """The same checks apply to downloaded and locally built installations."""
+    """Validate downloaded or locally built data against configuration and lineage."""
     from src.retrieval.search import SearchSession
 
     root = root.resolve()
@@ -76,7 +79,9 @@ def check_installation(root, config, *, require_models=True):
     if "chroma" in config:
         checks.append((config["chroma"], index["configuration"]["chroma"]))
     if "ingestion" in config:
-        checks.append((config["ingestion"]["lookup_names"], index["configuration"]["ingestion"]["lookup_names"]))
+        checks.append(
+            (config["ingestion"]["lookup_names"], index["configuration"]["ingestion"]["lookup_names"])
+        )
     if "fusion_settings" in config:
         checks.append((config["fusion_settings"], index["fusion_settings"]))
     if any(expected is not None and expected != actual for expected, actual in checks):
@@ -89,6 +94,7 @@ def check_installation(root, config, *, require_models=True):
 
 
 def distribution(root):
+    """Return a validated release asset matching the current platform and Python."""
     spec = read_json(root / "config/distribution.json")
     if spec.get("format") != 1:
         raise ValueError("Unsupported distribution descriptor")
@@ -100,7 +106,9 @@ def distribution(root):
             f"No tested bundle for {platform_key}. Run fda-rag setup --from-source instead."
         ) from None
     if asset.get("python") and asset["python"] != f"{sys.version_info.major}.{sys.version_info.minor}":
-        raise ValueError(f"The prepared bundle requires Python {asset['python']}; use --from-source otherwise.")
+        raise ValueError(
+            f"The prepared bundle requires Python {asset['python']}; use --from-source otherwise."
+        )
     if not re.fullmatch(r"[0-9a-f]{64}", asset.get("sha256", "")):
         raise ValueError("The bundle checksum is not configured. Run setup --from-source instead.")
     if not asset["url"].startswith(
@@ -111,6 +119,7 @@ def distribution(root):
 
 
 def download_bundle(asset, output):
+    """Download a pinned bundle and reject a mismatched SHA-256 checksum."""
     print("Downloading the pinned prepared collection...", flush=True)
     try:
         with requests.get(asset["url"], stream=True, timeout=(10, 60)) as response:
@@ -142,6 +151,7 @@ def public_member(name):
 
 
 def extract_bundle(archive, stage):
+    """Extract allowed archive members and verify the complete manifest inventory."""
     try:
         with ZipFile(archive) as zipped:
             seen = set()
@@ -173,12 +183,16 @@ def extract_bundle(archive, stage):
 
 @contextmanager
 def setup_lock(root):
+    """Hold an exclusive setup lock and remove it when the operation exits."""
     lock = root / "results/private/setup.lock"
     lock.parent.mkdir(parents=True, exist_ok=True)
     try:
         stream = lock.open("x")
     except FileExistsError:
-        raise RuntimeError("Setup is already running. If it was interrupted, remove results/private/setup.lock.") from None
+        raise RuntimeError(
+            "Setup is already running. If it was interrupted, remove "
+            "results/private/setup.lock."
+        ) from None
     try:
         with stream:
             stream.write(str(os.getpid()))
@@ -249,11 +263,13 @@ def smoke_installation(root):
         )
     except (OSError, subprocess.SubprocessError):
         raise RuntimeError(
-            "Native index/model readiness check failed or timed out; setup did not activate a new installation."
+            "Native index/model readiness check failed or timed out; setup did not "
+            "activate a new installation."
         ) from None
 
 
 def build_source(stage, config_path):
+    """Prepare source data in a staged child process using configured API credentials."""
     env = dict(os.environ, DRUGASSIST_WORKSPACE=str(stage))
     for name, value in dotenv_values(CODE_ROOT / ".env").items():
         if name in {"OPENAI_API_KEY", "FDA_API_KEY"} and value and not env.get(name):
@@ -272,6 +288,14 @@ def build_source(stage, config_path):
 
 
 def setup(*, from_source=False, config_path=None, root=ROOT):
+    """Prepare or verify local data and models, activating a validated installation last.
+
+    Reuse a compatible installation or download its pinned prepared bundle.
+    With from_source=True, build a staged collection using configured API keys;
+    embedding requests can incur charges. Use config_path to override the default
+    configuration and root to select the installation workspace. Preserve the
+    active installation if staging or validation fails.
+    """
     root = Path(root).resolve()
     config = load_config(config_path)
     with setup_lock(root):

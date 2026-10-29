@@ -24,6 +24,7 @@ def record_covers_name(record, name):
 
 
 def coverage_report(snapshot, names):
+    """Summarize named-drug coverage using identity evidence from full FDA records."""
     records = [envelope["record"] for envelope in snapshot["records"] if envelope["kind"] == "fda_full"]
     rows = []
     for name in names:
@@ -51,5 +52,8 @@ def coverage_report(snapshot, names):
         "full_fda_label_sets": len({r["set_id"] for r in records}),
         "names": rows,
         "selection": "Manually selected named-drug sample; not a representative FDA census.",
-        "coverage_definition": "Name occurs in source identity/ingredient/product fields; combinations may cover multiple names.",
+        "coverage_definition": (
+            "Name occurs in source identity/ingredient/product fields; combinations may "
+            "cover multiple names."
+        ),
     }

@@ -49,6 +49,8 @@ ANSWER_SECTIONS = {"answer": "Answer", "details": "Details", "warnings": "Import
 
 
 class AnswerSettings(BaseModel):
+    """Validated model, timeout, source-count, and token-budget settings."""
+
     model_config = ConfigDict(extra="forbid", strict=True)
     model: str = "gpt-5-mini"
     reasoning_effort: Literal["none", "minimal", "low", "medium", "high"] | None = "minimal"
@@ -60,6 +62,8 @@ class AnswerSettings(BaseModel):
 
 
 class AnswerStatement(BaseModel):
+    """A generated statement assigned to a section and supporting source identifiers."""
+
     model_config = ConfigDict(extra="forbid", strict=True)
     section: Literal["answer", "details", "warnings"]
     text: str = Field(min_length=1, max_length=1800)
@@ -67,6 +71,8 @@ class AnswerStatement(BaseModel):
 
 
 class GeneratedAnswer(BaseModel):
+    """The structured model response with evidence status and bounded statements."""
+
     model_config = ConfigDict(extra="forbid", strict=True)
     insufficient_evidence: bool
     statements: list[AnswerStatement] = Field(max_length=6)
@@ -74,11 +80,16 @@ class GeneratedAnswer(BaseModel):
 
 
 class AnswerUnavailable(RuntimeError):
+    """A failure to produce a valid answer from the retrieved source evidence."""
+
     pass
 
 
 class OpenAIAnswerWriter:
+    """A bounded structured-output client for the OpenAI Responses endpoint."""
+
     def write(self, payload, settings, source_ids):
+        """Request a structured answer restricted to the supplied source identifiers."""
         load_dotenv(ROOT / ".env")
         key = os.getenv("OPENAI_API_KEY")
         if not key:
@@ -145,12 +156,16 @@ def section_window(text, start, end, limit):
 
 
 class AnswerService:
+    """Evidence retrieval, bounded source context, and checked answer citations."""
+
     def __init__(self, search_service, writer=None, settings=None):
+        """Bind the search service, injectable answer writer, and validated settings."""
         self.search_service = search_service
         self.writer = writer or OpenAIAnswerWriter()
         self.settings = AnswerSettings.model_validate(settings or {})
 
     def context(self, search, audience):
+        """Build exact source windows and a payload within source and context budgets."""
         sources = []
         for hit in search["results"]:
             doc = self.search_service.documents[hit["document_id"]]
@@ -201,9 +216,18 @@ class AnswerService:
 
     @staticmethod
     def payload(query, audience, sources):
+        """Serialize the question, audience, and evidence as an untrusted JSON payload."""
         return json.dumps({"question": query, "audience": audience, "evidence": sources}, ensure_ascii=False)
 
     def answer(self, query, k=5, audience="patient"):
+        """Retrieve evidence and return a checked answer or an explicit fallback status.
+
+        Use patient or clinician wording while retaining the search results and
+        source metadata. Validate output structure and citation identifiers;
+        factual support still requires source review. Return insufficient_evidence
+        when retrieval finds no match, or unavailable when generation fails.
+        Raise ValueError for an unsupported audience.
+        """
         if audience not in {"patient", "clinician"}:
             raise ValueError("Unsupported audience")
         search = self.search_service.search(query, k)
@@ -216,12 +240,17 @@ class AnswerService:
         }
         if search["no_match"]:
             result["evidence_note"] = {
-                "outside_supported_label_scope": "This question did not match a recognized drug or supported label topic in this collection.",
+                "outside_supported_label_scope": (
+                    "This question did not match a recognized drug or supported label topic in "
+                    "this collection."
+                ),
                 "below_experimental_threshold": "No retrieved passage met the current relevance cutoff.",
                 "no_candidates": "No saved passages matched the identified drug and label section.",
             }.get(search.get("no_match_reason"), "No matching FDA passages were retrieved for this question.")
             filters = search.get("applied_filters", {})
-            if search.get("no_match_reason") == "no_candidates" and filters.get("section") == ["adverse_reactions"]:
+            if search.get("no_match_reason") == "no_candidates" and filters.get("section") == [
+                "adverse_reactions"
+            ]:
                 document_ids = filters.get("document_id", [])
                 if isinstance(document_ids, str):
                     document_ids = [document_ids]
@@ -234,7 +263,9 @@ class AnswerService:
                     )
                     if any(doc["sections"].get(key) for doc in docs
                            for key in ("warnings", "warnings_and_cautions", "boxed_warning")):
-                        result["evidence_note"] += " Warnings are available; try asking about warnings using the drug name."
+                        result["evidence_note"] += (
+                            " Warnings are available; try asking about warnings using the drug name."
+                        )
             return result
         try:
             sources, payload = self.context(search, audience)
@@ -259,7 +290,9 @@ class AnswerService:
                 if not statement.text.strip() or any(source not in ids for source in statement.source_ids):
                     raise AnswerUnavailable()
                 used.update(statement.source_ids)
-            statements = sorted(generated.statements, key=lambda row: list(ANSWER_SECTIONS).index(row.section))
+            statements = sorted(
+                generated.statements, key=lambda row: list(ANSWER_SECTIONS).index(row.section)
+            )
             paragraphs = []
             for section, title in ANSWER_SECTIONS.items():
                 rows = [row for row in statements if row.section == section]
@@ -274,7 +307,10 @@ class AnswerService:
                 citations=[source for source in sources if source["source_id"] in used],
                 evidence_note=generated.evidence_note,
                 answer_status="generated", insufficient_evidence=False,
-                answer_note="AI-written summary. Citation IDs were checked; factual support still requires review.",
+                answer_note=(
+                    "AI-written summary. Citation IDs were checked; factual support still requires "
+                    "review."
+                ),
             )
         except Exception:  # noqa: BLE001 -- Preserve retrieved evidence and redact provider/internal failures.
             result.update(
@@ -285,4 +321,5 @@ class AnswerService:
 
 
 def build_answer_service(search_service):
+    """Build the answer service with the repository's configured generation limits."""
     return AnswerService(search_service, settings=load_config().get("answer", {}))

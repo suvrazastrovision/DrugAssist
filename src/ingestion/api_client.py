@@ -13,11 +13,16 @@ from src.utils.config import ROOT, utcnow, write_json
 
 
 class APIError(RuntimeError):
+    """A source API request or contract failure with sanitized request details."""
+
     pass
 
 
 class APIClient:
+    """A retrying label API client that preserves raw bodies and public metadata."""
+
     def __init__(self, raw_dir=None, timeout=60, retries=4, session=None, sleep=time.sleep):
+        """Configure raw-response storage, request limits, and injectable HTTP helpers."""
         load_dotenv(ROOT / ".env")
         self.raw_dir = Path(raw_dir or ROOT / "data/raw/http")
         self.raw_dir.mkdir(parents=True, exist_ok=True)
@@ -28,6 +33,12 @@ class APIClient:
         )
 
     def get(self, url, params=None, provider="morvs"):
+        """Fetch JSON with retries and preserve source bytes without recording API keys.
+
+        Return the decoded response and public provenance metadata. Save the raw
+        response before checking its status or parsing JSON. Raise APIError after
+        exhausted retries, an unsuccessful status, or an invalid JSON response.
+        """
         public_params = dict(params or {})
         request_params = dict(public_params)
         if provider == "fda" and os.getenv("FDA_API_KEY"):
@@ -75,6 +86,7 @@ class APIClient:
         raise APIError("Retry budget exhausted")
 
     def discover(self):
+        """Fetch and validate the third-party label API's advertised contract."""
         spec, meta = self.get("https://api.morvs.ai/openapi.json")
         if not isinstance(spec, dict) or not isinstance(spec.get("paths"), dict):
             raise APIError("MORVS contract changed: invalid OpenAPI response")
@@ -92,14 +104,17 @@ class APIClient:
         }
 
     def recent(self, limit=200):
+        """Fetch a bounded recent-label feed and its response provenance."""
         if not 1 <= limit <= 200:
             raise ValueError("MORVS recent limit must be 1..200; pagination is not documented")
         return self.get("https://api.morvs.ai/api/v1/fda/labels/recent", {"limit": limit})
 
     def lookup(self, name):
+        """Fetch third-party label matches for a URL-escaped drug name."""
         return self.get("https://api.morvs.ai/api/v1/fda/labels/" + quote(name, safe=""))
 
     def fda_label(self, set_id):
+        """Fetch one authoritative label by set identifier with response provenance."""
         # A set_id lookup may return a newer version; callers must compare effective dates.
         self.sleep(0.3)
         return self.get(

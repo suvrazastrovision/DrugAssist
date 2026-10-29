@@ -32,11 +32,16 @@ HARD_TASKS = (
             ("Avoid abrupt stopping without supervision", "information_for_patients",
              ("Patients should be warned not to discontinue the use of corticosteroids abruptly "
              "or without medical supervision.")),
-            ("Adrenal dependence, informing staff and seeking advice for acute illness", "information_for_patients",
-             ("As prolonged use may cause adrenal insufficiency and make patients dependent on corticosteroids, "
-             "they should advise any medical attendants that they are taking corticosteroids and they should "
-             "seek medical advice at once should they develop an acute illness including fever or other "
-             "signs of infection.")),
+            (
+                "Adrenal dependence, informing staff and seeking advice for acute illness",
+                "information_for_patients",
+                (
+                    "As prolonged use may cause adrenal insufficiency and make patients dependent "
+                    "on corticosteroids, they should advise any medical attendants that they are "
+                    "taking corticosteroids and they should seek medical advice at once should "
+                    "they develop an acute illness including fever or other signs of infection."
+                ),
+            ),
         ),
     },
     {
@@ -49,10 +54,16 @@ HARD_TASKS = (
              ("For patients with creatinine clearance <15 mL/min, reduce daily dose in proportion to "
              "creatinine clearance (e.g., patients with a creatinine clearance of 7.5 mL/min should receive "
              "one-half the daily dose that patients with a creatinine clearance of 15 mL/min receive).")),
-            ("Maintenance and supplemental post-hemodialysis dosing", "dosage_and_administration",
-             ("Patients on hemodialysis should receive maintenance doses based on estimates of creatinine "
-             "clearance as indicated in the upper portion of the table and a supplemental post-hemodialysis "
-             "dose administered after each 4 hours of hemodialysis as indicated in the lower portion of the table.")),
+            (
+                "Maintenance and supplemental post-hemodialysis dosing",
+                "dosage_and_administration",
+                (
+                    "Patients on hemodialysis should receive maintenance doses based on estimates "
+                    "of creatinine clearance as indicated in the upper portion of the table and a "
+                    "supplemental post-hemodialysis dose administered after each 4 hours of "
+                    "hemodialysis as indicated in the lower portion of the table."
+                ),
+            ),
         ),
     },
     {
@@ -279,6 +290,7 @@ def covers_reference(results, reference):
 
 
 def check_results(results, question):
+    """Measure section hits or complete evidence-span coverage for one question."""
     if question.get("group") == "hard":
         first_ranks = {}
         for rank in range(1, min(10, len(results)) + 1):
@@ -308,6 +320,7 @@ def check_results(results, question):
 
 
 def summarize(rows):
+    """Aggregate hit counts, latency, and applicable hard-question coverage metrics."""
     summary = {
         "questions": len(rows), "found_first": sum(row["found_first"] for row in rows),
         "found_in_10": sum(row["found_in_10"] for row in rows),
@@ -322,6 +335,7 @@ def summarize(rows):
 
 
 def compare_methods(chroma_path=None):
+    """Evaluate saved retrieval methods against baseline and hard source references."""
     index_path = ROOT / read_json(ROOT / "results/search_latest.json")["run_path"].replace("\\", "/")
     index = read_json(index_path)
     snapshot = load_snapshot(index["snapshot_id"])
@@ -361,13 +375,31 @@ def compare_methods(chroma_path=None):
                 "Baseline: 60 original section-finding questions; 20 uses, 20 dosage, 20 warnings.",
                 "Challenge: 10 authored questions and 25 required evidence items, frozen before retrieval.",
                 "Baseline hits identify a drug section, not a medically sufficient passage.",
-                "Hard hits require full coverage of selected source spans; duplicate chunks earn no extra credit.",
-                "Exact spans are repository-reviewed anchors, not exhaustive relevance judgments or independent clinical review.",
+                (
+                    "Hard hits require full coverage of selected source spans; duplicate chunks "
+                    "earn no extra credit."
+                ),
+                (
+                    "Exact spans are repository-reviewed anchors, not exhaustive relevance "
+                    "judgments or independent clinical review."
+                ),
                 "Equivalent wording or other valid evidence can be missed by this strict span-based scorer.",
-                "Designed difficulty is not independently validated; ten questions are a small diagnostic stress test.",
-                "Existing settings were reused without tuning; all questions are descriptive checks, not an untouched test set.",
-                "Timing excludes model loading and API question embedding; no clinical correctness claim follows.",
-                "All methods use unfiltered top-10 retrieval without the app parser, score cutoff or answer writer.",
+                (
+                    "Designed difficulty is not independently validated; ten questions are a small "
+                    "diagnostic stress test."
+                ),
+                (
+                    "Existing settings were reused without tuning; all questions are descriptive "
+                    "checks, not an untouched test set."
+                ),
+                (
+                    "Timing excludes model loading and API question embedding; no clinical "
+                    "correctness claim follows."
+                ),
+                (
+                    "All methods use unfiltered top-10 retrieval without the app parser, score "
+                    "cutoff or answer writer."
+                ),
             ],
         }
     completed = {row["method"] for row in report["methods"]}

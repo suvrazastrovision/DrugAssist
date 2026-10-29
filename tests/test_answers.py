@@ -33,11 +33,18 @@ def answer_search(document):
         "source_body_sha256": document["provenance"]["body_sha256"],
     }
     result = {
-        "query": "TEST COMPOUND warnings", "parsed": {"drug": None, "condition": None, "information_type": None},
-        "no_match": False, "no_match_reason": None, "method": "hybrid_rerank", "snapshot_id": "test-snapshot",
-        "applied_filters": {}, "score_kind": "cross_encoder_score", "score_note": "Engineering fixture.",
+        "query": "TEST COMPOUND warnings",
+        "parsed": {"drug": None, "condition": None, "information_type": None},
+        "no_match": False,
+        "no_match_reason": None,
+        "method": "hybrid_rerank",
+        "snapshot_id": "test-snapshot",
+        "applied_filters": {},
+        "score_kind": "cross_encoder_score",
+        "score_note": "Engineering fixture.",
         "threshold": {"method": "hybrid_rerank", "min_score": 0.5, "status": "experimental"},
-        "results": [hit], "disclaimer": "Engineering fixture, not medical advice.",
+        "results": [hit],
+        "disclaimer": "Engineering fixture, not medical advice.",
     }
     return SimpleNamespace(
         search=Mock(return_value=result), documents={document["document_id"]: document}, close=Mock()
@@ -106,18 +113,24 @@ def test_missing_side_effects_section_is_explained_without_relaxing_filters(answ
     writer.write.assert_not_called()
 
 
-@pytest.mark.parametrize("output", [
-    good_answer("invented-source"),
-    {**good_answer(), "statements": []},
-    {**good_answer(), "insufficient_evidence": True},
-    {**good_answer(), "statements": [{"section": "answer", "text": "uncited claim", "source_ids": []}]},
-    {**good_answer(), "statements": [{"section": "answer", "text": "   ", "source_ids": ["S1"]}]},
-    {**good_answer(), "insufficient_evidence": "false"},
-    {"insufficient_evidence": True, "statements": [], "evidence_note": None},
-    {**good_answer(), "evidence_note": "   "},
-    {**good_answer(), "statements": [{"section": "details", "text": "No direct answer", "source_ids": ["S1"]}]},
-    {**good_answer(), "statements": good_answer()["statements"] * 2},
-])
+@pytest.mark.parametrize(
+    "output",
+    [
+        good_answer("invented-source"),
+        {**good_answer(), "statements": []},
+        {**good_answer(), "insufficient_evidence": True},
+        {**good_answer(), "statements": [{"section": "answer", "text": "uncited claim", "source_ids": []}]},
+        {**good_answer(), "statements": [{"section": "answer", "text": "   ", "source_ids": ["S1"]}]},
+        {**good_answer(), "insufficient_evidence": "false"},
+        {"insufficient_evidence": True, "statements": [], "evidence_note": None},
+        {**good_answer(), "evidence_note": "   "},
+        {
+            **good_answer(),
+            "statements": [{"section": "details", "text": "No direct answer", "source_ids": ["S1"]}],
+        },
+        {**good_answer(), "statements": good_answer()["statements"] * 2},
+    ],
+)
 def test_invalid_or_untraceable_output_falls_back_to_evidence(answer_search, output):
     writer = Mock()
     writer.write.return_value = output
@@ -152,7 +165,9 @@ def test_context_deduplicates_sections_but_preserves_label_versions(answer_searc
 
 def test_distinct_passages_in_one_long_section_are_kept_with_exact_offsets(answer_search):
     first, second = "First engineering detail.", "Second engineering detail."
-    section = "Earlier context. " * 2000 + first + "Middle context. " * 2000 + second + "Later context. " * 2000
+    section = (
+        "Earlier context. " * 2000 + first + "Middle context. " * 2000 + second + "Later context. " * 2000
+    )
     hit = answer_search.search.return_value["results"][0]
     answer_search.documents[hit["document_id"]]["sections"][hit["section"]] = section
     hits = [
@@ -255,11 +270,23 @@ def test_incomplete_refused_or_malformed_provider_responses_are_not_displayed(mo
 
 def test_responses_request_has_exact_source_enum_and_no_stored_response(monkeypatch):
     monkeypatch.setenv("OPENAI_API_KEY", "engineering-test-key")
-    post = Mock(return_value=SimpleNamespace(raise_for_status=lambda: None, json=lambda: {
-        "status": "completed", "model": "provider-reported-snapshot", "output": [{"type": "message", "content": [
-            {"type": "output_text", "text": json.dumps(good_answer())},
-        ]}],
-    }))
+    post = Mock(
+        return_value=SimpleNamespace(
+            raise_for_status=lambda: None,
+            json=lambda: {
+                "status": "completed",
+                "model": "provider-reported-snapshot",
+                "output": [
+                    {
+                        "type": "message",
+                        "content": [
+                            {"type": "output_text", "text": json.dumps(good_answer())},
+                        ],
+                    }
+                ],
+            },
+        )
+    )
     monkeypatch.setattr(requests, "post", post)
     result = OpenAIAnswerWriter().write("fixture question and evidence", AnswerSettings(), ["S1"])
     assert result == {**good_answer(), "_model": "provider-reported-snapshot"}
@@ -270,11 +297,15 @@ def test_responses_request_has_exact_source_enum_and_no_stored_response(monkeypa
     schema = body["text"]["format"]["schema"]
     assert set(schema["required"]) == {"insufficient_evidence", "statements", "evidence_note"}
     assert "section" in schema["$defs"]["AnswerStatement"]["required"]
-    assert body["text"]["format"]["schema"]["$defs"]["AnswerStatement"]["properties"]["source_ids"]["items"]["enum"] == ["S1"]
+    assert body["text"]["format"]["schema"]["$defs"]["AnswerStatement"]["properties"]["source_ids"]["items"][
+        "enum"
+    ] == ["S1"]
     assert post.call_args.kwargs["allow_redirects"] is False
 
 
-def test_authenticated_answer_endpoint_and_redacted_generation_failure(answer_search, auth_service, auth_headers):
+def test_authenticated_answer_endpoint_and_redacted_generation_failure(
+    answer_search, auth_service, auth_headers
+):
     writer = Mock()
     writer.write.side_effect = RuntimeError("private-provider-key-and-question")
     def factory(service):
@@ -288,7 +319,9 @@ def test_authenticated_answer_endpoint_and_redacted_generation_failure(answer_se
         assert result.headers["Cache-Control"] == "no-store"
         writer.write.side_effect = None
         writer.write.return_value = {**good_answer(), "_model": "provider-reported-snapshot"}
-        response = client.post("/answer", json={"query": "question", "audience": "clinician"}, headers=auth_headers)
+        response = client.post(
+            "/answer", json={"query": "question", "audience": "clinician"}, headers=auth_headers
+        )
         assert response.status_code == 200 and response.json()["answer_status"] == "generated"
         assert response.json()["answer_model"] == "provider-reported-snapshot"
         assert response.json()["citations"][0]["source_id"] == "S1"

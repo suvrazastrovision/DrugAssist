@@ -14,7 +14,10 @@ class EmbeddingUnavailable(RuntimeError):
 
 
 class EmbeddingCache:
+    """A thread-locked SQLite cache keyed by model fingerprint and input text."""
+
     def __init__(self, fingerprint, dimensions, path):
+        """Open the vector cache for a specific embedding fingerprint and dimension."""
         self.fingerprint, self.dimensions = fingerprint, dimensions
         self.cache_path = Path(path)
         self.cache_path.parent.mkdir(parents=True, exist_ok=True)
@@ -23,6 +26,12 @@ class EmbeddingCache:
         self.lock = RLock()
 
     def encode(self, texts, encode_missing):
+        """Return vectors in input order, validating and caching provider misses.
+
+        Call encode_missing once with the unique uncached texts. Both cached and
+        fresh vectors must be finite and have the configured dimension; otherwise
+        raise EmbeddingUnavailable without returning partial results.
+        """
         with self.lock:
             keys = [digest([self.fingerprint, text]) for text in texts]
             vectors, missing = {}, {}
@@ -49,6 +58,7 @@ class EmbeddingCache:
             return result
 
     def close(self):
+        """Close the SQLite cache connection."""
         self.db.close()
 
 
@@ -56,10 +66,12 @@ class QueryEmbeddingCache(EmbeddingCache):
     """Use the same cache for providers without their own disk cache."""
 
     def __init__(self, embedder, path):
+        """Wrap an embedder with a disk cache matching its fingerprint and dimension."""
         self.embedder = embedder
         super().__init__(embedder.fingerprint, embedder.dimensions, path)
 
     def encode(self, texts):
+        """Return cached query vectors and request missing vectors from the provider."""
         return super().encode(texts, self._encode_missing)
 
     def _encode_missing(self, texts):
@@ -69,6 +81,7 @@ class QueryEmbeddingCache(EmbeddingCache):
             raise EmbeddingUnavailable("Embedding provider is unavailable") from None
 
     def close(self):
+        """Close the cache and release the wrapped provider when supported."""
         super().close()
         close = getattr(self.embedder, "close", None)
         if close is not None:

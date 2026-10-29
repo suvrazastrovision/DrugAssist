@@ -19,16 +19,21 @@ from src.utils.config import ROOT
 
 
 class AuthError(Exception):
+    """An authentication failure with a public HTTP status and message."""
+
     def __init__(self, status: int, detail: str, retry_after: int | None = None):
+        """Store the response status, public detail, and optional retry delay."""
         self.status, self.detail, self.retry_after = status, detail, retry_after
         super().__init__(detail)
 
 
 def token_hash(token: str) -> str:
+    """Return the SHA-256 digest used to store an opaque session token."""
     return hashlib.sha256(token.encode("utf-8")).hexdigest()
 
 
 def public_user(row: sqlite3.Row) -> dict:
+    """Return account details without password hashes or session secrets."""
     return {
         "id": row["id"],
         "email": row["email"],
@@ -37,6 +42,8 @@ def public_user(row: sqlite3.Row) -> dict:
 
 
 class AuthService:
+    """Local account registration, password verification, and expiring sessions."""
+
     def __init__(
         self,
         path: Path,
@@ -46,6 +53,7 @@ class AuthService:
         attempt_limit: int = 10,
         attempt_window: int = 600,
     ):
+        """Initialize storage, password hashing, and configurable session limits."""
         self.path, self.clock = Path(path), clock
         self.session_seconds = session_seconds
         self.attempt_limit, self.attempt_window = attempt_limit, attempt_window
@@ -57,6 +65,7 @@ class AuthService:
         initialize(self.path)
 
     def limit_attempts(self, client: str) -> None:
+        """Record a client attempt or raise AuthError when its window is full."""
         now = self.clock()
         with self.lock:
             for key in list(self.attempts):
@@ -72,6 +81,7 @@ class AuthService:
             bucket.append(now)
 
     def signup(self, email: str, password: str) -> dict:
+        """Register a normalized email, raising AuthError if it already exists."""
         email = email.strip().casefold()
         hashed = self.passwords.hash(password)
         try:
@@ -86,6 +96,7 @@ class AuthService:
         return public_user(row)
 
     def login(self, email: str, password: str) -> dict:
+        """Verify credentials and return a new bearer token with its expiry."""
         with connect(self.path) as db:
             user = db.execute("SELECT * FROM users WHERE email=?", (email.strip().casefold(),)).fetchone()
         valid = self.passwords.verify(password, user["password_hash"] if user else self.dummy_hash)
@@ -107,6 +118,7 @@ class AuthService:
         }
 
     def current_user(self, token: str) -> dict:
+        """Return the account for a valid, unexpired token or raise AuthError."""
         if not token or len(token) > 512:
             raise AuthError(401, "Please log in again.")
         with connect(self.path) as db:
@@ -120,15 +132,18 @@ class AuthService:
         return public_user(row)
 
     def logout(self, token: str) -> None:
+        """Delete the session associated with the supplied token."""
         with connect(self.path) as db:
             db.execute("DELETE FROM sessions WHERE token_hash=?", (token_hash(token),))
 
     def cleanup_expired(self) -> int:
+        """Delete expired sessions and return the number removed."""
         with connect(self.path) as db:
             return db.execute("DELETE FROM sessions WHERE expires_at <= ?", (int(self.clock()),)).rowcount
 
 
 def build_auth_service() -> AuthService:
+    """Build the account service using the configured local database path."""
     load_dotenv(ROOT / ".env")
     path = Path(os.getenv("DRUGASSIST_AUTH_DB", "data/auth/users.sqlite3"))
     return AuthService(path if path.is_absolute() else ROOT / path)

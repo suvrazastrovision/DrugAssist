@@ -73,7 +73,9 @@ def test_bundle_setup_installs_and_then_reuses_without_provider_calls(release, m
 
 def test_native_bookkeeping_and_later_launch_preserve_bundle_validation(release, monkeypatch):
     root, archive, _ = release
-    monkeypatch.setattr(installer, "download_bundle", lambda asset, output: output.write_bytes(archive.read_bytes()))
+    monkeypatch.setattr(
+        installer, "download_bundle", lambda asset, output: output.write_bytes(archive.read_bytes())
+    )
 
     def smoke(stage):
         assert (stage / installer.RECEIPT).read_text() == bundles.sha256(stage / "data/bundle.json")
@@ -137,7 +139,9 @@ def test_failed_source_build_preserves_existing_pointer(release, monkeypatch):
 
 def test_incompatible_existing_installation_is_not_replaced(release, monkeypatch):
     root, archive, config = release
-    monkeypatch.setattr(installer, "download_bundle", lambda asset, output: output.write_bytes(archive.read_bytes()))
+    monkeypatch.setattr(
+        installer, "download_bundle", lambda asset, output: output.write_bytes(archive.read_bytes())
+    )
     run_setup(root)
     config["reranker"]["revision"] = "different"
     write_json(root / "config/default.json", config)
@@ -148,8 +152,18 @@ def test_incompatible_existing_installation_is_not_replaced(release, monkeypatch
     download.assert_not_called()
 
 
-@pytest.mark.parametrize("name", ["../escape", "data/auth/users.sqlite3", installer.RECEIPT, ".env", "C:/escape",
-                                      "data/chroma/../../auth", "data\\chroma\\file"])
+@pytest.mark.parametrize(
+    "name",
+    [
+        "../escape",
+        "data/auth/users.sqlite3",
+        installer.RECEIPT,
+        ".env",
+        "C:/escape",
+        "data/chroma/../../auth",
+        "data\\chroma\\file",
+    ],
+)
 def test_unsafe_archive_members_are_rejected(tmp_path, name):
     if "\\" in name:
         # Windows' ZIP writer normalizes backslashes, so test the path policy directly.
@@ -185,7 +199,9 @@ def test_platform_mismatch_is_actionable(release, monkeypatch):
 
 def test_missing_model_asset_is_detected(release, monkeypatch):
     root, archive, config = release
-    monkeypatch.setattr(installer, "download_bundle", lambda asset, output: output.write_bytes(archive.read_bytes()))
+    monkeypatch.setattr(
+        installer, "download_bundle", lambda asset, output: output.write_bytes(archive.read_bytes())
+    )
     run_setup(root)
     (installer.model_folder(root, config["reranker"]) / "vocab.txt").unlink()
     with pytest.raises(FileNotFoundError, match="incomplete"):
@@ -194,7 +210,9 @@ def test_missing_model_asset_is_detected(release, monkeypatch):
 
 def test_noncanonical_root_is_resolved_before_validation(release, monkeypatch):
     root, archive, config = release
-    monkeypatch.setattr(installer, "download_bundle", lambda asset, output: output.write_bytes(archive.read_bytes()))
+    monkeypatch.setattr(
+        installer, "download_bundle", lambda asset, output: output.write_bytes(archive.read_bytes())
+    )
     run_setup(root)
     (root / "existing").mkdir()
     installer.check_installation(root / "existing/..", config)
@@ -267,7 +285,9 @@ def test_native_failure_never_activates_staged_installation(release, monkeypatch
     private = root / "data/auth/users.sqlite3"
     private.parent.mkdir(parents=True)
     private.write_bytes(b"private accounts")
-    monkeypatch.setattr(installer, "download_bundle", lambda asset, output: output.write_bytes(archive.read_bytes()))
+    monkeypatch.setattr(
+        installer, "download_bundle", lambda asset, output: output.write_bytes(archive.read_bytes())
+    )
 
     def build(stage, config_path):
         with ZipFile(archive) as zipped:

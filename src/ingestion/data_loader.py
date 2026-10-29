@@ -10,6 +10,7 @@ from src.utils.config import ROOT, digest, read_json, utcnow, write_json
 
 
 def ingest(config, client=None, base_snapshot=None, report_dir=None, set_latest=True):
+    """Acquire and validate label records, persist a snapshot, and optionally activate it."""
     settings = config["ingestion"]
     names = settings["lookup_names"]
     if (
@@ -148,7 +149,8 @@ def ingest(config, client=None, base_snapshot=None, report_dir=None, set_latest=
             except APIError as exc:
                 errors.append({"stage": "fda_name_fallback", "name": name, "error": str(exc)})
         print(
-            f"Acquired {name}: {len(payload['labels'])} MORVS labels; {len(covered)} matching full FDA labels",
+            f"Acquired {name}: {len(payload['labels'])} MORVS labels; "
+            f"{len(covered)} matching full FDA labels",
             flush=True,
         )
     # FDA full records remain a distinct, explicitly identified supplementary corpus.
@@ -193,6 +195,7 @@ def ingest(config, client=None, base_snapshot=None, report_dir=None, set_latest=
 
 
 def load_snapshot(snapshot_id=None):
+    """Load a named snapshot's manifest and data, defaulting to the latest pointer."""
     snapshot_id = snapshot_id or read_json(ROOT / "data/processed/latest.json")["snapshot_id"]
     folder = ROOT / "data/processed" / snapshot_id
     return {

@@ -1,3 +1,5 @@
+"""Rerank retrieved candidates with a pinned local cross-encoder."""
+
 import numpy as np
 
 from src.retrieval.base import SearchResult
@@ -8,6 +10,7 @@ class CrossEncoderReranker:
     """Separate relevance model. Inputs are truncated only at model context length."""
 
     def __init__(self, retriever, model, revision, candidates=30, batch_size=16, max_length=512):
+        """Load a pinned CPU cross-encoder and store candidate retrieval settings."""
         from sentence_transformers import CrossEncoder
 
         if not revision or revision == "main":
@@ -29,6 +32,7 @@ class CrossEncoderReranker:
         )
 
     def search(self, query, k=10, filters=None):
+        """Score retrieved query-passage pairs and return the highest-ranked hits."""
         rows = self.retriever.search(query, max(k + 1, self.candidates), filters)
         if not rows:
             return []

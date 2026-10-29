@@ -13,6 +13,7 @@ from src.utils.config import ROOT, digest, utcnow, write_json
 
 
 def build_search_index(snapshot, config, activate=True):
+    """Validate source data, build its index, and optionally activate the descriptor."""
     coverage = coverage_report(snapshot, config["ingestion"]["lookup_names"])
     if coverage["covered_names"] != len(config["ingestion"]["lookup_names"]):
         raise ValueError(
@@ -32,7 +33,8 @@ def build_search_index(snapshot, config, activate=True):
     folder.mkdir(parents=True, exist_ok=True)
     write_json(folder / "chunks.json", [chunk.to_dict() for chunk in chunks])
     print(
-        f"Indexing {coverage['covered_names']} drug names, {len(documents)} FDA records, {len(chunks)} chunks",
+        f"Indexing {coverage['covered_names']} drug names, "
+        f"{len(documents)} FDA records, {len(chunks)} chunks",
         flush=True,
     )
     cls = LocalEmbedder if embedding["provider"] == "local" else OpenAIEmbedder
@@ -41,6 +43,7 @@ def build_search_index(snapshot, config, activate=True):
     begin = time.perf_counter()
 
     def progress(done, total):
+        """Print periodic progress for pending passage embeddings."""
         if done % 512 == 0 or done == total:
             print(f"Indexed {done}/{total} pending chunks", flush=True)
 

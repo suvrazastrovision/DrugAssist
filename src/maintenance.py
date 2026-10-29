@@ -10,7 +10,7 @@ from src.utils.config import ROOT, read_json, write_json
 
 
 def available_snapshot(snapshot_id=None):
-    """A clone includes report pointers, but not necessarily the referenced data."""
+    """Load a local snapshot, returning None when its referenced files are absent."""
     try:
         return load_snapshot(snapshot_id)
     except FileNotFoundError:
@@ -18,6 +18,7 @@ def available_snapshot(snapshot_id=None):
 
 
 def acquire(config):
+    """Expand local source data and persist coverage, quality, and integrity checks."""
     checkpoint = ROOT / "reports/data_checks.json"
     previous = read_json(checkpoint) if checkpoint.exists() else {}
     baseline = available_snapshot(previous.get("snapshot_id"))
@@ -44,6 +45,7 @@ def acquire(config):
 
 
 def index(config):
+    """Build and activate an index from the most recently acquired local snapshot."""
     checkpoint = ROOT / "reports/data_checks.json"
     snapshot_id = read_json(checkpoint)["snapshot_id"] if checkpoint.exists() else None
     snapshot = available_snapshot(snapshot_id) or available_snapshot()
@@ -89,7 +91,10 @@ def verify(config):
         "checked_names": len(rows),
         "passed_names": len(rows),
         "indexed_fda_label_sets": len(source_sets),
-        "limitation": "Exact-name lookup and source identity smoke checks, not an independently judged relevance benchmark.",
+        "limitation": (
+            "Exact-name lookup and source identity smoke checks, not an independently "
+            "judged relevance benchmark."
+        ),
         "names": rows,
     }
     write_json(checkpoint, checks)
@@ -100,6 +105,7 @@ def verify(config):
 
 
 def maintain(config, step="verify"):
+    """Run a selected maintenance step or acquire, index, and verify in sequence."""
     actions = {"acquire": acquire, "index": index, "verify": verify}
     for name in actions if step == "all" else [step]:
         actions[name](config)

@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def main():
+    """Run pytest in fresh source copies and return the first failing exit status."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--runs", type=int, default=2)
     args, pytest_args = parser.parse_known_args()
@@ -27,7 +28,7 @@ def main():
             for name in paths:
                 path = Path(name)
                 if not name or path.parts[0] not in {
-                    "src", "tests", "scripts", "frontend", "config", "pyproject.toml", "uv.lock",
+                    "src", "tests", "scripts", "frontend", "config", "pyproject.toml", "uv.lock", "ruff.toml",
                 }:
                     continue
                 source = ROOT / path

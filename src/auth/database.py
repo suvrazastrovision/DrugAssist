@@ -8,6 +8,7 @@ from pathlib import Path
 
 @contextmanager
 def connect(path: Path) -> Iterator[sqlite3.Connection]:
+    """Yield a transactional SQLite connection and close it on exit."""
     db = sqlite3.connect(path, timeout=10)
     db.row_factory = sqlite3.Row
     db.execute("PRAGMA foreign_keys = ON")
@@ -19,6 +20,7 @@ def connect(path: Path) -> Iterator[sqlite3.Connection]:
 
 
 def initialize(path: Path) -> None:
+    """Create the account database, session tables, and indexes if needed."""
     path.parent.mkdir(parents=True, exist_ok=True)
     with connect(path) as db:
         db.executescript("""

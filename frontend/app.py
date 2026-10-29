@@ -17,6 +17,7 @@ API_URL = os.getenv("DRUGASSIST_API_URL", "http://127.0.0.1:8000").rstrip("/")
 
 
 def clear_session(message: str) -> None:
+    """Clear browser session state, save a notice, and rerun the interface."""
     st.session_state.clear()
     st.session_state["notice"] = message
     st.rerun()
@@ -29,7 +30,10 @@ def api_request(
     *,
     on_error: Callable[[], None] | None = None,
 ) -> dict:
+    """Call the backend with session credentials and display sanitized errors."""
+
     def fail(message: str) -> None:
+        """Run the error callback, display a message, and stop the current render."""
         if on_error is not None:
             on_error()
         st.error(message)
@@ -74,6 +78,7 @@ def api_request(
 
 
 def account_screen() -> None:
+    """Render account forms and submit signup or login requests."""
     screen = st.radio("Account", ["Log in", "Sign up"], horizontal=True, label_visibility="collapsed")
     with st.form("account", clear_on_submit=True):
         st.subheader(screen)
@@ -104,6 +109,7 @@ def account_screen() -> None:
 
 
 def label_date(value: str | None) -> str:
+    """Format a valid FDA label date or return a missing-date placeholder."""
     if value and len(value) == 8 and value.isdigit():
         try:
             return datetime.strptime(value, "%Y%m%d").strftime("%d %b %Y")
@@ -113,6 +119,7 @@ def label_date(value: str | None) -> str:
 
 
 def show_answer(result: dict) -> None:
+    """Display generated statements and their supporting FDA source windows."""
     st.subheader("Answer")
     status = result.get("answer_status")
     if status != "generated":
@@ -137,7 +144,10 @@ def show_answer(result: dict) -> None:
         if result.get("evidence_note"):
             st.text(result["evidence_note"])
         if partial:
-            st.caption("The supporting excerpts include part of a longer section; this may not be a complete answer.")
+            st.caption(
+                "The supporting excerpts include part of a longer section; this may not be a "
+                "complete answer."
+            )
     with st.expander("Supporting FDA context"):
         for source in result["citations"]:
             st.markdown(f"**{source['source_id']} | {source['section'].replace('_', ' ').title()}**")
@@ -152,12 +162,16 @@ def show_answer(result: dict) -> None:
 
 
 def show_results(result: dict, elapsed: float | None = None) -> None:
+    """Display ranked passages, no-match guidance, and source metadata."""
     if "answer_status" in result:
         show_answer(result)
     st.subheader("Results")
     hits = result["results"]
     labels = len({hit["set_id"] for hit in hits})
-    summary = f"{len(hits)} {'passage' if len(hits) == 1 else 'passages'} from {labels} FDA label {'set' if labels == 1 else 'sets'}"
+    summary = (
+        f"{len(hits)} {'passage' if len(hits) == 1 else 'passages'} "
+        f"from {labels} FDA label {'set' if labels == 1 else 'sets'}"
+    )
     if elapsed is not None:
         summary += f" | Search time: {elapsed:.1f}s"
     st.caption(summary)
@@ -165,8 +179,14 @@ def show_results(result: dict, elapsed: float | None = None) -> None:
     if result["no_match"]:
         st.info("No good match found.")
         hints = {
-            "outside_supported_label_scope": "Try a drug name in this collection and a label topic such as uses, dosage or warnings.",
-            "below_experimental_threshold": "No passage met the current relevance cutoff. Try a more specific drug or label section.",
+            "outside_supported_label_scope": (
+                "Try a drug name in this collection and a label topic such as uses, dosage or "
+                "warnings."
+            ),
+            "below_experimental_threshold": (
+                "No passage met the current relevance cutoff. Try a more specific drug or "
+                "label section."
+            ),
             "no_candidates": "No passage matched this drug and section. Try a broader question.",
         }
         st.caption(
@@ -224,6 +244,7 @@ def show_results(result: dict, elapsed: float | None = None) -> None:
 
 
 def search_screen(user: dict) -> None:
+    """Render the search form and manage the signed-in user's saved results."""
     identity, logout = st.columns([4, 1], vertical_alignment="center")
     identity.caption(f"Signed in as {user['email']}")
     if logout.button("Log out", width="stretch"):
@@ -259,7 +280,11 @@ def search_screen(user: dict) -> None:
                 st.session_state["results"] = api_request(
                     "POST",
                     "/answer" if write_answer else "/search",
-                    {"query": question.strip(), "k": int(k), **({"audience": audience.lower()} if write_answer else {})},
+                    {
+                        "query": question.strip(),
+                        "k": int(k),
+                        **({"audience": audience.lower()} if write_answer else {}),
+                    },
                     on_error=lambda: status.update(
                         label="Search not completed", state="error", expanded=True
                     ),
@@ -273,11 +298,15 @@ def search_screen(user: dict) -> None:
     st.caption(
         result["disclaimer"]
         if result
-        else "FDA label excerpts are for information only, not medical advice. Consult a qualified healthcare professional."
+        else (
+            "FDA label excerpts are for information only, not medical advice. Consult a "
+            "qualified healthcare professional."
+        )
     )
 
 
 def main() -> None:
+    """Render the account or search screen according to session authentication."""
     url = urlsplit(API_URL)
     if (
         url.scheme not in {"http", "https"}
