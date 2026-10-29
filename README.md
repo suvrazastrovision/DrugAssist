@@ -1,5 +1,14 @@
 # DrugAssist
 
+[![Offline tests](https://github.com/suvrazastrovision/DrugAssist/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/suvrazastrovision/DrugAssist/actions/workflows/tests.yml)
+[![Python 3.11–3.12](https://img.shields.io/badge/Python-3.11%E2%80%933.12-3776AB?logo=python&logoColor=white)](pyproject.toml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io/)
+[![ChromaDB](https://img.shields.io/badge/ChromaDB-FFDE2D)](https://www.trychroma.com/)
+[![OpenAI](https://img.shields.io/badge/OpenAI-412991)](https://platform.openai.com/docs/)
+
 Search FDA drug labels and get optional AI-written answers with supporting sources.
 Prepared collection: **60 drug names · 118 FDA labels · 8,601 passages**.
 
@@ -185,3 +194,7 @@ Review FDA sources. The saved benchmark does not validate clinical answer qualit
 
 Project code is available under the [MIT License](LICENSE).
 Third-party dependencies, model weights and datasets retain their own licenses and terms.
+
+## Special remarks
+
+All 445 tests pass in CI on Linux and Windows. Full macOS support is planned for a future update.
