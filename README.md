@@ -1,5 +1,7 @@
 # DrugAssist
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23814386.svg)](https://doi.org/10.5281/zenodo.23814386)
+
 [![Offline tests](https://github.com/suvrazastrovision/DrugAssist/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/suvrazastrovision/DrugAssist/actions/workflows/tests.yml) [![Python 3.11–3.12](https://img.shields.io/badge/Python-3.11%E2%80%933.12-3776AB?logo=python&logoColor=white)](pyproject.toml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) [![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/) [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io/) [![ChromaDB](https://img.shields.io/badge/ChromaDB-FFDE2D)](https://www.trychroma.com/) [![OpenAI](https://img.shields.io/badge/OpenAI-412991)](https://platform.openai.com/docs/) [![openFDA API](https://img.shields.io/badge/openFDA-API-0071BC)](https://open.fda.gov/apis/drug/label/)
 
 DrugAssist retrieves prescribing information from FDA drug labels in response to natural-language
