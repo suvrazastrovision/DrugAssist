@@ -203,4 +203,4 @@ All 445/445 tests passed in CI on Linux and Windows. Full macOS support is plann
 
 ## Contributors
 
-DDesigned and developed by **Suvra Nath** under the supervision of **Ofer Feder** as part of the qualifying certification examination for the **DevOps and AI Engineering** track at **MSIT Masterschool**.
+Designed and developed by **Suvra Nath** under the supervision of **Ofer Feder** as part of the qualifying certification examination for the **DevOps and AI Engineering** track at **MSIT Masterschool**.
