@@ -7,7 +7,7 @@
 DrugAssist retrieves prescribing information from FDA drug labels in response to natural-language
 questions. It combines keyword search, semantic search, and local reranking to find relevant evidence
 within a prepared collection of **60 drug names · 118 FDA labels · 8,601 passages**.
-This minimum viable product (MVP) is the foundation for ongoing development, with further improvements
+This [minimum viable product (MVP)](docs/app-frontend-overview.md) is the foundation for ongoing development, with further improvements
 planned for future releases.
 
 Ask **“What warnings are listed for warfarin?”** to retrieve supporting label passages, label dates,
