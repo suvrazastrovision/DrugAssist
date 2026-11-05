@@ -90,6 +90,7 @@ class OpenAIAnswerWriter:
 
     def write(self, payload, settings, source_ids):
         """Request a structured answer restricted to the supplied source identifiers."""
+        self.last_usage = None
         load_dotenv(ROOT / ".env")
         key = os.getenv("OPENAI_API_KEY")
         if not key:
@@ -127,6 +128,7 @@ class OpenAIAnswerWriter:
             parsed = json.loads(output)
             if not isinstance(parsed, dict):
                 raise AnswerUnavailable()
+            self.last_usage = body.get("usage")
             # Provider metadata is separate from the model-generated JSON schema.
             return {**parsed, "_model": body.get("model") or settings.model}
         except (requests.RequestException, ValueError, KeyError, TypeError):

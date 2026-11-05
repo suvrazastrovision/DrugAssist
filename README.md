@@ -185,6 +185,7 @@ Prepared downloads verify checksums, preserve credentials/accounts and never aut
 | [App flow](docs/app-flow.md) | Data preparation and search pipeline |
 | [Database schema](docs/database-schema.md) | Labels, caches and accounts |
 | [Research](docs/research.md) | Notebooks, evaluation and maintenance |
+| [App autograding](docs/evaluation.md) | Source-pinned cases, optional answer judging and regression reports |
 | [Repository and data](docs/repository.md) | Files, data transfer and release publishing |
 | [Configuration](config/default.json) / [Environment](.env.example) | Drug list, models and settings |
 | [Benchmark notebook](notebooks/03_retrieval_pipeline_benchmark.ipynb) | Six methods; 60 baseline + 10 hard questions, reported separately |

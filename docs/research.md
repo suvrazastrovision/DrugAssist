@@ -2,6 +2,11 @@
 
 [README](../README.md) | [Run and search](usage.md) | [App flow](app-flow.md) | [Research](research.md) | [Repository guide](repository.md)
 
+For the app's full parser/filter/answer pipeline, use the separate
+[app autograding guide](evaluation.md). It adds source-pinned draft cases, deterministic checks,
+optional semantic grading, saved-response replay and regression comparison. The notebook
+comparison below remains an unfiltered retrieval benchmark.
+
 ## Read the notebooks
 
 - Run cells in order using `.venv`; notebooks read saved files without API calls.

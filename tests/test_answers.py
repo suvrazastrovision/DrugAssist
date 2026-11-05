@@ -276,6 +276,7 @@ def test_responses_request_has_exact_source_enum_and_no_stored_response(monkeypa
             json=lambda: {
                 "status": "completed",
                 "model": "provider-reported-snapshot",
+                "usage": {"input_tokens": 12, "output_tokens": 34},
                 "output": [
                     {
                         "type": "message",
@@ -288,7 +289,9 @@ def test_responses_request_has_exact_source_enum_and_no_stored_response(monkeypa
         )
     )
     monkeypatch.setattr(requests, "post", post)
-    result = OpenAIAnswerWriter().write("fixture question and evidence", AnswerSettings(), ["S1"])
+    writer = OpenAIAnswerWriter()
+    result = writer.write("fixture question and evidence", AnswerSettings(), ["S1"])
+    assert writer.last_usage == {"input_tokens": 12, "output_tokens": 34}
     assert result == {**good_answer(), "_model": "provider-reported-snapshot"}
     body = post.call_args.kwargs["json"]
     assert body["store"] is False and body["max_output_tokens"] == 1500
