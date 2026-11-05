@@ -151,5 +151,4 @@ model grades as release gates only after calibration. Keep regression snapshots 
 live-source changes with a new dataset/snapshot. The notebook benchmark remains a separate,
 unfiltered retrieval comparison.
 
-Artifacts default to the Git-ignored `results/private/` directory. Exclude private user questions
-from shared reports.
+Evaluation artifacts, including JSON and Markdown reports, are saved in the Git-ignored `results/private/evaluation/` directory by default; use `--output PATH.json` to choose another report location and exclude private user questions from shared reports.
