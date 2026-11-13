@@ -13,6 +13,7 @@ from src.api.schemas import AnswerRequest, AnswerResponse, HealthResponse, Searc
 from src.auth.routes import get_current_user
 from src.auth.routes import router as auth_router
 from src.auth.service import AuthError, build_auth_service
+from src.observability import shutdown as shutdown_observability
 from src.services.answer_service import build_answer_service
 from src.services.search_service import ServiceUnavailable, build_search_service
 
@@ -41,8 +42,11 @@ def create_app(
         try:
             yield
         finally:
-            if app.state.service is not None:
-                app.state.service.close()
+            try:
+                if app.state.service is not None:
+                    app.state.service.close()
+            finally:
+                shutdown_observability()
 
     app = FastAPI(title="DrugAssist", version="0.1.0", lifespan=lifespan)
     app.state.service_factory, app.state.service = service_factory, None

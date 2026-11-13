@@ -5,6 +5,7 @@ import re
 from threading import RLock
 
 from src.ingestion.data_loader import load_snapshot
+from src.observability import traced
 from src.query_parser import QueryParser
 from src.retrieval.search import SearchSession
 from src.utils.config import ROOT, load_config
@@ -66,6 +67,7 @@ class SearchService:
         except Exception:  # noqa: BLE001 -- Public service boundary; redact database details.
             raise ServiceUnavailable() from None
 
+    @traced("retrieval")
     def search(self, query, k=5):
         """Return filtered label evidence with provenance and explicit no-match reasons."""
         parsed = self.parser.parse(query)
