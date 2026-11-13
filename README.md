@@ -134,6 +134,28 @@ Manual setup/startup also works on Windows; use `Copy-Item .env.example .env` to
 New semantic questions go to OpenAI; answer writing also sends supporting passages.
 [Usage and settings](docs/usage.md) · [Local API reference](http://127.0.0.1:8000/docs)
 
+## Optional observability
+
+Install metadata-only Langfuse tracing with:
+
+```sh
+uv sync --locked --inexact --extra observability
+```
+
+Create a Langfuse Cloud project and set `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`,
+and `LANGFUSE_BASE_URL` in `.env` (EU: `https://cloud.langfuse.com`). Set
+`DRUGASSIST_OBSERVABILITY_ENABLED=true` and restart the API. To disable tracing,
+set it to `false` and restart. The default is disabled.
+
+Search produces a retrieval trace; answers group retrieval and any OpenAI answer call
+under one trace. Recorded fields include timings, retrieval method, requested/result
+counts, audience, no-match reason, answer status, and generation model/token usage.
+Questions, answers, passages, filters, account identifiers and raw errors are excluded.
+Auth and health requests are not traced. Telemetry is exported in the background and
+drained on API shutdown; missing configuration, a missing SDK, or telemetry failures
+do not prevent search or answers. The initial integration covers these service calls,
+not embedding usage, ingestion, evaluation judging or the CLI search pipeline.
+
 ## Tests
 
 **Offline tests — all three operating systems:** after step 2, stop servers/notebooks and run:
@@ -185,6 +207,7 @@ Prepared downloads verify checksums, preserve credentials/accounts and never aut
 | [App flow](docs/app-flow.md) | Data preparation and search pipeline |
 | [Database schema](docs/database-schema.md) | Labels, caches and accounts |
 | [Research](docs/research.md) | Notebooks, evaluation and maintenance |
+| [App autograding](docs/evaluation.md) | Source-pinned cases, optional answer judging and regression reports |
 | [Repository and data](docs/repository.md) | Files, data transfer and release publishing |
 | [Configuration](config/default.json) / [Environment](.env.example) | Drug list, models and settings |
 | [Benchmark notebook](notebooks/03_retrieval_pipeline_benchmark.ipynb) | Six methods; 60 baseline + 10 hard questions, reported separately |

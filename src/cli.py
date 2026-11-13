@@ -1,16 +1,21 @@
 """Command-line tools for FDA label acquisition and retrieval."""
 
 import argparse
+import sys
 
 from src.utils.config import load_config
 
 
 def main():
     """Parse command-line options and dispatch setup, ingestion, or search work."""
+    if sys.argv[1:2] == ["evaluate"]:
+        from src.evaluation.runner import main as evaluate
+
+        raise SystemExit(evaluate(sys.argv[2:]))
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "command",
-        choices=["setup", "ingest", "search", "maintain"],
+        choices=["setup", "ingest", "search", "maintain", "evaluate"],
     )
     parser.add_argument("question", nargs="?", help="Question for search; omit to enter interactive mode")
     parser.add_argument("--config")
@@ -48,8 +53,6 @@ def main():
             parser.exit(1, f"Setup failed: {exc}\n")
         return
     if args.command == "search":
-        import sys
-
         from src.retrieval.search import run_search
 
         if hasattr(sys.stdout, "reconfigure"):

@@ -117,6 +117,34 @@ def test_successful_source_traceable_response(client, api_service):
         assert row["snapshot_id"] == api_service.session.snapshot_id
 
 
+def test_autograder_runs_the_real_filtered_app_service(api_service):
+    import re
+
+    from src.evaluation.dataset import EvalCase, EvalDataset, Reference, Requirement
+    from src.evaluation.runner import evaluate
+
+    document = next(doc for doc in api_service.documents.values()
+                    if doc["metadata"]["generic_name"] == ["metformin"])
+    quote = "metformin engineering contraindications fixture only."
+    references = [Reference(
+        document_id=document["document_id"], set_id=document["set_id"], section="contraindications",
+        start=match.start(), end=match.end(), quote=quote, source_record_hash=document["source_record_hash"],
+        source_body_sha256=document["provenance"]["body_sha256"],
+    ) for match in re.finditer(re.escape(quote), document["sections"]["contraindications"])]
+    case = EvalCase(
+        id="app-service", question="What are the contraindications of metformin?", split="regression",
+        category="fixture", expected_outcome="answer",
+        requirements=[Requirement(id="r1", description="Find the fixture contraindications.",
+                                  references=references)],
+    )
+    dataset = EvalDataset(snapshot_id=document["snapshot_id"], cases=[case], notes="Engineering test.")
+    report = evaluate(dataset, list(api_service.documents.values()), lambda item: {
+        "response": api_service.search(item.question, 5),
+    })
+    assert report["summary"]["passed"] == 1, report["cases"][0]["grade"]
+    assert report["cases"][0]["response"]["applied_filters"]["section"] == ["contraindications"]
+
+
 @pytest.mark.parametrize("k", [1, 2, 4])
 def test_requested_k_is_enforced(client, k):
     body = client.post("/search", json={"query": "metformin contraindications", "k": k}).json()

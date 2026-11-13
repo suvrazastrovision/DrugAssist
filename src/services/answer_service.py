@@ -9,6 +9,7 @@ import requests
 from dotenv import load_dotenv
 from pydantic import BaseModel, ConfigDict, Field
 
+from src.observability import record_generation, traced
 from src.preprocessing.chunking import token_count
 from src.utils.config import ROOT, load_config
 
@@ -88,8 +89,10 @@ class AnswerUnavailable(RuntimeError):
 class OpenAIAnswerWriter:
     """A bounded structured-output client for the OpenAI Responses endpoint."""
 
+    @traced("generation")
     def write(self, payload, settings, source_ids):
         """Request a structured answer restricted to the supplied source identifiers."""
+        self.last_usage = None
         load_dotenv(ROOT / ".env")
         key = os.getenv("OPENAI_API_KEY")
         if not key:
@@ -117,6 +120,7 @@ class OpenAIAnswerWriter:
             )
             response.raise_for_status()
             body = response.json()
+            record_generation(body)
             if body.get("status") != "completed":
                 raise AnswerUnavailable()
             content = [part for item in body["output"] if item.get("type") == "message"
@@ -127,6 +131,7 @@ class OpenAIAnswerWriter:
             parsed = json.loads(output)
             if not isinstance(parsed, dict):
                 raise AnswerUnavailable()
+            self.last_usage = body.get("usage")
             # Provider metadata is separate from the model-generated JSON schema.
             return {**parsed, "_model": body.get("model") or settings.model}
         except (requests.RequestException, ValueError, KeyError, TypeError):
@@ -219,6 +224,7 @@ class AnswerService:
         """Serialize the question, audience, and evidence as an untrusted JSON payload."""
         return json.dumps({"question": query, "audience": audience, "evidence": sources}, ensure_ascii=False)
 
+    @traced("answer")
     def answer(self, query, k=5, audience="patient"):
         """Retrieve evidence and return a checked answer or an explicit fallback status.
 
