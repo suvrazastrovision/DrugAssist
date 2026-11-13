@@ -70,6 +70,10 @@ def offline_providers(monkeypatch, tmp_path, request):
         return
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     monkeypatch.delenv("FDA_API_KEY", raising=False)
+    monkeypatch.setenv("DRUGASSIST_OBSERVABILITY_ENABLED", "false")
+    monkeypatch.setattr("src.observability.load_dotenv", lambda *args, **kwargs: False)
+    monkeypatch.setattr("src.observability._client", None)
+    monkeypatch.setattr("src.observability._initialized", False)
     monkeypatch.setattr("src.embeddings.embedder.load_dotenv", lambda *args, **kwargs: False)
     monkeypatch.setattr("src.ingestion.api_client.load_dotenv", lambda *args, **kwargs: False)
     monkeypatch.setattr("src.auth.service.load_dotenv", lambda *args, **kwargs: False)
