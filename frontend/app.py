@@ -307,6 +307,28 @@ def search_screen(user: dict) -> None:
 
 def main() -> None:
     """Render the account or search screen according to session authentication."""
+    st.markdown(
+        """
+        <style>
+            [data-testid="stMainBlockContainer"] {
+                padding-bottom: 5rem;
+            }
+            #copyright-footer {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                box-sizing: border-box;
+                padding: 0.75rem 1rem;
+                text-align: center;
+                background-color: var(--st-background-color, var(--background-color, Canvas));
+                z-index: 1000;
+            }
+        </style>
+        <footer id="copyright-footer"><small>&copy; 2026 Suvra Nath</small></footer>
+        """,
+        unsafe_allow_html=True,
+    )
     url = urlsplit(API_URL)
     if (
         url.scheme not in {"http", "https"}
@@ -328,11 +350,6 @@ def main() -> None:
         search_screen(user)
     else:
         account_screen()
-    st.markdown(
-        '<footer style="text-align: center; margin-top: 2rem;">'
-        '<small>&copy; 2026 Suvra Nath</small></footer>',
-        unsafe_allow_html=True,
-    )
 
 
 if __name__ == "__main__":
