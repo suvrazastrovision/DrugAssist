@@ -328,6 +328,11 @@ def main() -> None:
         search_screen(user)
     else:
         account_screen()
+    st.markdown(
+        '<footer style="text-align: center; margin-top: 2rem;">'
+        '<small>&copy; 2026 Suvra Nath</small></footer>',
+        unsafe_allow_html=True,
+    )
 
 
 if __name__ == "__main__":
