@@ -1,229 +1,93 @@
 # DrugAssist
 
+Retrieve FDA drug-label evidence and generate optional, source-cited answers.
+
+[![Offline tests](https://github.com/suvrazastrovision/DrugAssist/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/suvrazastrovision/DrugAssist/actions/workflows/tests.yml)
+[![Python 3.11–3.12](https://img.shields.io/badge/Python-3.11%E2%80%933.12-3776AB?logo=python&logoColor=white)](pyproject.toml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23814386.svg)](https://doi.org/10.5281/zenodo.23814386)
 
-[![Offline tests](https://github.com/suvrazastrovision/DrugAssist/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/suvrazastrovision/DrugAssist/actions/workflows/tests.yml) [![Python 3.11–3.12](https://img.shields.io/badge/Python-3.11%E2%80%933.12-3776AB?logo=python&logoColor=white)](pyproject.toml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) [![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/) [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io/) [![ChromaDB](https://img.shields.io/badge/ChromaDB-FFDE2D)](https://www.trychroma.com/) [![OpenAI](https://img.shields.io/badge/OpenAI-412991)](https://platform.openai.com/docs/) [![openFDA API](https://img.shields.io/badge/openFDA-API-0071BC)](https://open.fda.gov/apis/drug/label/)
+[Quick start](#quick-start) · [Documentation](#documentation) · [Tests](docs/testing.md) · [Troubleshooting](docs/troubleshooting.md)
 
-DrugAssist retrieves prescribing information from FDA drug labels in response to natural-language
-questions. It combines keyword search, semantic search, and local reranking to find relevant evidence
-within a prepared collection of **60 drug names · 118 FDA labels · 8,601 passages**.
-This [minimum viable product (MVP)](docs/app-frontend-overview.md) is the foundation for ongoing development, with further improvements
-planned for future releases.
+## What it does
 
-Ask **“What warnings are listed for warfarin?”** to retrieve supporting label passages, label dates,
-and links to the original FDA sources. Each result provides the evidence needed to check the information
-in its source context.
+- **Find evidence:** keyword and semantic retrieval with local reranking.
+- **Write cited answers:** optional OpenAI summaries with Patient or Clinician wording.
+- **Inspect sources:** label passages, dates and FDA links remain available for review.
 
-For a written response, enable **Write a cited answer**. OpenAI summarizes the retrieved passages
-with source references and wording tailored to patients or clinicians. The passages remain available
-for review, and the app reports when no matching evidence is found. Generated answers require
-verification against the cited labels.
-See [how the app works](docs/app-flow.md) for the full workflow.
+The prepared collection contains **60 drug names · 118 FDA labels · 8,601 passages**.
+This is a bounded corpus, not the full openFDA dataset.
 
-[Setup](#quick-start) · [Tests](#tests) · [Troubleshooting](#troubleshooting) · [Guides](#documentation)
+**Stack:** Streamlit · FastAPI · ChromaDB · OpenAI · openFDA
+
+![DrugAssist answer and supporting FDA evidence](docs/images/frontend-answer-evidence.png)
+
+[More screenshots](docs/app-frontend-overview.md) · [How it works](docs/app-flow.md)
 
 ## Quick start
 
-Use **PowerShell on Windows** or **Terminal on macOS/Linux**. Run commands one at a time;
-wait for each to finish and resolve any error before continuing. First setup needs internet.
+Requires [Git](https://git-scm.com/downloads), [uv](https://docs.astral.sh/uv/getting-started/installation/)
+and an OpenAI API key. First setup needs internet; new semantic searches, answers and source-build
+embeddings can incur API charges. Use a local folder outside OneDrive or other sync services.
 
-### 1. Install the tools
-
-Install [Git](https://git-scm.com/downloads) and [uv](https://docs.astral.sh/uv/getting-started/installation/):
-
-**Windows:**
-
-```powershell
-winget install --id=astral-sh.uv -e
-```
-
-**macOS / Linux:**
+### 1. Install
 
 ```sh
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
-
-Reopen your terminal; check `git --version` and `uv --version`.
-uv downloads Python when needed, so no separate Python installation is required.
-
-### 2. Download the app
-
-Use a local folder outside OneDrive or other cloud-sync folders:
-
-```sh
-git clone https://github.com/suvrazastrovision/drug_rag.git DrugAssist
+git clone https://github.com/suvrazastrovision/DrugAssist.git DrugAssist
 cd DrugAssist
 uv sync --locked --inexact --python 3.11
 ```
 
-Downloads may take several minutes. Python 3.11–3.12 is supported; these steps use 3.11.
-Run the remaining commands inside `DrugAssist`.
+### 2. Set up and launch
 
-### 3. Set up and launch
-
-Have your own [OpenAI API key](https://platform.openai.com/api-keys) ready.
-New semantic searches, written answers and source-build embeddings can incur API charges.
-
-Cloning the code does not include the searchable data. Choose either setup path:
-
-| Path | What happens | Use on |
-|---|---|---|
-| Download prepared data | The launcher downloads the ZIP automatically; nobody needs to send it to you. Requires a published data release. | Windows x64 + Python 3.11 |
-| Build from source | Downloads FDA labels and builds the index locally; no prepared ZIP is needed. Takes longer and incurs embedding charges. | macOS/Linux, or Windows as an alternative |
-
-**Windows x64 — automatic ZIP download:**
+**Windows x64 + Python 3.11:**
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\start.ps1
 ```
 
-The launcher asks for your key (entry is hidden), saves it in `.env`, downloads prepared data
-and opens the app. Wait for `DrugAssist is ready: http://127.0.0.1:8501`.
-
-Prepared data requires **Windows x64 + Python 3.11** and the published
-[data release](https://github.com/suvrazastrovision/drug_rag/releases/tag/data-v0.1.0).
-
-**Windows alternative — build from source without a ZIP:**
-
-If the release is unavailable, or you prefer to build the data yourself, run:
+The launcher prompts for your key, saves it in the ignored `.env`, prepares the data and opens
+the app. The prepared ZIP requires a compatible [data release](https://github.com/suvrazastrovision/DrugAssist/releases/tag/data-v0.1.0).
+To build from source instead, use:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\start.ps1 -FromSource
 ```
 
-**macOS / Linux — build from source without a ZIP:**
+**macOS/Linux, Python 3.12 or manual startup:** follow the [setup guide](docs/setup.md#3-set-up-and-launch)
+to configure `.env`, build the data and start both servers. Cloning alone does not include searchable data.
 
-```sh
-cp .env.example .env
-```
+### 3. Ask and verify
 
-Open `.env` in a text editor. Set `OPENAI_API_KEY=your-key-here`, save and keep it private.
-`FDA_API_KEY` is optional. Build the collection:
+Open [DrugAssist](http://127.0.0.1:8501), sign up and log in. Ask **“What warnings are listed for warfarin?”**
+and check the supporting passages. Uncheck **Write a cited answer** for evidence only.
 
-```sh
-uv run --locked --no-sync fda-rag setup --from-source
-```
-
-This downloads FDA data and the local model, then builds the index. It may take several minutes
-and produce different data from the saved benchmark. Other architectures and Python 3.12 also
-need a source build; dependency availability varies. Live setup needs checking on each target platform.
-
-Open **two terminals**, both inside `DrugAssist`:
-
-```sh
-# Terminal 1: search API
-uv run --locked --no-sync uvicorn src.api.main:app --host 127.0.0.1 --port 8000
-```
-
-```sh
-# Terminal 2: browser interface
-uv run --locked --no-sync streamlit run frontend/app.py --server.address 127.0.0.1
-```
-
-Manual setup/startup also works on Windows; use `Copy-Item .env.example .env` to create `.env`.
-
-### 4. Use and reopen
-
-- Open [DrugAssist](http://127.0.0.1:8501), **sign up**, then **log in** (password: at least 8 characters).
-- Try **“What warnings are listed for warfarin?”** and review the FDA sources.
-- Uncheck **Write a cited answer** for evidence only; new semantic searches still use the API.
-- Keep terminals open. Press **Ctrl+C** to stop (in both terminals for manual startup).
-- Next time, reopen the repository folder and repeat the launcher or the two server commands.
-  Your key/account are saved; setup reuses compatible data.
-
-New semantic questions go to OpenAI; answer writing also sends supporting passages.
-[Usage and settings](docs/usage.md) · [Local API reference](http://127.0.0.1:8000/docs)
-
-## Optional observability
-
-Install metadata-only Langfuse tracing with:
-
-```sh
-uv sync --locked --inexact --extra observability
-```
-
-Create a Langfuse Cloud project and set `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`,
-and `LANGFUSE_BASE_URL` in `.env` (EU: `https://cloud.langfuse.com`). Set
-`DRUGASSIST_OBSERVABILITY_ENABLED=true` and restart the API. To disable tracing,
-set it to `false` and restart. The default is disabled.
-
-Search produces a retrieval trace; answers group retrieval and any OpenAI answer call
-under one trace. Recorded fields include timings, retrieval method, requested/result
-counts, audience, no-match reason, answer status, and generation model/token usage.
-Questions, answers, passages, filters, account identifiers and raw errors are excluded.
-Auth and health requests are not traced. Telemetry is exported in the background and
-drained on API shutdown; missing configuration, a missing SDK, or telemetry failures
-do not prevent search or answers. The initial integration covers these service calls,
-not embedding usage, ingestion, evaluation judging or the CLI search pipeline.
-
-## Tests
-
-**Offline tests — all three operating systems:** after step 2, stop servers/notebooks and run:
-
-```sh
-uv sync --locked --inexact --extra dev --python 3.11
-uv run --locked --no-sync python scripts/test_clean.py
-uv run --locked --no-sync ruff check src tests scripts frontend
-```
-
-The suite runs twice in fresh source copies with isolated caches, temporary stores and simulated
-providers. External networking is blocked; no data setup or API key is needed. Dependency installation
-still needs internet or cached packages. For one ordinary run: `uv run --locked --no-sync pytest -q`.
-
-**Online CI:** [GitHub Actions](https://github.com/suvrazastrovision/drug_rag/actions) runs these offline tests
-and lint checks on pushes/PRs, using Windows/Linux and Python 3.11/3.12. Open a run to see results;
-macOS is not in the CI matrix.
-
-Ruff enforces code-style and PEP 257 docstring checks through `ruff.toml`, inheriting the
-project's 110-character line limit. Public application interfaces require docstrings;
-test and fixture names are exempt from missing-docstring checks.
-
-**Real online check:** start the app with internet and a valid API key (charges apply):
-
-1. Open [health](http://127.0.0.1:8000/health); expect `"status": "ready"`. This checks the index, not API access.
-2. Sign up/log in; submit a new drug-label question with answer writing unchecked and inspect the passages.
-3. Enable **Write a cited answer**, submit again and review the answer and sources.
-
-No automated `live` tests currently exist; `pytest -m live` does not run this online check.
-
-## Troubleshooting
-
-| Problem | Try this |
-|---|---|
-| `uv` / `git` not recognized | Reopen the terminal; check the installation links above. |
-| Installation: `Access is denied` | Stop servers/notebooks, pause folder syncing and retry. Persistent incomplete metadata may require recreating `.venv`. |
-| Prepared download fails | Check release availability and platform/Python requirements; explicitly choose a source build if needed. |
-| Port already in use | Stop the earlier app. Windows launcher alternatives: `-ApiPort 8001 -UiPort 8502`. |
-| Search/answer fails | Check API key and billing/access. Launcher logs: `results/private/startup/`. |
-
-Stop services before changing dependencies/data. Use a separate checkout for a fresh configuration.
-Prepared downloads verify checksums, preserve credentials/accounts and never automatically fall back to a paid build.
+Keep the terminal open; press **Ctrl+C** to stop. Rerun the launcher to reopen the app.
+See [usage and settings](docs/usage.md) for accounts, manual startup and the API.
 
 ## Documentation
 
 | Guide | Contents |
 |---|---|
+| [Setup](docs/setup.md) | Tool installation, platform requirements and startup |
 | [Usage](docs/usage.md) | Accounts, answers, settings, API and terminal search |
-| [App flow](docs/app-flow.md) | Data preparation and search pipeline |
+| [Optional observability](docs/observability.md) | Metadata-only Langfuse tracing and verification |
+| [Tests](docs/testing.md) | Offline checks, CI and manual online validation |
+| [Troubleshooting](docs/troubleshooting.md) | Installation, data, ports, provider and tracing issues |
+| [App flow](docs/app-flow.md) | Data preparation and retrieval pipeline |
 | [Database schema](docs/database-schema.md) | Labels, caches and accounts |
+| [App autograding](docs/evaluation.md) | Source-pinned cases, optional judging and regression reports |
 | [Research](docs/research.md) | Notebooks, evaluation and maintenance |
-| [App autograding](docs/evaluation.md) | Source-pinned cases, optional answer judging and regression reports |
-| [Repository and data](docs/repository.md) | Files, data transfer and release publishing |
-| [Configuration](config/default.json) / [Environment](.env.example) | Drug list, models and settings |
-| [Benchmark notebook](notebooks/03_retrieval_pipeline_benchmark.ipynb) | Six methods; 60 baseline + 10 hard questions, reported separately |
+| [Repository and data](docs/repository.md) | Storage layout, data transfer and release publishing |
+| [Configuration](config/default.json) / [Environment](.env.example) | Drug list, models and private settings |
+| [Benchmark notebook](notebooks/03_retrieval_pipeline_benchmark.ipynb) | Six methods; 60 baseline and 10 hard questions |
 
-For information, not personalized medical advice. Scores rank relevance, not correctness or confidence.
-Review FDA sources. The saved benchmark does not validate clinical answer quality or a rebuilt collection.
+> For information, not personalized medical advice. Verify generated answers against the cited labels.
+> Relevance scores are not confidence estimates; benchmarks do not establish clinical correctness.
 
-## License
+## License and credits
 
-Project code is available under the [MIT License](LICENSE).
-Third-party dependencies, model weights and datasets retain their own licenses and terms.
+[MIT License](LICENSE). Third-party dependencies, model weights and datasets retain their own terms.
 
-## Special remarks
-
-All 445/445 tests passed in CI on Linux and Windows. Full macOS support is planned for a future update.
-
-## Contributors
-
-Designed and developed by **Suvra Nath** under the supervision of **Ofer Feder** as part of the qualifying certification examination for the **DevOps and AI Engineering** track at **MSIT Masterschool**.
+Designed and developed by **Suvra Nath**, supervised by **Ofer Feder**, for the **DevOps and AI Engineering**
+qualifying certification examination at **MSIT Masterschool**.
