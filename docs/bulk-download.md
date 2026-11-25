@@ -97,4 +97,3 @@ limit first.
 
 Storage scenarios are hypothetical; full-index RAM and latency remain
 unmeasured. The 335 MiB peak RAM describes the final analysis invocation.
-Choose a server within the **EUR 50/month hosting budget** after benchmarking.
