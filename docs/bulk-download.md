@@ -1,133 +1,100 @@
-# Local FDA source downloads
+# FDA bulk download and sizing
 
-This stage saves FDA source ZIPs locally. It does not change the 60-drug app,
-normalize records, generate passages, request embeddings, or build an index.
-The existing chunking and retrieval configuration remains in place.
+## Status
 
-From the repository root in PowerShell:
+Downloads and sizing completed on **2026-11-25**. The 60-drug app and retrieval
+settings remain unchanged. No bulk embeddings or new index have been created.
 
-```powershell
-.venv/Scripts/python.exe scripts/download_fda_bulk.py --workspace "$env:LOCALAPPDATA\DrugAssist\bulk"
-```
+| Result | Total |
+|---|---:|
+| Source label records scanned | 265,009 |
+| Approval-matched label sets | 41,240 |
+| Passages counted | 2,016,926 |
+| Embedding-input tokens, including repeats | 474,191,969 |
+| Downloaded ZIPs | 1.76 GiB |
+| Analysis artifacts, including backup and sample plan | Approximately 285 MiB |
 
-For a first-partition trial, append `--limit 1`. Run again without that option
-to finish. The downloader reuses the saved manifest rather than selecting a
-different FDA release midway through a run.
+These are snapshot figures; consult generated reports after future runs.
 
-## Files on your PC
+## Location and outputs
 
-The default destination above is outside OneDrive and the repository:
+Workspace: `%LOCALAPPDATA%\DrugAssist\bulk`, outside the repository and OneDrive.
+Keep the entire workspace for verification and resume.
 
-- `fda_manifest.json`: the original pinned FDA download manifest.
-- `downloads/`: label and Drugs@FDA approval ZIPs, with no bulk extraction.
-- `download_state.json`: per-file hashes, sizes and ZIP-validation results.
-- `download_report.json`: totals, export dates and completion status.
-- `baseline.json`: original baseline configuration, counts and file hashes.
-- `baseline_verification.json`: comparison of protected baseline files after a run.
-- `download.lock`: operating-system lock preventing concurrent writers; the
-  file remains after exit, but its lock is automatically released.
+| Path relative to workspace | Purpose |
+|---|---|
+| `downloads/` | Label and Drugs@FDA source ZIPs; no extraction |
+| `fda_manifest.json`, `download_state.json` | Pinned release and download checkpoints |
+| `download_report.json` | Download completion, source counts and sizes |
+| `analysis/sizing_report.txt`, `analysis/sizing_report.json` | Readable and detailed sizing results |
+| `analysis/analysis.sqlite3` | Matching audit and resumable sizing checkpoints |
+| `analysis/progress.json` | Latest progress during analysis |
+| `baseline_verification.json`, `analysis/baseline_verification.json` | Baseline preservation checks for each stage |
+| `analysis/baseline_comparison.json` | Original labels compared with the approval rule |
+| `analysis/benchmark_plan.json` | Prepared sample records, token counts and optional cost estimates |
 
-The source-record totals are before approval filtering. Uncompressed sizes
-come from ZIP member metadata; these files are not extracted to disk.
+## Commands
 
-## Interrupting and resuming
-
-Press Ctrl+C, then rerun the same command. Partial files use `.part` names.
-Byte-range resume requires an unchanged ETag or Last-Modified value and a valid
-server range response. If the server ignores the range or does not provide a
-validator, the partition restarts. Completed files are verified and skipped.
-Network failures are retried; ZIP-integrity or baseline changes stop the run
-for investigation. SHA-256 hashes record locally downloaded bytes; they are
-not signatures or FDA-published cryptographic checksums.
-
-The process pauses if the destination drive has under 80 GiB free or the bulk
-workspace reaches 40 GiB. Keep this workspace dedicated to this download run.
-Use a new workspace when deliberately acquiring a newer release.
-
-Avoid running indexing or maintenance against the baseline during the download.
-The baseline inventory includes Chroma and embedding-cache files, so another
-process updating them can cause preservation verification to report changes.
-
-Approval matching, sequential normalization, token sizing and sample indexing
-are subsequent stages and are not implemented by this command.
-
-## Free count-only sizing
-
-The separate analyzer scans the complete download, selects the newest
-approval-matched record per label set, and counts the existing normalizer and
-chunker's actual embedding inputs. It does not save passage text or vectors,
-change the active app, or make network connections. It uses the checked-in
-`cl100k_base` tokenizer asset, so it needs no API credentials or new dependencies.
-
-First try matching one partition:
+Run in PowerShell from the repository root, using the existing virtual environment.
+Steps 1, 2 and 4 are already complete for this workspace.
 
 ```powershell
-.venv/Scripts/python.exe scripts/analyze_fda_bulk.py --workspace "$env:LOCALAPPDATA\DrugAssist\bulk" --stage match --limit-partitions 1
+$bulkWorkspace = Join-Path $env:LOCALAPPDATA 'DrugAssist\bulk'
+
+# 1. Download sources; reuse verified files.
+.venv/Scripts/python.exe scripts/download_fda_bulk.py --workspace $bulkWorkspace
+
+# 2. Match approvals and count all passages/tokens.
+.venv/Scripts/python.exe scripts/analyze_fda_bulk.py --workspace $bulkWorkspace
+
+# 3. Read the latest saved sizing report.
+.venv/Scripts/python.exe scripts/analyze_fda_bulk.py --workspace $bulkWorkspace --stage status
+
+# 4. Prepare samples without indexing or embeddings.
+.venv/Scripts/python.exe scripts/prepare_bulk_benchmark.py --workspace $bulkWorkspace
 ```
 
-Then resume matching and count the full selected collection:
+Sample preparation replaces `benchmark_plan.json`. To include cost estimates,
+supply `--usd-per-million` and `--pricing-source` with a reviewed rate and URL.
 
-```powershell
-.venv/Scripts/python.exe scripts/analyze_fda_bulk.py --workspace "$env:LOCALAPPDATA\DrugAssist\bulk"
-```
+## Matching and sizing rules
 
-Run the same command after Ctrl+C to resume. Reading a compressed partition
-starts at its beginning again, but committed records and label-set counts are
-skipped without duplication. Source hashes, code and configuration must match
-the saved run. There is no sampling or drug-name limit in a complete report.
-Only label records with an explicit NDA/ANDA/BLA application match to at least
-one approved (`AP`) Drugs@FDA submission qualify. Tentative-only applications
-are excluded. This is application-level approval evidence, not verification of
-current marketing status or independent approval of each label's text.
+Labels require an explicit NDA/ANDA/BLA application-number match to an approved
+(`AP`) Drugs@FDA submission. Tentative-only applications are excluded. This is
+application-level approval evidence, not current marketing status or approval
+of each label's text.
 
-Version selection sorts numeric version, effective date, then canonical source
-hash. Labels without a set ID are reported but cannot be selected. Exact
-duplicates and superseded records remain represented in the audit database.
-The original ZIPs preserve all source records.
+Partitions are processed sequentially, selecting the newest matched version per
+label set. Existing normalization and recursive **256-token chunks with
+32-token overlap** use `cl100k_base`. Token counts include identity and section
+text; distinct-input totals support cache sizing.
 
-Find the outputs in `%LOCALAPPDATA%\DrugAssist\bulk\analysis`:
+Analysis runs offline and calculates passage-file and vector sizes without
+creating those files.
 
-- `sizing_report.txt` and `sizing_report.json`: counts, token totals, estimated
-  serialized passage sizes, raw vector/cache payload, and storage scenarios.
-- `analysis.sqlite3`: approvals, matching audit, selected record locations,
-  per-label counts, unique input hashes and transactional checkpoints.
-- `baseline_comparison.json`: whether original full-label records satisfy the
-  same approval rule and overlap the downloaded/selected collection.
-- `baseline_verification.json`: protected original files remain unchanged.
-- `progress.json`: the most recent progress update.
+## Resume and limits
 
-Use `--stage status` to read the latest persisted report. During a run,
-`progress.json` has more recent progress than the last partition-level report.
-Use `--stage match` or `--stage size` to run the stages independently; sizing
-requires matching to have finished across every partition first.
+Press Ctrl+C, then rerun the same command. Analysis rereads the interrupted
+partition and skips committed work. Resume with unchanged pinned sources, code
+and configuration. Use a separate workspace for a newer FDA release.
 
-Analysis has a 2 GiB **additional** storage allowance, an 80 GiB free-space
-reserve, and a 4 GiB process peak-RAM stop threshold. The SQLite database is
-limited to approximately 1 GiB to leave space for its rollback journal and
-reports. A resource stop rolls back uncommitted work and saves a paused report.
-The existing ZIP downloads do not count toward the new 2 GiB allowance.
+| Guard | Limit |
+|---|---:|
+| Free disk reserve for download and analysis | 80 GiB |
+| Total download-workspace allowance | 40 GiB |
+| Additional analysis storage, including checkpoint backups | 2 GiB |
+| Analysis process peak-RAM stop threshold | 4 GiB |
 
-Passage/normalized JSONL sizes describe canonical compact UTF-8 serialization
-with one newline per record; those files are counted, not written. Cache totals
-deduplicate the exact identity/section/text input, using SHA-256 hashes. Token
-counts include repeated passage inputs as well as distinct-input totals.
-The source SHA in the hypothetical passage provenance refers to the source ZIP.
+Avoid baseline indexing, maintenance or embedding-cache updates during these
+stages; preservation checks compare those files.
 
-Raw vectors use the configured dimension count and four bytes per float32.
-Storage scenarios apply explicitly hypothetical Chroma overhead multipliers;
-they are not measured storage forecasts or upper bounds. This report cannot
-certify cloud RAM or query latency. A separately cost-bounded representative
-index benchmark is required before selecting the cheapest server under the
-EUR 50/month hosting ceiling. No paid benchmark or rental is initiated here.
+## Next step
 
-After complete sizing, prepare nested samples targeting 2,000 and 10,000 passages:
+Benchmark the prepared **2,076- and 10,070-passage samples** using the existing
+Chroma/BM25/fusion/reranker pipeline. Measure indexing and searching separately.
+Preparation makes no paid requests; review costs and set an embedding spending
+limit first.
 
-```powershell
-.venv/Scripts/python.exe scripts/prepare_bulk_benchmark.py --workspace "$env:LOCALAPPDATA\DrugAssist\bulk"
-```
-
-This writes `analysis/benchmark_plan.json` containing whole label sets sampled
-from four passage-count ranges, their source locations, and sample token totals.
-Targets may be exceeded to retain complete labels. Tokens are an upper bound
-before duplicate/cache savings, suitable for pricing a sample before any paid
-requests. This preparation does not run indexing or embeddings.
+Storage scenarios are hypothetical; full-index RAM and latency remain
+unmeasured. The 335 MiB peak RAM describes the final analysis invocation.
+Choose a server within the **EUR 50/month hosting budget** after benchmarking.
